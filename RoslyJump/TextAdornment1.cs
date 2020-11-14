@@ -69,10 +69,21 @@ namespace RoslyJump
         /// <param name="e">The event arguments.</param>
         internal void OnLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
-            foreach (ITextViewLine line in e.NewOrReformattedLines)
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            SnapshotPoint caretPositionInBuffer = this.view.Caret.Position.BufferPosition;
+
+            IWpfTextViewLine line =
+                this.view.GetTextViewLineContainingBufferPosition(caretPositionInBuffer);
+
+            if (e.NewOrReformattedLines.Contains(line))
             {
                 this.CreateVisuals(line);
             }
+
+            //foreach (ITextViewLine line in e.NewOrReformattedLines)
+            //{
+            //    this.CreateVisuals(line);
+            //}
         }
 
         /// <summary>
