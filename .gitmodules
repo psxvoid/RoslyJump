@@ -1,0 +1,3 @@
+[submodule "dngrep"]
+	path = dngrep
+	url = https://github.com/psxvoid/dngrep
