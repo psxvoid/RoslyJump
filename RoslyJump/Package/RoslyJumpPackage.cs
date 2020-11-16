@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text.Editor;
 using RoslyJump.Package;
 using Task = System.Threading.Tasks.Task;
 
@@ -52,31 +53,29 @@ namespace RoslyJump
 
         private TextAdornment1 Adorment = null;
 
+
         SyntaxNode[] nodes;
         private int activeParamPosition = -1;
+        private IWpfTextView lastActiveView;
 
         private void ContextJumpNext()
         {
-            if (this.Adorment == null && this.viewAccessor?.ActiveView != null)
+            if (this.viewAccessor.ActiveView != null && this.lastActiveView != this.viewAccessor?.ActiveView)
             {
-                this.Adorment = new TextAdornment1(this.viewAccessor.ActiveView);
-
-                string text = this.viewAccessor.ActiveView.TextSnapshot.GetText();
-                SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
-
-                var query = SyntaxTreeQueryBuilder.From(new SyntaxTreeQueryDescriptor
+                if (this.Adorment != null)
                 {
-                    Target = QueryTarget.MethodParameter
-                });
-                var walker = new SyntaxTreeQueryWalker(query);
-                walker.Visit(tree.GetRoot());
+                    this.Adorment.Remove();
+                }
 
-                this.nodes = walker.Results.ToArray();
+                this.Adorment = new TextAdornment1(this.viewAccessor.ActiveView);
+                this.lastActiveView = this.viewAccessor.ActiveView;
+                this.activeParamPosition = -1;
+                this.ScanForParameters();
             }
 
-            if (this.Adorment != null)
+            if (this.Adorment != null && this.viewAccessor?.ActiveView != null)
             {
-                // this.Adorment.EndorseActiveLine();
+                this.Adorment.Remove();
 
                 if (this.activeParamPosition == this.nodes.Length - 1)
                 {
@@ -86,7 +85,7 @@ namespace RoslyJump
                 {
                     this.activeParamPosition++;
                 }
-                
+
                 var activeParam = this.nodes[this.activeParamPosition] as ParameterSyntax;
 
                 LinePosition startPosition = activeParam.GetLocation().GetLineSpan().StartLinePosition;
@@ -104,6 +103,21 @@ namespace RoslyJump
                 Microsoft.VisualStudio.Text.SnapshotPoint jumpPoint = viewLine.Start.Add(charStart);
                 this.viewAccessor.ActiveView.Caret.MoveTo(jumpPoint);
             }
+        }
+
+        private void ScanForParameters()
+        {
+            string text = this.viewAccessor.ActiveView.TextSnapshot.GetText();
+            SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
+
+            var query = SyntaxTreeQueryBuilder.From(new SyntaxTreeQueryDescriptor
+            {
+                Target = QueryTarget.MethodParameter
+            });
+            var walker = new SyntaxTreeQueryWalker(query);
+            walker.Visit(tree.GetRoot());
+
+            this.nodes = walker.Results.ToArray();
         }
 
         #region Package Members

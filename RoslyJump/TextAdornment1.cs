@@ -32,6 +32,8 @@ namespace RoslyJump
         /// </summary>
         private readonly Pen pen;
 
+        private bool applied = false;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TextAdornment1"/> class.
         /// </summary>
@@ -88,18 +90,21 @@ namespace RoslyJump
 
         public void EndorseActiveLine()
         {
+            if (this.applied) throw new InvalidOperationException("This adornment is already applied.");
             SnapshotPoint caretPositionInBuffer = this.view.Caret.Position.BufferPosition;
             IWpfTextViewLine line =
                 this.view.GetTextViewLineContainingBufferPosition(caretPositionInBuffer);
 
             this.CreateVisuals(line);
+            this.applied = true;
         }
 
         internal void EndorseLine(int line, int charStart, int charEnd)
         {
+            if (this.applied) throw new InvalidOperationException("This adornment is already applied.");
             IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
             ITextViewLine textViewLine = textViewLines[line];
-            
+
             SnapshotSpan span = new SnapshotSpan(
                 this.view.TextSnapshot,
                 Span.FromBounds(
@@ -124,8 +129,15 @@ namespace RoslyJump
                 Canvas.SetLeft(image, geometry.Bounds.Left);
                 Canvas.SetTop(image, geometry.Bounds.Top);
 
-                this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, null, image, null);
+                this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, this, image, null);
             }
+            this.applied = true;
+        }
+
+        public void Remove()
+        {
+            this.layer.RemoveAdornmentsByTag(this);
+            this.applied = false;
         }
 
         /// <summary>
@@ -160,7 +172,7 @@ namespace RoslyJump
                         Canvas.SetLeft(image, geometry.Bounds.Left);
                         Canvas.SetTop(image, geometry.Bounds.Top);
 
-                        this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, null, image, null);
+                        this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, this, image, null);
                     }
                 }
             }
