@@ -7,8 +7,7 @@ using System.Threading;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using RoslyJump.PackageD;
-using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
+using RoslyJump.Package;
 using Task = System.Threading.Tasks.Task;
 
 namespace RoslyJump
@@ -35,7 +34,6 @@ namespace RoslyJump
     [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    // [ProvideService(typeof(IActiveViewAccessor), IsAsyncQueryable = true)]
     public sealed class RoslyJumpPackage : AsyncPackage
     {
         #region MEF Providers
@@ -84,7 +82,6 @@ namespace RoslyJump
                 var menuItem = new MenuCommand((sender, evt) =>
                 {
                     ContextJumpNext();
-                    // Do stuff
                 }, menuCommandID);
 
                 mcs.AddCommand(menuItem);
