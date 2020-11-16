@@ -95,6 +95,39 @@ namespace RoslyJump
             this.CreateVisuals(line);
         }
 
+        internal void EndorseLine(int line, int charStart, int charEnd)
+        {
+            IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
+            ITextViewLine textViewLine = textViewLines[line];
+            
+            SnapshotSpan span = new SnapshotSpan(
+                this.view.TextSnapshot,
+                Span.FromBounds(
+                    textViewLine.Start + charStart,
+                    textViewLine.Start + charEnd));
+
+            Geometry geometry = textViewLines.GetMarkerGeometry(span);
+            if (geometry != null)
+            {
+                var drawing = new GeometryDrawing(this.brush, this.pen, geometry);
+                drawing.Freeze();
+
+                var drawingImage = new DrawingImage(drawing);
+                drawingImage.Freeze();
+
+                var image = new Image
+                {
+                    Source = drawingImage,
+                };
+
+                // Align the image with the top of the bounds of the text geometry
+                Canvas.SetLeft(image, geometry.Bounds.Left);
+                Canvas.SetTop(image, geometry.Bounds.Top);
+
+                this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, null, image, null);
+            }
+        }
+
         /// <summary>
         /// Adds the scarlet box behind the 'a' characters within the given line
         /// </summary>

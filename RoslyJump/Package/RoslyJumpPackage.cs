@@ -2,8 +2,15 @@
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Design;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using dngrep.core.Queries;
+using dngrep.core.Queries.Specifiers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -45,16 +52,57 @@ namespace RoslyJump
 
         private TextAdornment1 Adorment = null;
 
+        SyntaxNode[] nodes;
+        private int activeParamPosition = -1;
+
         private void ContextJumpNext()
         {
             if (this.Adorment == null && this.viewAccessor?.ActiveView != null)
             {
                 this.Adorment = new TextAdornment1(this.viewAccessor.ActiveView);
+
+                string text = this.viewAccessor.ActiveView.TextSnapshot.GetText();
+                SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
+
+                var query = SyntaxTreeQueryBuilder.From(new SyntaxTreeQueryDescriptor
+                {
+                    Target = QueryTarget.MethodParameter
+                });
+                var walker = new SyntaxTreeQueryWalker(query);
+                walker.Visit(tree.GetRoot());
+
+                this.nodes = walker.Results.ToArray();
             }
 
             if (this.Adorment != null)
             {
-                this.Adorment.EndorseActiveLine();
+                // this.Adorment.EndorseActiveLine();
+
+                if (this.activeParamPosition == this.nodes.Length - 1)
+                {
+                    this.activeParamPosition = 0;
+                }
+                else
+                {
+                    this.activeParamPosition++;
+                }
+                
+                var activeParam = this.nodes[this.activeParamPosition] as ParameterSyntax;
+
+                LinePosition startPosition = activeParam.GetLocation().GetLineSpan().StartLinePosition;
+                LinePosition endPosition = activeParam.GetLocation().GetLineSpan().EndLinePosition;
+                int line = startPosition.Line;
+                int charStart = startPosition.Character;
+                int charEnd = endPosition.Character;
+
+                // TODO: support cross-line definitions
+                this.Adorment.EndorseLine(line, charStart, charEnd);
+
+                Microsoft.VisualStudio.Text.Formatting.IWpfTextViewLine viewLine =
+                    this.viewAccessor.ActiveView.TextViewLines[line];
+
+                Microsoft.VisualStudio.Text.SnapshotPoint jumpPoint = viewLine.Start.Add(charStart);
+                this.viewAccessor.ActiveView.Caret.MoveTo(jumpPoint);
             }
         }
 
