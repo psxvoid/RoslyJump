@@ -21,8 +21,8 @@ namespace RoslyJump
                     "KeyBindingTextAdorned", out bool adorned) && adorned;
                 if (!alreadyAdorned)
                 {
-                    new TextAdornment1((IWpfTextView)args.TextView);
-                    args.TextView.Properties.AddProperty("KeyBindingTextAdorned", true);
+                    //new TextAdornment1((IWpfTextView)args.TextView);
+                    //args.TextView.Properties.AddProperty("KeyBindingTextAdorned", true);
                 }
             }
 

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <Extern href="stdidcmd.h"/>
+  <Extern href="vsshlids.h"/>
+
+  <Commands package="guidRoslyJumpPackage">
+    <Buttons>
+      <Button guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpNext" priority="0x0100" type="Button">
+        <Parent guid="guidCommandGroup" id="RoslyJumpMenuGroup" />
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <CommandName>cmdidRoslyJumpContextJumpNext</CommandName>
+          <ButtonText>RoslyJump - Context Jump Next</ButtonText>
+          <CanonicalName>.RoslyJump.ContextJumpNext</CanonicalName>
+          <LocCanonicalName>.RoslyJump.ContextJumpNext</LocCanonicalName>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+  <KeyBindings>
+    <KeyBinding guid="guidCommandGroup" id="RoslyJumpMenuGroup"
+     editor="guidVSStd97"
+     key1="VK_J" mod1="Alt Shift">
+    </KeyBinding>
+  </KeyBindings>
+  <Symbols>
+    <!-- This is the package guid. -->
+    <GuidSymbol name="guidRoslyJumpPackage" value="{20835a5e-c89f-4dac-aaa6-8bc279eeb0ef}" />
+
+    <!-- This is the guid used to group the menu commands together -->
+    <GuidSymbol name="guidCommandGroup" value="{9770c766-52be-419a-85f1-f839c5f36c94}">
+      <IDSymbol name="RoslyJumpMenuGroup" value="0x1020" />
+      <IDSymbol name="cmdidRoslyJumpContextJumpNext" value="0x0100" />
+    </GuidSymbol>
+
+    <!--<GuidSymbol name="guidImages" value="{0d47856f-7002-435d-9a3d-a497651683ab}">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+    </GuidSymbol>-->
+  </Symbols>
+</CommandTable>

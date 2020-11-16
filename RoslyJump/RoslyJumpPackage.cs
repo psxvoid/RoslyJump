@@ -1,7 +1,14 @@
 ﻿using System;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using RoslyJump.PackageD;
+using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
 using Task = System.Threading.Tasks.Task;
 
 namespace RoslyJump
@@ -23,14 +30,35 @@ namespace RoslyJump
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
+    [Guid(PackageIds.PackageGuidString)]
+    // VSConstants.UICONTEXT.NoSolution_string
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid(RoslyJumpPackage.PackageGuidString)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
+    // [ProvideService(typeof(IActiveViewAccessor), IsAsyncQueryable = true)]
     public sealed class RoslyJumpPackage : AsyncPackage
     {
-        /// <summary>
-        /// RoslyJumpPackage GUID string.
-        /// </summary>
-        public const string PackageGuidString = "e2786c8f-8483-4dca-87ae-217452d4ee00";
+        #region MEF Providers
+        private IComponentModel componentModel;
+        private ExportProvider exportProvider;
+        #endregion
+
+        private IActiveViewAccessor viewAccessor;
+
+        private TextAdornment1 Adorment = null;
+
+        private void ContextJumpNext()
+        {
+            if (this.Adorment == null && this.viewAccessor?.ActiveView != null)
+            {
+                this.Adorment = new TextAdornment1(this.viewAccessor.ActiveView);
+            }
+
+            if (this.Adorment != null)
+            {
+                this.Adorment.EndorseActiveLine();
+            }
+        }
 
         #region Package Members
 
@@ -43,9 +71,33 @@ namespace RoslyJump
         /// <returns>A task representing the async work of package initialization, or an already completed task if there is none. Do not return null from this method.</returns>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            await base.InitializeAsync(cancellationToken, progress);
+            object componentModel = await GetServiceAsync(typeof(SComponentModel));
+
+            OleMenuCommandService mcs = await this.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+            Debug.Assert(mcs != null);
+
+            if (null != mcs)
+            {
+                //// Create the command for the menu item.
+                var menuCommandID = new CommandID(PackageIds.CommandGroup, (int)CommandIds.ContextJumpNext);
+                var menuItem = new MenuCommand((sender, evt) =>
+                {
+                    ContextJumpNext();
+                    // Do stuff
+                }, menuCommandID);
+
+                mcs.AddCommand(menuItem);
+            }
+
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+            this.componentModel = (IComponentModel)componentModel;
+            this.exportProvider = this.componentModel.DefaultExportProvider;
+
+            this.viewAccessor = this.exportProvider.GetExportedValue<IActiveViewAccessor>();
         }
 
         #endregion

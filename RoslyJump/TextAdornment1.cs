@@ -77,13 +77,22 @@ namespace RoslyJump
 
             if (e.NewOrReformattedLines.Contains(line))
             {
-                this.CreateVisuals(line);
+                // this.CreateVisuals(line);
             }
 
             //foreach (ITextViewLine line in e.NewOrReformattedLines)
             //{
             //    this.CreateVisuals(line);
             //}
+        }
+
+        public void EndorseActiveLine()
+        {
+            SnapshotPoint caretPositionInBuffer = this.view.Caret.Position.BufferPosition;
+            IWpfTextViewLine line =
+                this.view.GetTextViewLineContainingBufferPosition(caretPositionInBuffer);
+
+            this.CreateVisuals(line);
         }
 
         /// <summary>
