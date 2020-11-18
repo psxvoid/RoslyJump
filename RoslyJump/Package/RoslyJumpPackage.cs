@@ -5,12 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.Queries;
 using dngrep.core.Queries.Specifiers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -87,18 +87,13 @@ namespace RoslyJump
                 }
 
                 var activeParam = this.nodes[this.activeParamPosition] as ParameterSyntax;
-
-                LinePosition startPosition = activeParam.GetLocation().GetLineSpan().StartLinePosition;
-                LinePosition endPosition = activeParam.GetLocation().GetLineSpan().EndLinePosition;
-                int line = startPosition.Line;
-                int charStart = startPosition.Character;
-                int charEnd = endPosition.Character;
+                var (lineStart, _, charStart, charEnd) = activeParam.GetSourceTextBounds();
 
                 // TODO: support cross-line definitions
-                this.Adorment.EndorseLine(line, charStart, charEnd);
+                this.Adorment.EndorseLine(lineStart, charStart, charEnd);
 
                 Microsoft.VisualStudio.Text.Formatting.IWpfTextViewLine viewLine =
-                    this.viewAccessor.ActiveView.TextViewLines[line];
+                    this.viewAccessor.ActiveView.TextViewLines[lineStart];
 
                 Microsoft.VisualStudio.Text.SnapshotPoint jumpPoint = viewLine.Start.Add(charStart);
                 this.viewAccessor.ActiveView.Caret.MoveTo(jumpPoint);
