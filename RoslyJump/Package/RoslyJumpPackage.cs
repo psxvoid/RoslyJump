@@ -53,34 +53,43 @@ namespace RoslyJump
         private TextAdornment1 Adorment = null;
 
 
-        LocalContext LocalContext;
+        private LocalContext LocalContext;
         private IWpfTextView lastActiveView;
 
         private void ContextJumpNext()
         {
-            if (this.viewAccessor.ActiveView != null && this.lastActiveView != this.viewAccessor?.ActiveView)
+            UpdateContextAndJump(() => this.LocalContext.State.JumpNext());
+        }
+
+        private void ContextJumpPrev()
+        {
+            UpdateContextAndJump(() => this.LocalContext.State.JumpPrev());
+        }
+
+        private void UpdateContextAndJump(Action jumpAction)
+        {
+            var view = this.viewAccessor?.ActiveView;
+
+            if (view != null && this.lastActiveView != view)
             {
                 if (this.Adorment != null)
                 {
                     this.Adorment.Remove();
                 }
 
-                this.Adorment = new TextAdornment1(this.viewAccessor.ActiveView);
-                this.lastActiveView = this.viewAccessor.ActiveView;
+                this.Adorment = new TextAdornment1(view);
+                this.lastActiveView = view;
 
-                string text = this.viewAccessor.ActiveView.TextSnapshot.GetText();
+                string text = view.TextSnapshot.GetText();
                 SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
                 this.LocalContext = new LocalContext(tree);
             }
-
-            var view = this.viewAccessor?.ActiveView;
 
             if (this.Adorment != null && view != null)
             {
                 this.Adorment.Remove();
 
-                SnapshotPoint caret = this.viewAccessor
-                    .ActiveView.Caret.Position.BufferPosition;
+                SnapshotPoint caret = view.Caret.Position.BufferPosition;
                 IWpfTextViewLine textViewLine = view.GetTextViewLineContainingBufferPosition(caret);
                 int line = caret.GetContainingLine().LineNumber;
                 int startChar = textViewLine.Start.Difference(caret);
@@ -89,7 +98,7 @@ namespace RoslyJump
 
                 LocalContextState state = this.LocalContext.State;
 
-                state.JumpNext();
+                jumpAction();
 
                 if (state.IsJumpTargetSet)
                 {
@@ -100,10 +109,11 @@ namespace RoslyJump
                         state.JumpTargetEndChar);
 
                     Microsoft.VisualStudio.Text.Formatting.IWpfTextViewLine viewLine =
-                        this.viewAccessor.ActiveView.TextViewLines[state.JumpTargetStartLine];
+                        view.TextViewLines[state.JumpTargetStartLine];
 
                     Microsoft.VisualStudio.Text.SnapshotPoint jumpPoint = viewLine.Start.Add(state.JumpTargetStartChar);
-                    this.viewAccessor.ActiveView.Caret.MoveTo(jumpPoint);
+
+                    view.Caret.MoveTo(jumpPoint);
                 }
             }
         }
@@ -127,14 +137,10 @@ namespace RoslyJump
 
             if (null != mcs)
             {
-                //// Create the command for the menu item.
-                var menuCommandID = new CommandID(PackageIds.CommandGroup, (int)CommandIds.ContextJumpNext);
-                var menuItem = new MenuCommand((sender, evt) =>
-                {
-                    ContextJumpNext();
-                }, menuCommandID);
-
-                mcs.AddCommand(menuItem);
+                mcs.AddCommand(
+                    CreateMenuCommand((int) CommandIds.ContextJumpNext, ContextJumpNext));
+                mcs.AddCommand(
+                    CreateMenuCommand((int) CommandIds.ContextJumpPrev, ContextJumpPrev));
             }
 
             // When initialized asynchronously, the current thread may be a background thread at this point.
@@ -148,5 +154,12 @@ namespace RoslyJump
         }
 
         #endregion
+
+        private static MenuCommand CreateMenuCommand(int commandId, Action action)
+        {
+            var menuCommandID = new CommandID(PackageIds.CommandGroup, commandId);
+
+            return new MenuCommand((sender, evt) => action(), menuCommandID);
+        }
     }
 }

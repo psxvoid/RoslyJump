@@ -15,22 +15,39 @@
           <LocCanonicalName>.RoslyJump.ContextJumpNext</LocCanonicalName>
         </Strings>
       </Button>
+
+      <Button guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpPrev" priority="0x0100" type="Button">
+        <Parent guid="guidCommandGroup" id="RoslyJumpMenuGroup" />
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <CommandName>cmdidRoslyJumpContextJumpPrev</CommandName>
+          <ButtonText>RoslyJump - Context Jump Prev</ButtonText>
+          <CanonicalName>.RoslyJump.ContextJumpPrev</CanonicalName>
+          <LocCanonicalName>.RoslyJump.ContextJumpPrev</LocCanonicalName>
+        </Strings>
+      </Button>
     </Buttons>
   </Commands>
   <KeyBindings>
-    <KeyBinding guid="guidCommandGroup" id="RoslyJumpMenuGroup"
-     editor="guidVSStd97"
-     key1="VK_J" mod1="Alt Shift">
+    <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpNext"
+     editor="guidCSharpEditor"
+     key1="J" mod1="Alt Shift" key2="N">
+    </KeyBinding>
+    <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpPrev"
+     editor="guidCSharpEditor"
+     key1="J" mod1="Alt Shift" key2="P">
     </KeyBinding>
   </KeyBindings>
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidRoslyJumpPackage" value="{20835a5e-c89f-4dac-aaa6-8bc279eeb0ef}" />
+    <GuidSymbol name="guidCSharpEditor" value="{A6C744A8-0E4A-4FC6-886A-064283054674}" />
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidCommandGroup" value="{9770c766-52be-419a-85f1-f839c5f36c94}">
       <IDSymbol name="RoslyJumpMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidRoslyJumpContextJumpNext" value="0x0100" />
+      <IDSymbol name="cmdidRoslyJumpContextJumpPrev" value="0x0200" />
     </GuidSymbol>
 
     <!--<GuidSymbol name="guidImages" value="{0d47856f-7002-435d-9a3d-a497651683ab}">
