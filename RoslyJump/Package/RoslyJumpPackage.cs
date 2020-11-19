@@ -2,19 +2,18 @@
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using dngrep.core.Extensions.SyntaxTreeExtensions;
-using dngrep.core.Queries;
-using dngrep.core.Queries.Specifiers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Formatting;
+using RoslyJump.Core;
+using RoslyJump.Core.Contexts.Local;
 using RoslyJump.Package;
 using Task = System.Threading.Tasks.Task;
 
@@ -54,8 +53,7 @@ namespace RoslyJump
         private TextAdornment1 Adorment = null;
 
 
-        SyntaxNode[] nodes;
-        private int activeParamPosition = -1;
+        LocalContext LocalContext;
         private IWpfTextView lastActiveView;
 
         private void ContextJumpNext()
@@ -69,50 +67,45 @@ namespace RoslyJump
 
                 this.Adorment = new TextAdornment1(this.viewAccessor.ActiveView);
                 this.lastActiveView = this.viewAccessor.ActiveView;
-                this.activeParamPosition = -1;
-                this.ScanForParameters();
+
+                string text = this.viewAccessor.ActiveView.TextSnapshot.GetText();
+                SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
+                this.LocalContext = new LocalContext(tree);
             }
 
-            if (this.Adorment != null && this.viewAccessor?.ActiveView != null)
+            var view = this.viewAccessor?.ActiveView;
+
+            if (this.Adorment != null && view != null)
             {
                 this.Adorment.Remove();
 
-                if (this.activeParamPosition == this.nodes.Length - 1)
+                SnapshotPoint caret = this.viewAccessor
+                    .ActiveView.Caret.Position.BufferPosition;
+                IWpfTextViewLine textViewLine = view.GetTextViewLineContainingBufferPosition(caret);
+                int line = caret.GetContainingLine().LineNumber;
+                int startChar = textViewLine.Start.Difference(caret);
+
+                this.LocalContext.TransitionTo(line, startChar);
+
+                LocalContextState state = this.LocalContext.State;
+
+                state.JumpNext();
+
+                if (state.IsJumpTargetSet)
                 {
-                    this.activeParamPosition = 0;
+                    // TODO: support cross-line definitions
+                    this.Adorment.EndorseLine(
+                        state.JumpTargetStartLine,
+                        state.JumpTargetStartChar,
+                        state.JumpTargetEndChar);
+
+                    Microsoft.VisualStudio.Text.Formatting.IWpfTextViewLine viewLine =
+                        this.viewAccessor.ActiveView.TextViewLines[state.JumpTargetStartLine];
+
+                    Microsoft.VisualStudio.Text.SnapshotPoint jumpPoint = viewLine.Start.Add(state.JumpTargetStartChar);
+                    this.viewAccessor.ActiveView.Caret.MoveTo(jumpPoint);
                 }
-                else
-                {
-                    this.activeParamPosition++;
-                }
-
-                var activeParam = this.nodes[this.activeParamPosition] as ParameterSyntax;
-                var (lineStart, _, charStart, charEnd) = activeParam.GetSourceTextBounds();
-
-                // TODO: support cross-line definitions
-                this.Adorment.EndorseLine(lineStart, charStart, charEnd);
-
-                Microsoft.VisualStudio.Text.Formatting.IWpfTextViewLine viewLine =
-                    this.viewAccessor.ActiveView.TextViewLines[lineStart];
-
-                Microsoft.VisualStudio.Text.SnapshotPoint jumpPoint = viewLine.Start.Add(charStart);
-                this.viewAccessor.ActiveView.Caret.MoveTo(jumpPoint);
             }
-        }
-
-        private void ScanForParameters()
-        {
-            string text = this.viewAccessor.ActiveView.TextSnapshot.GetText();
-            SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
-
-            var query = SyntaxTreeQueryBuilder.From(new SyntaxTreeQueryDescriptor
-            {
-                Target = QueryTarget.MethodParameter
-            });
-            var walker = new SyntaxTreeQueryWalker(query);
-            walker.Visit(tree.GetRoot());
-
-            this.nodes = walker.Results.ToArray();
         }
 
         #region Package Members

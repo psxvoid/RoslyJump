@@ -102,6 +102,10 @@
       <Project>{b72ad0ef-37a8-435e-b9cc-84b746979625}</Project>
       <Name>dngrep.core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RoslyJump.Core\RoslyJump.Core.csproj">
+      <Project>{7b9360a0-5cf6-4001-a589-24dae1a374dd}</Project>
+      <Name>RoslyJump.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
