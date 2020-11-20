@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using dngrep.core.Extensions.EnumerableExtensions;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
 using Microsoft.CodeAnalysis;
@@ -46,8 +47,18 @@ namespace RoslyJump.Core.Contexts.Local
             if (syntaxNode == null)
             {
                 this.Context.State = new InactiveState(context);
+                return;
             }
-            else if (syntaxNode.GetType() == typeof(ParameterSyntax))
+
+            if (this.nodes.Contains(syntaxNode))
+            {
+                // No need to transition to the same context.
+                // Also prevents "resetting" the context
+                // when focus is shifted to another node.
+                return;
+            }
+
+            if (syntaxNode.GetType() == typeof(ParameterSyntax))
             {
                 this.Context.State = new MethodParameterState(context, syntaxNode);
             }
