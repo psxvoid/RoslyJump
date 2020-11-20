@@ -58,9 +58,15 @@ namespace RoslyJump.Core.Contexts.Local
                 return;
             }
 
-            if (syntaxNode.GetType() == typeof(ParameterSyntax))
+            Type nodeType = syntaxNode.GetType();
+
+            if (nodeType == typeof(ParameterSyntax))
             {
                 this.Context.State = new MethodParameterState(context, syntaxNode);
+            }
+            else if (nodeType == typeof(MethodDeclarationSyntax))
+            {
+                this.Context.State = new MethodDeclarationState(context, syntaxNode);
             }
         }
 
