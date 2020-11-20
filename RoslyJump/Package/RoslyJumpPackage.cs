@@ -103,8 +103,9 @@ namespace RoslyJump
                 if (state.IsJumpTargetSet)
                 {
                     // TODO: support cross-line definitions
-                    this.Adorment.EndorseLine(
+                    this.Adorment.EndorseTextBounds(
                         state.JumpTargetStartLine,
+                        state.JumpTargetEndLine,
                         state.JumpTargetStartChar,
                         state.JumpTargetEndChar);
 

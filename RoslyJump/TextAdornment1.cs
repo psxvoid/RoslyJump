@@ -131,6 +131,44 @@ namespace RoslyJump
 
                 this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, this, image, null);
             }
+
+            this.applied = true;
+        }
+
+        internal void EndorseTextBounds(int lineStart, int lineEnd, int charStart, int charEnd)
+        {
+            if (this.applied) throw new InvalidOperationException("This adornment is already applied.");
+            IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
+            ITextViewLine textViewStartLine = textViewLines[lineStart];
+            ITextViewLine textViewEndLine = textViewLines[lineEnd];
+
+            SnapshotSpan span = new SnapshotSpan(
+                this.view.TextSnapshot,
+                Span.FromBounds(
+                    textViewStartLine.Start + charStart,
+                    textViewEndLine.Start + charEnd));
+
+            Geometry geometry = textViewLines.GetMarkerGeometry(span);
+            if (geometry != null)
+            {
+                var drawing = new GeometryDrawing(this.brush, this.pen, geometry);
+                drawing.Freeze();
+
+                var drawingImage = new DrawingImage(drawing);
+                drawingImage.Freeze();
+
+                var image = new Image
+                {
+                    Source = drawingImage,
+                };
+
+                // Align the image with the top of the bounds of the text geometry
+                Canvas.SetLeft(image, geometry.Bounds.Left);
+                Canvas.SetTop(image, geometry.Bounds.Top);
+
+                this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, this, image, null);
+            }
+
             this.applied = true;
         }
 
