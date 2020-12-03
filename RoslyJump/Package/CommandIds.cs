@@ -7,5 +7,6 @@
     {
         internal const uint ContextJumpNext = 0x100;
         internal const uint ContextJumpPrev = 0x200;
+        internal const uint ContextJumpUp   = 0x300;
     }
 }

@@ -34,5 +34,11 @@ namespace RoslyJump.Core.Contexts.Local.States
 
             base.TransitionTo(syntaxNode, context);
         }
+
+        protected override CombinedSyntaxNode? QueryParentContextNode()
+        {
+            return new CombinedSyntaxNode(
+                this.ContextNode.Value.BaseNode.GetFirstParentOfType<MethodDeclarationSyntax>());
+        }
     }
 }
