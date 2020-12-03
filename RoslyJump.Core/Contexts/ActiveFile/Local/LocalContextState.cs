@@ -2,7 +2,7 @@
 using System.Linq;
 using dngrep.core.Extensions.EnumerableExtensions;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
-using Microsoft.CodeAnalysis;
+using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Abstractions;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
@@ -12,16 +12,16 @@ namespace RoslyJump.Core.Contexts.Local
 {
     public abstract class LocalContextState : ICanJumpNext, ICanJumpPrev
     {
-        public LocalContextState(LocalContext context, SyntaxNode contextNode)
+        public LocalContextState(LocalContext context, CombinedSyntaxNode? contextNode)
         {
             this.Context = context;
             this.ContextNode = contextNode;
         }
 
         protected LocalContext Context { get; private set; }
-        public SyntaxNode ContextNode { get; private set; }
+        public CombinedSyntaxNode? ContextNode { get; private set; }
 
-        protected SyntaxNode[] nodes = Array.Empty<SyntaxNode>();
+        protected CombinedSyntaxNode[] nodes = Array.Empty<CombinedSyntaxNode>();
         protected bool IsJumpTargetNodesSet => !nodes.IsNullOrEmpty();
         protected int JumpTargetIndex = -1;
 
@@ -37,20 +37,20 @@ namespace RoslyJump.Core.Contexts.Local
             this.nodes = this.QueryTargetNodesFunc();
         }
 
-        public virtual void TransitionTo(SyntaxNode syntaxNode, LocalContext context)
+        public virtual void TransitionTo(CombinedSyntaxNode? node, LocalContext context)
         {
             _ = context ?? throw new ArgumentNullException(nameof(context));
 
             this.Context = context;
-            this.ContextNode = syntaxNode;
+            this.ContextNode = node;
 
-            if (syntaxNode == null)
+            if (node == null)
             {
                 this.Context.State = new InactiveState(context);
                 return;
             }
 
-            if (this.nodes.Contains(syntaxNode))
+            if (this.nodes.Contains(node.Value))
             {
                 // No need to transition to the same context.
                 // Also prevents "resetting" the context
@@ -58,19 +58,24 @@ namespace RoslyJump.Core.Contexts.Local
                 return;
             }
 
-            Type nodeType = syntaxNode.GetType();
+            Type nodeType = node.Value.BaseNode.GetType();
 
             if (nodeType == typeof(ParameterSyntax))
             {
-                this.Context.State = new MethodParameterState(context, syntaxNode);
+                this.Context.State = new MethodParameterState(context, node.Value);
             }
             else if (nodeType == typeof(MethodDeclarationSyntax))
             {
-                this.Context.State = new MethodDeclarationState(context, syntaxNode);
+                this.Context.State = new MethodDeclarationState(context, node.Value);
+            }
+            else if (nodeType == typeof(BlockSyntax))
+            {
+                this.Context.State = new InactiveState(context);
+                return;
             }
         }
 
-        protected abstract SyntaxNode[] QueryTargetNodesFunc();
+        protected abstract CombinedSyntaxNode[] QueryTargetNodesFunc();
 
         public virtual void JumpNext()
         {
@@ -83,7 +88,7 @@ namespace RoslyJump.Core.Contexts.Local
                     this.JumpTargetIndex = 0;
                 }
 
-                SyntaxNode target = nodes[this.JumpTargetIndex];
+                CombinedSyntaxNode target = nodes[this.JumpTargetIndex];
 
                 this.SetJumpTarget(target);
             }
@@ -100,15 +105,15 @@ namespace RoslyJump.Core.Contexts.Local
                     this.JumpTargetIndex = this.nodes.Length - 1;
                 }
 
-                SyntaxNode target = nodes[this.JumpTargetIndex];
+                CombinedSyntaxNode target = nodes[this.JumpTargetIndex];
 
                 this.SetJumpTarget(target);
             }
         }
 
-        private void SetJumpTarget(SyntaxNode target)
+        private void SetJumpTarget(CombinedSyntaxNode target)
         {
-            var (lineStart, lineEnd, charStart, charEnd) = target.GetSourceTextBounds();
+            var (lineStart, lineEnd, charStart, charEnd) = target.BaseNode.GetSourceTextBounds();
 
 
             this.JumpTargetStartLine = lineStart;
