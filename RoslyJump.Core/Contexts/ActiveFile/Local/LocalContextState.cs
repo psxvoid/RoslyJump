@@ -76,6 +76,7 @@ namespace RoslyJump.Core.Contexts.Local
         }
 
         protected abstract CombinedSyntaxNode[] QueryTargetNodesFunc();
+        protected virtual CombinedSyntaxNode? QueryParentContextNode() => null;
 
         public virtual void JumpNext()
         {
@@ -109,6 +110,20 @@ namespace RoslyJump.Core.Contexts.Local
 
                 this.SetJumpTarget(target);
             }
+        }
+
+        public virtual void JumpContextUp()
+        {
+            CombinedSyntaxNode? parentContextNode = this.QueryParentContextNode();
+
+            if (parentContextNode == null)
+            {
+                return;
+            }
+
+            this.TransitionTo(parentContextNode, this.Context);
+            this.Context.State.QueryTargetNodes();
+            this.Context.State.JumpNext();
         }
 
         private void SetJumpTarget(CombinedSyntaxNode target)

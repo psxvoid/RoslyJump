@@ -26,6 +26,17 @@
           <LocCanonicalName>.RoslyJump.ContextJumpPrev</LocCanonicalName>
         </Strings>
       </Button>
+      
+      <Button guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpUp" priority="0x0100" type="Button">
+        <Parent guid="guidCommandGroup" id="RoslyJumpMenuGroup" />
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <CommandName>cmdidRoslyJumpContextJumpUp</CommandName>
+          <ButtonText>RoslyJump - Context Jump Up</ButtonText>
+          <CanonicalName>.RoslyJump.ContextJumpUp</CanonicalName>
+          <LocCanonicalName>.RoslyJump.ContextJumpUp</LocCanonicalName>
+        </Strings>
+      </Button>
     </Buttons>
   </Commands>
   <KeyBindings>
@@ -36,6 +47,10 @@
     <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpPrev"
      editor="guidCSharpEditor"
      key1="J" mod1="Alt Shift" key2="P">
+    </KeyBinding>
+    <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpUp"
+     editor="guidCSharpEditor"
+     key1="J" mod1="Alt Shift" key2="U">
     </KeyBinding>
   </KeyBindings>
   <Symbols>
@@ -48,6 +63,7 @@
       <IDSymbol name="RoslyJumpMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidRoslyJumpContextJumpNext" value="0x0100" />
       <IDSymbol name="cmdidRoslyJumpContextJumpPrev" value="0x0200" />
+      <IDSymbol name="cmdidRoslyJumpContextJumpUp" value="0x0300" />
     </GuidSymbol>
 
     <!--<GuidSymbol name="guidImages" value="{0d47856f-7002-435d-9a3d-a497651683ab}">

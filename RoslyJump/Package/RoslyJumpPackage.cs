@@ -66,6 +66,11 @@ namespace RoslyJump
             UpdateContextAndJump(() => this.LocalContext.State.JumpPrev());
         }
 
+        private void ContextJumpUp()
+        {
+            UpdateContextAndJump(() => this.LocalContext.State.JumpContextUp());
+        }
+
         private void UpdateContextAndJump(Action jumpAction)
         {
             var view = this.viewAccessor?.ActiveView;
@@ -96,9 +101,9 @@ namespace RoslyJump
 
                 this.LocalContext.TransitionTo(line, startChar);
 
-                LocalContextState state = this.LocalContext.State;
-
                 jumpAction();
+                
+                LocalContextState state = this.LocalContext.State;
 
                 if (state.IsJumpTargetSet)
                 {
@@ -109,10 +114,10 @@ namespace RoslyJump
                         state.JumpTargetStartChar,
                         state.JumpTargetEndChar);
 
-                    Microsoft.VisualStudio.Text.Formatting.IWpfTextViewLine viewLine =
+                    IWpfTextViewLine viewLine =
                         view.TextViewLines[state.JumpTargetStartLine];
 
-                    Microsoft.VisualStudio.Text.SnapshotPoint jumpPoint = viewLine.Start.Add(state.JumpTargetStartChar);
+                    SnapshotPoint jumpPoint = viewLine.Start.Add(state.JumpTargetStartChar);
 
                     view.Caret.MoveTo(jumpPoint);
                 }
@@ -139,9 +144,11 @@ namespace RoslyJump
             if (null != mcs)
             {
                 mcs.AddCommand(
-                    CreateMenuCommand((int) CommandIds.ContextJumpNext, ContextJumpNext));
+                    CreateMenuCommand((int)CommandIds.ContextJumpNext, ContextJumpNext));
                 mcs.AddCommand(
-                    CreateMenuCommand((int) CommandIds.ContextJumpPrev, ContextJumpPrev));
+                    CreateMenuCommand((int)CommandIds.ContextJumpPrev, ContextJumpPrev));
+                mcs.AddCommand(
+                    CreateMenuCommand((int)CommandIds.ContextJumpUp, ContextJumpUp));
             }
 
             // When initialized asynchronously, the current thread may be a background thread at this point.
