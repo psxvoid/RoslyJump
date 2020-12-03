@@ -2,6 +2,9 @@
 using System.Linq;
 using dngrep.core.Extensions.SourceTextExtensions;
 using dngrep.core.Queries;
+using dngrep.core.Queries.SyntaxWalkers;
+using dngrep.core.Queries.SyntaxWalkers.MatchStrategies;
+using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
@@ -25,12 +28,16 @@ namespace RoslyJump.Core
         {
             TextSpan span = this.tree.GetText().GetSingleCharSpan(line, lineChar);
 
-            var query = SyntaxTreeQueryBuilder.From(span);
-            var walker = new SyntaxTreeQueryWalker(query);
+            CombinedSyntaxTreeQuery query = SyntaxTreeQueryBuilder.From(span);
+            var walker = new CombinedSyntaxTreeQueryWalker(
+                query,
+                new VirtualQueryRoutingFactory(),
+                new BaseScopedSyntaxNodeMatchStrategy(query.VirtualNodeSubQueries));
+
             walker.Visit(this.tree.GetRoot());
 
-            IReadOnlyCollection<SyntaxNode> results = walker.Results;
-            
+            IReadOnlyCollection<CombinedSyntaxNode> results = walker.Results;
+
             if (results.Count <= 0)
             {
                 this.State.TransitionTo(null, this);

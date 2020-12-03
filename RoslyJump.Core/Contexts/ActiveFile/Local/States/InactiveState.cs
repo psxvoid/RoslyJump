@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.CodeAnalysis;
+using dngrep.core.VirtualNodes;
 using RoslyJump.Core.Contexts.Local;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
@@ -11,12 +11,12 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
         {
         }
 
-        protected override SyntaxNode[] QueryTargetNodesFunc()
+        protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            return Array.Empty<SyntaxNode>();
+            return Array.Empty<CombinedSyntaxNode>();
         }
 
-        public override void TransitionTo(SyntaxNode syntaxNode, LocalContext context)
+        public override void TransitionTo(CombinedSyntaxNode? syntaxNode, LocalContext context)
         {
             _ = context ?? throw new ArgumentNullException(nameof(context));
 

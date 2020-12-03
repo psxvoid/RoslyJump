@@ -1,26 +1,27 @@
 ﻿using System.Linq;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
-using Microsoft.CodeAnalysis;
+using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace RoslyJump.Core.Contexts.Local.States
 {
     public sealed class MethodParameterState : LocalContextState
     {
-        public MethodParameterState(LocalContext context, SyntaxNode contextNode) :
+        public MethodParameterState(LocalContext context, CombinedSyntaxNode contextNode) :
             base(context, contextNode)
         {
         }
 
-        protected override SyntaxNode[] QueryTargetNodesFunc()
+        protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
             ParameterListSyntax paramList =
-                this.ContextNode.GetFirstParentOfType<ParameterListSyntax>();
+                ((CombinedSyntaxNode)this.ContextNode).Node
+                .GetFirstParentOfType<ParameterListSyntax>();
 
-            return paramList.Parameters.ToArray();
+            return paramList.Parameters.Select(x => new CombinedSyntaxNode(x)).ToArray();
         }
 
-        public override void TransitionTo(SyntaxNode syntaxNode, LocalContext context)
+        public override void TransitionTo(CombinedSyntaxNode? syntaxNode, LocalContext context)
         {
             if (
                 syntaxNode != null
