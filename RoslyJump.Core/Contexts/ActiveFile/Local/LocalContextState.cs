@@ -5,14 +5,105 @@ using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Abstractions;
+using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates;
+using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
 using RoslyJump.Core.Contexts.Local.States;
+using RoslyJump.Core.Infrastructure.Helpers.Reflection;
 
 namespace RoslyJump.Core.Contexts.Local
 {
+    /// <summary>
+    /// The state that support jumping between sibling nodes 
+    /// of type <see cref="SiblingStateBase"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type of the sibling context, e.g. class members.
+    /// For example, see <see cref="ClassMemberSiblingState"/>.
+    /// </typeparam>
+    public abstract class LocalContextState<T> : LocalContextState where T : SiblingStateBase
+    {
+        protected LocalContextState(LocalContext context, CombinedSyntaxNode? contextNode)
+            : base(context, contextNode)
+        {
+            if (!(context.State is LocalContextState<T>))
+            {
+                this.SiblingState = this.InitSiblingState();
+            }
+        }
+
+        protected T? SiblingState { get; private set; }
+
+        protected abstract T InitSiblingState();
+
+        protected void SetSiblingStateFrom(T siblingState)
+        {
+            this.SiblingState = siblingState;
+        }
+
+        public override void TransitionTo(CombinedSyntaxNode? node, LocalContext context)
+        {
+            LocalContextState stateBefore = context.State;
+
+            base.TransitionTo(node, context);
+
+            LocalContextState stateAfter = context.State;
+
+            LocalContextState<T>? before = stateBefore as LocalContextState<T>;
+            LocalContextState<T>? after = stateAfter as LocalContextState<T>;
+
+            if (before != null && after != null
+                && after.GetType().IsInheritedFromType(typeof(LocalContextState<T>)))
+            {
+                _ = before.SiblingState ?? throw new NullReferenceException(
+                    "The sibling state isn't set for the previous state.");
+
+                // states has the same sibling jump targets
+                // we want to preserve them
+                after.SetSiblingStateFrom(before.SiblingState);
+            }
+            else if (after != null)
+            {
+                // it means we are transitioning to a sibling state
+                // but we have to initialize it first
+                T newSiblingState = after.InitSiblingState();
+                after.SetSiblingStateFrom(newSiblingState);
+            }
+        }
+
+        public override void QueryTargetNodes()
+        {
+            base.QueryTargetNodes();
+        }
+
+        public override void JumpToNextSiblingContext()
+        {
+            _ = this.SiblingState ?? throw new NullReferenceException(
+                "Sibling state should be initialized before jumping to next sibling.");
+
+            this.SiblingState.QueryTargets();
+
+            if (!this.SiblingState.HasTargets)
+            {
+                return;
+            }
+
+            this.SiblingState.Next();
+
+            CombinedSyntaxNode target = this.SiblingState.Target;
+
+            this.TransitionTo(target, this.Context);
+
+            this.Context.State.QueryTargetNodes();
+            this.Context.State.JumpNext();
+        }
+    }
+
     public abstract class LocalContextState : ICanJumpNext, ICanJumpPrev
     {
-        public LocalContextState(LocalContext context, CombinedSyntaxNode? contextNode)
+        public LocalContextState(
+            LocalContext context,
+            CombinedSyntaxNode? contextNode)
         {
             this.Context = context;
             this.ContextNode = contextNode;
@@ -36,6 +127,9 @@ namespace RoslyJump.Core.Contexts.Local
         {
             this.nodes = this.QueryTargetNodesFunc();
         }
+
+        protected virtual CombinedSyntaxNode[] QueryClassMembersTargets()
+            => Array.Empty<CombinedSyntaxNode>();
 
         public virtual void TransitionTo(CombinedSyntaxNode? node, LocalContext context)
         {
@@ -68,7 +162,12 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new MethodDeclarationState(context, node.Value);
             }
-            else if (nodeType == typeof(BlockSyntax))
+            else if(nodeType == typeof(FieldDeclarationSyntax))
+            {
+                this.Context.State = new FieldDeclarationState(context, node.Value);
+            }
+            else
+            //else if (nodeType == typeof(BlockSyntax))
             {
                 this.Context.State = new InactiveState(context);
                 return;
@@ -124,6 +223,11 @@ namespace RoslyJump.Core.Contexts.Local
             this.TransitionTo(parentContextNode, this.Context);
             this.Context.State.QueryTargetNodes();
             this.Context.State.JumpNext();
+        }
+
+        public virtual void JumpToNextSiblingContext()
+        {
+            // do nothing
         }
 
         private void SetJumpTarget(CombinedSyntaxNode target)

@@ -6,8 +6,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 {
     public sealed class InactiveState : LocalContextState
     {
-        public InactiveState(LocalContext context) :
-            base(context, null)
+        public InactiveState(LocalContext context) : base(context, null)
         {
         }
 

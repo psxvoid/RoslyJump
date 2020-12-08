@@ -71,6 +71,11 @@ namespace RoslyJump
             UpdateContextAndJump(() => this.LocalContext.State.JumpContextUp());
         }
 
+        private void ContextJumpNextSubling()
+        {
+            UpdateContextAndJump(() => this.LocalContext.State.JumpToNextSiblingContext());
+        }
+
         private void UpdateContextAndJump(Action jumpAction)
         {
             var view = this.viewAccessor?.ActiveView;
@@ -102,7 +107,7 @@ namespace RoslyJump
                 this.LocalContext.TransitionTo(line, startChar);
 
                 jumpAction();
-                
+
                 LocalContextState state = this.LocalContext.State;
 
                 if (state.IsJumpTargetSet)
@@ -149,6 +154,8 @@ namespace RoslyJump
                     CreateMenuCommand((int)CommandIds.ContextJumpPrev, ContextJumpPrev));
                 mcs.AddCommand(
                     CreateMenuCommand((int)CommandIds.ContextJumpUp, ContextJumpUp));
+                mcs.AddCommand(
+                    CreateMenuCommand((int)CommandIds.ContextJumpNextSibling, ContextJumpNextSubling));
             }
 
             // When initialized asynchronously, the current thread may be a background thread at this point.
