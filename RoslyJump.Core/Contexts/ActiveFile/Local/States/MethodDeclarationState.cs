@@ -5,13 +5,13 @@ using dngrep.core.Queries.Specifiers;
 using dngrep.core.Queries.SyntaxWalkers;
 using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RoslyJump.Core.Contexts.Local;
+using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 {
-    public class MethodDeclarationState : LocalContextState
+    public class MethodDeclarationState : ClassMemberStateBase
     {
-        public MethodDeclarationState(LocalContext context, CombinedSyntaxNode contextNode)
+        public MethodDeclarationState(LocalContext context, CombinedSyntaxNode? contextNode)
             : base(context, contextNode)
         {
         }

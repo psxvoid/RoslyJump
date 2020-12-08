@@ -26,7 +26,7 @@
           <LocCanonicalName>.RoslyJump.ContextJumpPrev</LocCanonicalName>
         </Strings>
       </Button>
-      
+
       <Button guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpUp" priority="0x0100" type="Button">
         <Parent guid="guidCommandGroup" id="RoslyJumpMenuGroup" />
         <CommandFlag>CommandWellOnly</CommandFlag>
@@ -35,6 +35,28 @@
           <ButtonText>RoslyJump - Context Jump Up</ButtonText>
           <CanonicalName>.RoslyJump.ContextJumpUp</CanonicalName>
           <LocCanonicalName>.RoslyJump.ContextJumpUp</LocCanonicalName>
+        </Strings>
+      </Button>
+
+      <Button guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpNextSibling" priority="0x0100" type="Button">
+        <Parent guid="guidCommandGroup" id="RoslyJumpMenuGroup" />
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <CommandName>cmdidRoslyJumpContextJumpNextSibling</CommandName>
+          <ButtonText>RoslyJump - Context Jump Next Sibling</ButtonText>
+          <CanonicalName>.RoslyJump.ContextJumpNextSibling</CanonicalName>
+          <LocCanonicalName>.RoslyJump.ContextJumpNextSibling</LocCanonicalName>
+        </Strings>
+      </Button>
+
+      <Button guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpPrevSibling" priority="0x0100" type="Button">
+        <Parent guid="guidCommandGroup" id="RoslyJumpMenuGroup" />
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <CommandName>cmdidRoslyJumpContextJumpPrevSibling</CommandName>
+          <ButtonText>RoslyJump - Context Jump Prev Sibling</ButtonText>
+          <CanonicalName>.RoslyJump.ContextJumpPrevSibling</CanonicalName>
+          <LocCanonicalName>.RoslyJump.ContextJumpPrevSibling</LocCanonicalName>
         </Strings>
       </Button>
     </Buttons>
@@ -52,6 +74,14 @@
      editor="guidCSharpEditor"
      key1="J" mod1="Alt Shift" key2="U">
     </KeyBinding>
+    <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpNextSibling"
+     editor="guidCSharpEditor"
+     key1="J" mod1="Alt Shift" key2="N" mod2="Shift">
+    </KeyBinding>
+    <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpPrevSibling"
+     editor="guidCSharpEditor"
+     key1="J" mod1="Alt Shift" key2="P" mod2="Shift">
+    </KeyBinding>
   </KeyBindings>
   <Symbols>
     <!-- This is the package guid. -->
@@ -64,6 +94,8 @@
       <IDSymbol name="cmdidRoslyJumpContextJumpNext" value="0x0100" />
       <IDSymbol name="cmdidRoslyJumpContextJumpPrev" value="0x0200" />
       <IDSymbol name="cmdidRoslyJumpContextJumpUp" value="0x0300" />
+      <IDSymbol name="cmdidRoslyJumpContextJumpNextSibling" value="0x0400" />
+      <IDSymbol name="cmdidRoslyJumpContextJumpPrevSibling" value="0x0500" />
     </GuidSymbol>
 
     <!--<GuidSymbol name="guidImages" value="{0d47856f-7002-435d-9a3d-a497651683ab}">
