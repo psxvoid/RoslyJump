@@ -118,18 +118,17 @@ namespace RoslyJump
 
                 if (state.IsJumpTargetSet)
                 {
-                    this.Adornment.EndorseTextBounds(
-                        state.JumpTargetStartLine,
-                        state.JumpTargetEndLine,
-                        state.JumpTargetStartChar,
-                        state.JumpTargetEndChar);
+                    //this.Adornment.EndorseTextBounds(
+                    //    state.JumpTargetStartLine,
+                    //    state.JumpTargetEndLine,
+                    //    state.JumpTargetStartChar,
+                    //    state.JumpTargetEndChar);
 
-                    IWpfTextViewLine viewLine =
-                        view.TextViewLines[state.JumpTargetStartLine];
+                    ITextSnapshotLine jumpTargetLine = view.TextSnapshot
+                        .GetLineFromLineNumber(state.JumpTargetStartLine);
+                    SnapshotPoint jumpPoint = jumpTargetLine.Start.Add(state.JumpTargetStartChar);
 
-                    SnapshotPoint jumpPoint = viewLine.Start.Add(state.JumpTargetStartChar);
-
-                    view.Caret.MoveTo(jumpPoint);
+                    view.Caret.MoveTo(new SnapshotPoint(view.TextSnapshot, jumpPoint));
                 }
             }
         }

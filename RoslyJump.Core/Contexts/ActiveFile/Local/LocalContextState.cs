@@ -166,6 +166,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new FieldDeclarationState(context, node.Value);
             }
+            else if(nodeType == typeof(PropertyDeclarationSyntax))
+            {
+                this.Context.State = new PropertyDeclarationState(context, node.Value);
+            }
             else
             //else if (nodeType == typeof(BlockSyntax))
             {
