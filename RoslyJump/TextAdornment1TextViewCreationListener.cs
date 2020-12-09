@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace RoslyJump
 {
+    #nullable disable
     /// <summary>
     /// Establishes an <see cref="IAdornmentLayer"/> to place the adornment on and exports the <see cref="IWpfTextViewCreationListener"/>
     /// that instantiates the adornment on the event of a <see cref="IWpfTextView"/>'s creation
@@ -42,4 +43,5 @@ namespace RoslyJump
 
         #endregion
     }
+    #nullable enable
 }

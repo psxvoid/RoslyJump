@@ -6,9 +6,11 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace RoslyJump
 {
+    #nullable enable
+
     public interface IActiveViewAccessor
     {
-        IWpfTextView ActiveView { get; }
+        IWpfTextView? ActiveView { get; }
     }
 
     [Export(typeof(IWpfTextViewConnectionListener))]
@@ -17,7 +19,7 @@ namespace RoslyJump
     [TextViewRole(PredefinedTextViewRoles.Document)]
     internal sealed class ActiveViewConnectionListener : IWpfTextViewConnectionListener, IActiveViewAccessor
     {
-        public IWpfTextView ActiveView { get; private set; }
+        public IWpfTextView? ActiveView { get; private set; }
 
         public void SubjectBuffersConnected(IWpfTextView textView, ConnectionReason reason, Collection<ITextBuffer> subjectBuffers)
         {
@@ -29,4 +31,6 @@ namespace RoslyJump
             this.ActiveView = null;
         }
     }
+
+    #nullable disable
 }
