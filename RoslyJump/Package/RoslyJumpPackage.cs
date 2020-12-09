@@ -19,6 +19,8 @@ using Task = System.Threading.Tasks.Task;
 
 namespace RoslyJump
 {
+#nullable enable
+
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
     /// </summary>
@@ -44,50 +46,51 @@ namespace RoslyJump
     public sealed class RoslyJumpPackage : AsyncPackage
     {
         #region MEF Providers
-        private IComponentModel componentModel;
-        private ExportProvider exportProvider;
+        private IComponentModel? componentModel;
+        private ExportProvider? exportProvider;
         #endregion
 
-        private IActiveViewAccessor viewAccessor;
+        private IActiveViewAccessor? viewAccessor;
 
-        private TextAdornment1 Adorment = null;
+        private TextAdornment1? Adornment = null;
 
 
-        private LocalContext LocalContext;
-        private IWpfTextView lastActiveView;
+        private LocalContext? LocalContext;
+        private IWpfTextView? lastActiveView;
 
         private void ContextJumpNext()
         {
-            UpdateContextAndJump(() => this.LocalContext.State.JumpNext());
+            UpdateContextAndJump((state) => state.JumpNext());
         }
 
         private void ContextJumpPrev()
         {
-            UpdateContextAndJump(() => this.LocalContext.State.JumpPrev());
+            UpdateContextAndJump((state) => state.JumpPrev());
         }
 
         private void ContextJumpUp()
         {
-            UpdateContextAndJump(() => this.LocalContext.State.JumpContextUp());
+            UpdateContextAndJump((state) => state.JumpContextUp());
         }
 
         private void ContextJumpNextSubling()
         {
-            UpdateContextAndJump(() => this.LocalContext.State.JumpToNextSiblingContext());
+            UpdateContextAndJump((state) => state.JumpToNextSiblingContext());
         }
 
-        private void UpdateContextAndJump(Action jumpAction)
+        private void UpdateContextAndJump(Action<LocalContextState> jumpAction)
         {
+
             var view = this.viewAccessor?.ActiveView;
 
             if (view != null && this.lastActiveView != view)
             {
-                if (this.Adorment != null)
+                if (this.Adornment != null)
                 {
-                    this.Adorment.Remove();
+                    this.Adornment.Remove();
                 }
 
-                this.Adorment = new TextAdornment1(view);
+                this.Adornment = new TextAdornment1(view);
                 this.lastActiveView = view;
 
                 string text = view.TextSnapshot.GetText();
@@ -95,9 +98,12 @@ namespace RoslyJump
                 this.LocalContext = new LocalContext(tree);
             }
 
-            if (this.Adorment != null && view != null)
+            if (this.Adornment != null && view != null)
             {
-                this.Adorment.Remove();
+                _ = this.LocalContext ?? throw new NullReferenceException(
+                    "The local context should be initialized first.");
+
+                this.Adornment.Remove();
 
                 SnapshotPoint caret = view.Caret.Position.BufferPosition;
                 IWpfTextViewLine textViewLine = view.GetTextViewLineContainingBufferPosition(caret);
@@ -106,14 +112,13 @@ namespace RoslyJump
 
                 this.LocalContext.TransitionTo(line, startChar);
 
-                jumpAction();
+                jumpAction(this.LocalContext.State);
 
                 LocalContextState state = this.LocalContext.State;
 
                 if (state.IsJumpTargetSet)
                 {
-                    // TODO: support cross-line definitions
-                    this.Adorment.EndorseTextBounds(
+                    this.Adornment.EndorseTextBounds(
                         state.JumpTargetStartLine,
                         state.JumpTargetEndLine,
                         state.JumpTargetStartChar,
@@ -143,7 +148,7 @@ namespace RoslyJump
             await base.InitializeAsync(cancellationToken, progress);
             object componentModel = await GetServiceAsync(typeof(SComponentModel));
 
-            OleMenuCommandService mcs = await this.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+            OleMenuCommandService? mcs = await this.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
             Debug.Assert(mcs != null);
 
             if (null != mcs)
@@ -177,4 +182,6 @@ namespace RoslyJump
             return new MenuCommand((sender, evt) => action(), menuCommandID);
         }
     }
+
+#nullable disable
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.Queries;
 using dngrep.core.Queries.Specifiers;
@@ -18,9 +19,16 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
+            _ = this.ContextNode ?? throw new NullReferenceException(
+                "The context node is not set for MethodDeclarationState");
+
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8604 // Possible null reference argument.
             ClassDeclarationSyntax containingClass =
                 ((CombinedSyntaxNode)this.ContextNode).Node
-                .GetFirstParentOfType<ClassDeclarationSyntax>();
+                    .GetFirstParentOfType<ClassDeclarationSyntax>();
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
             SyntaxTreeQuery query = SyntaxTreeQueryBuilder.From(
                 new SyntaxTreeQueryDescriptor { Target = QueryTarget.Method });
