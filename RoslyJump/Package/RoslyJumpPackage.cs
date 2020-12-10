@@ -118,11 +118,11 @@ namespace RoslyJump
 
                 if (state.IsJumpTargetSet)
                 {
-                    //this.Adornment.EndorseTextBounds(
-                    //    state.JumpTargetStartLine,
-                    //    state.JumpTargetEndLine,
-                    //    state.JumpTargetStartChar,
-                    //    state.JumpTargetEndChar);
+                    this.Adornment.EndorseTextBounds(
+                        state.JumpTargetStartLine,
+                        state.JumpTargetEndLine,
+                        state.JumpTargetStartChar,
+                        state.JumpTargetEndChar);
 
                     ITextSnapshotLine jumpTargetLine = view.TextSnapshot
                         .GetLineFromLineNumber(state.JumpTargetStartLine);

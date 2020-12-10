@@ -102,15 +102,17 @@ namespace RoslyJump
         internal void EndorseLine(int line, int charStart, int charEnd)
         {
             if (this.applied) throw new InvalidOperationException("This adornment is already applied.");
-            IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
-            ITextViewLine textViewLine = textViewLines[line];
+
+            ITextSnapshot textSnapshot = this.view.TextSnapshot;
+            ITextSnapshotLine textViewStartLine = textSnapshot.GetLineFromLineNumber(line);
 
             SnapshotSpan span = new SnapshotSpan(
                 this.view.TextSnapshot,
                 Span.FromBounds(
-                    textViewLine.Start + charStart,
-                    textViewLine.Start + charEnd));
+                    textViewStartLine.Start + charStart,
+                    textViewStartLine.Start + charEnd));
 
+            IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
             Geometry geometry = textViewLines.GetMarkerGeometry(span);
             if (geometry != null)
             {
@@ -138,9 +140,10 @@ namespace RoslyJump
         internal void EndorseTextBounds(int lineStart, int lineEnd, int charStart, int charEnd)
         {
             if (this.applied) throw new InvalidOperationException("This adornment is already applied.");
-            IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
-            ITextViewLine textViewStartLine = textViewLines[lineStart];
-            ITextViewLine textViewEndLine = textViewLines[lineEnd];
+
+            ITextSnapshot textSnapshot = this.view.TextSnapshot;
+            ITextSnapshotLine textViewStartLine = textSnapshot.GetLineFromLineNumber(lineStart);
+            ITextSnapshotLine textViewEndLine = textSnapshot.GetLineFromLineNumber(lineEnd);
 
             SnapshotSpan span = new SnapshotSpan(
                 this.view.TextSnapshot,
@@ -148,6 +151,7 @@ namespace RoslyJump
                     textViewStartLine.Start + charStart,
                     textViewEndLine.Start + charEnd));
 
+            IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
             Geometry geometry = textViewLines.GetMarkerGeometry(span);
             if (geometry != null)
             {
