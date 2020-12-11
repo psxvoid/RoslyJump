@@ -85,6 +85,22 @@ namespace RoslyJump.Core.Contexts.Local
             _ = this.SiblingState ?? throw new NullReferenceException(
                 "Sibling state should be initialized before jumping to next sibling.");
 
+            this.PerformJumpAction(this.SiblingState.Next);
+        }
+
+        public override void JumpToPrevSiblingContext()
+        {
+            _ = this.SiblingState ?? throw new NullReferenceException(
+                "Sibling state should be initialized before jumping to prev sibling.");
+
+            this.PerformJumpAction(this.SiblingState.Prev);
+        }
+
+        private void PerformJumpAction(Action<CombinedSyntaxNode?> jumpAction)
+        {
+            _ = this.SiblingState ?? throw new NullReferenceException(
+                "Sibling state should be initialized before jumping to a sibling.");
+
             this.SiblingState.QueryTargets();
 
             if (!this.SiblingState.HasTargets)
@@ -92,7 +108,7 @@ namespace RoslyJump.Core.Contexts.Local
                 return;
             }
 
-            this.SiblingState.Next(this.Context.State.ActiveNode);
+            jumpAction(this.Context.State.ActiveNode);
 
             CombinedSyntaxNode target = this.SiblingState.Target;
 
@@ -259,6 +275,11 @@ namespace RoslyJump.Core.Contexts.Local
         }
 
         public virtual void JumpToNextSiblingContext()
+        {
+            // do nothing
+        }
+
+        public virtual void JumpToPrevSiblingContext()
         {
             // do nothing
         }
