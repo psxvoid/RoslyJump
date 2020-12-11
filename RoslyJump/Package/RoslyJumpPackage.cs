@@ -134,6 +134,17 @@ namespace RoslyJump
                     SnapshotPoint jumpPoint = jumpTargetLine.Start.Add(state.JumpTargetStartChar);
 
                     view.Caret.MoveTo(new SnapshotPoint(view.TextSnapshot, jumpPoint));
+
+                    if (!view.TextViewLines.ContainsBufferPosition(jumpPoint))
+                    {
+                        SnapshotSpan span = new SnapshotSpan(
+                            view.TextSnapshot,
+                            Span.FromBounds(jumpTargetLine.Start, jumpTargetLine.End));
+
+                        view.ViewScroller.EnsureSpanVisible(
+                            span,
+                            EnsureSpanVisibleOptions.AlwaysCenter);
+                    }
                 }
             }
         }
