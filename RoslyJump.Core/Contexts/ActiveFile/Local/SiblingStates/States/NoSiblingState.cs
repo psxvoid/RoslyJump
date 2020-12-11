@@ -14,11 +14,11 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
             return Array.Empty<CombinedSyntaxNode>();
         }
 
-        public override void Next()
+        public override void Next(CombinedSyntaxNode? node)
         {
         }
 
-        public override void Prev()
+        public override void Prev(CombinedSyntaxNode? node)
         {
         }
     }
