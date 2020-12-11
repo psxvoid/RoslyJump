@@ -3,6 +3,7 @@ using System.Linq;
 using dngrep.core.Extensions.EnumerableExtensions;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Abstractions;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates;
@@ -17,16 +18,22 @@ namespace RoslyJump.Core.Contexts.Local
     /// The state that support jumping between sibling nodes 
     /// of type <see cref="SiblingStateBase"/>.
     /// </summary>
+    /// <typeparam name="TNode">
+    /// See documentation for <see cref="LocalContextState{TNode}"/>.
+    /// </typeparam>
     /// <typeparam name="T">
     /// The type of the sibling context, e.g. class members.
     /// For example, see <see cref="ClassMemberSiblingState"/>.
     /// </typeparam>
-    public abstract class LocalContextState<T> : LocalContextState where T : SiblingStateBase
+    public abstract class LocalContextState<TNode, T>
+        : LocalContextState<TNode>
+        where TNode : SyntaxNode
+        where T : SiblingStateBase
     {
-        protected LocalContextState(LocalContext context, CombinedSyntaxNode? contextNode)
+        protected LocalContextState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
-            if (!(context.State is LocalContextState<T>))
+            if (!(context.State is LocalContextState<TNode, T>))
             {
                 this.SiblingState = this.InitSiblingState();
             }
@@ -49,8 +56,8 @@ namespace RoslyJump.Core.Contexts.Local
 
             LocalContextState stateAfter = context.State;
 
-            LocalContextState<T>? before = stateBefore as LocalContextState<T>;
-            LocalContextState<T>? after = stateAfter as LocalContextState<T>;
+            LocalContextState<TNode, T>? before = stateBefore as LocalContextState<TNode, T>;
+            LocalContextState<TNode, T>? after = stateAfter as LocalContextState<TNode, T>;
 
             if (before != null && before.SiblingState == null)
             {
@@ -59,7 +66,7 @@ namespace RoslyJump.Core.Contexts.Local
             }
 
             if (before != null && after != null && before.SiblingState != null && node != null
-                && after.GetType().IsInheritedFromType(typeof(LocalContextState<T>))
+                && after.GetType().IsInheritedFromType(typeof(LocalContextState<TNode, T>))
                 && before.SiblingState.HasSibling((CombinedSyntaxNode)node))
             {
                 // states has the same sibling jump targets
@@ -116,6 +123,51 @@ namespace RoslyJump.Core.Contexts.Local
 
             this.Context.State.QueryTargetNodes();
             this.Context.State.JumpNext();
+        }
+    }
+
+    /// <summary>
+    /// This is the same version as <see cref="LocalContextState"/>
+    /// but it can access strongly-typed underlying context nodes.
+    /// </summary>
+    /// <typeparam name="TNode">
+    /// The type of the underlying <see cref="SyntaxNode"/> that is
+    /// used as a jump target. For example, when the context handles
+    /// jumping between <see cref="MethodDeclarationSyntax"/> then
+    /// the type should be also set to <see cref="MethodDeclarationSyntax"/>.
+    /// </typeparam>
+    public abstract class LocalContextState<TNode> : LocalContextState where TNode : SyntaxNode
+    {
+        private const string ConstraintMismatchError =
+            "The context node type should be the same as the generic constraint.";
+
+        protected LocalContextState(LocalContext context, CombinedSyntaxNode contextNode)
+            : base(context, contextNode)
+        {
+            if (contextNode.BaseNode == null || contextNode.BaseNode.GetType() != typeof(TNode))
+            {
+                throw new ArgumentException(ConstraintMismatchError, nameof(contextNode));
+            }
+        }
+
+        public TNode BaseNode
+        {
+            get
+            {
+                if (this.ContextNode == null || this.ContextNode?.BaseNode == null)
+                {
+                    throw new NullReferenceException(
+                        "The context node should be initialized before accessing.");
+                }
+
+
+                if (!(this.ContextNode.Value.BaseNode is TNode node))
+                {
+                    throw new InvalidOperationException(ConstraintMismatchError);
+                }
+
+                return node;
+            }
         }
     }
 
