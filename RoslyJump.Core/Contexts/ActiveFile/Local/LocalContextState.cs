@@ -92,7 +92,7 @@ namespace RoslyJump.Core.Contexts.Local
                 return;
             }
 
-            this.SiblingState.Next();
+            this.SiblingState.Next(this.Context.State.ActiveNode);
 
             CombinedSyntaxNode target = this.SiblingState.Target;
 
@@ -119,6 +119,23 @@ namespace RoslyJump.Core.Contexts.Local
         protected CombinedSyntaxNode[] nodes = Array.Empty<CombinedSyntaxNode>();
         protected bool IsJumpTargetNodesSet => !nodes.IsNullOrEmpty();
         protected int JumpTargetIndex = -1;
+
+        public CombinedSyntaxNode? ActiveNode
+        {
+            get
+            {
+                if (this.IsJumpTargetNodesSet && this.JumpTargetIndex > -1)
+                {
+                    return this.nodes[this.JumpTargetIndex];
+                }
+                else if (this.ContextNode != null)
+                {
+                    return this.ContextNode;
+                }
+
+                return null;
+            }
+        }
 
         public bool IsJumpTargetSet { get; private set; }
         public int JumpTargetStartLine { get; private set; }

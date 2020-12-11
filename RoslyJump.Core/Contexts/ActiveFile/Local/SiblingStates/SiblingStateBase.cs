@@ -42,14 +42,32 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates
 
         public bool HasTargets => this.Targets.Length > 0;
 
-        public virtual void Next()
+        public virtual void Next(CombinedSyntaxNode? node)
         {
             if (!this.HasTargets)
             {
                 return;
             }
 
-            this.ActiveIndex++;
+            if (node != null && node?.BaseNode != null)
+            {
+                int activeIndex = -1;
+
+                for (int i = 0; i < this.Targets.Length; i++)
+                {
+                    if (this.Targets[i].BaseNode.GetType() == node?.BaseNode.GetType())
+                    {
+                        activeIndex = i;
+                        break;
+                    }
+                }
+
+                this.ActiveIndex = activeIndex + 1;
+            }
+            else
+            {
+                this.ActiveIndex++;
+            }
 
             if (this.ActiveIndex >= this.Targets.Length)
             {
@@ -57,18 +75,36 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates
             }
         }
 
-        public virtual void Prev()
+        public virtual void Prev(CombinedSyntaxNode? node)
         {
             if (!this.HasTargets)
             {
                 return;
             }
 
-            this.ActiveIndex++;
-
-            if (this.ActiveIndex >= this.Targets.Length)
+            if (node != null && node?.BaseNode != null)
             {
-                this.ActiveIndex = 0;
+                int activeIndex = -1;
+
+                for (int i = 0; i < this.Targets.Length; i++)
+                {
+                    if (this.Targets[i].BaseNode.GetType() == node?.BaseNode.GetType())
+                    {
+                        activeIndex = i;
+                        break;
+                    }
+                }
+
+                this.ActiveIndex = activeIndex - 1;
+            }
+            else
+            {
+                this.ActiveIndex--;
+            }
+
+            if (this.ActiveIndex < 0)
+            {
+                this.ActiveIndex = this.Targets.Length - 1;
             }
         }
 
