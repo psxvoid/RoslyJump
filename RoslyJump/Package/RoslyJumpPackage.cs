@@ -78,6 +78,11 @@ namespace RoslyJump
             UpdateContextAndJump((state) => state.JumpToNextSiblingContext());
         }
 
+        private void ContextJumpPrevSubling()
+        {
+            UpdateContextAndJump((state) => state.JumpToPrevSiblingContext());
+        }
+
         private void UpdateContextAndJump(Action<LocalContextState> jumpAction)
         {
 
@@ -160,6 +165,8 @@ namespace RoslyJump
                     CreateMenuCommand((int)CommandIds.ContextJumpUp, ContextJumpUp));
                 mcs.AddCommand(
                     CreateMenuCommand((int)CommandIds.ContextJumpNextSibling, ContextJumpNextSubling));
+                mcs.AddCommand(
+                    CreateMenuCommand((int)CommandIds.ContextJumpPrevSibling, ContextJumpPrevSubling));
             }
 
             // When initialized asynchronously, the current thread may be a background thread at this point.
