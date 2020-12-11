@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using dngrep.core.Extensions.EnumerableExtensions;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.Queries;
 using dngrep.core.Queries.Specifiers;
@@ -10,9 +11,9 @@ using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 {
-    public class MethodDeclarationState : ClassMemberStateBase
+    public class MethodDeclarationState : ClassMemberStateBase<MethodDeclarationSyntax>
     {
-        public MethodDeclarationState(LocalContext context, CombinedSyntaxNode? contextNode)
+        public MethodDeclarationState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
         }
@@ -20,15 +21,13 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
             _ = this.ContextNode ?? throw new NullReferenceException(
-                "The context node is not set for MethodDeclarationState");
+                $"The context node is not set for {nameof(MethodDeclarationState)}.");
 
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8604 // Possible null reference argument.
-            ClassDeclarationSyntax containingClass =
-                ((CombinedSyntaxNode)this.ContextNode).Node
-                    .GetFirstParentOfType<ClassDeclarationSyntax>();
-#pragma warning restore CS8604 // Possible null reference argument.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            ClassDeclarationSyntax? containingClass =
+                this.BaseNode.GetFirstParentOfType<ClassDeclarationSyntax>();
+            
+            _ = containingClass ?? throw new InvalidOperationException(
+                $"Unable to query the parent for {nameof(MethodDeclarationState)}.");
 
             SyntaxTreeQuery query = SyntaxTreeQueryBuilder.From(
                 new SyntaxTreeQueryDescriptor { Target = QueryTarget.Method });
@@ -36,6 +35,12 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
             var walker = new SyntaxTreeQueryWalker(query);
 
             walker.Visit(containingClass);
+
+            if (walker.Results.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException(
+                    $"Unable to query target nodes for {nameof(MethodDeclarationState)}.");
+            }
 
             return walker.Results.Select(x => new CombinedSyntaxNode(x)).ToArray();
         }
