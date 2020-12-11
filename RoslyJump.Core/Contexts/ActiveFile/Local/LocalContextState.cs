@@ -52,12 +52,16 @@ namespace RoslyJump.Core.Contexts.Local
             LocalContextState<T>? before = stateBefore as LocalContextState<T>;
             LocalContextState<T>? after = stateAfter as LocalContextState<T>;
 
-            if (before != null && after != null
-                && after.GetType().IsInheritedFromType(typeof(LocalContextState<T>)))
+            if (before != null && before.SiblingState == null)
             {
-                _ = before.SiblingState ?? throw new NullReferenceException(
+                throw new NullReferenceException(
                     "The sibling state isn't set for the previous state.");
+            }
 
+            if (before != null && after != null && before.SiblingState != null && node != null
+                && after.GetType().IsInheritedFromType(typeof(LocalContextState<T>))
+                && before.SiblingState.HasSibling((CombinedSyntaxNode)node))
+            {
                 // states has the same sibling jump targets
                 // we want to preserve them
                 after.SetSiblingStateFrom(before.SiblingState);
@@ -162,17 +166,21 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new MethodDeclarationState(context, node.Value);
             }
-            else if(nodeType == typeof(FieldDeclarationSyntax))
+            else if (nodeType == typeof(FieldDeclarationSyntax))
             {
                 this.Context.State = new FieldDeclarationState(context, node.Value);
             }
-            else if(nodeType == typeof(PropertyDeclarationSyntax))
+            else if (nodeType == typeof(PropertyDeclarationSyntax))
             {
                 this.Context.State = new PropertyDeclarationState(context, node.Value);
             }
-            else if(nodeType == typeof(ConstructorDeclarationSyntax))
+            else if (nodeType == typeof(ConstructorDeclarationSyntax))
             {
                 this.Context.State = new ConstructorDeclarationState(context, node.Value);
+            }
+            else if (nodeType == typeof(ClassDeclarationSyntax))
+            {
+                this.Context.State = new ClassDeclarationState(context, node.Value);
             }
             else
             //else if (nodeType == typeof(BlockSyntax))
