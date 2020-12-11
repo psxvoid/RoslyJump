@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using dngrep.core.Extensions.SourceTextExtensions;
 using dngrep.core.Queries;
@@ -6,6 +7,7 @@ using dngrep.core.Queries.SyntaxWalkers;
 using dngrep.core.Queries.SyntaxWalkers.MatchStrategies;
 using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
 using RoslyJump.Core.Contexts.Local;
@@ -15,6 +17,18 @@ namespace RoslyJump.Core
     public class LocalContext
     {
         private readonly SyntaxTree tree;
+
+        private readonly static HashSet<Type> SupportedNodeTypes =
+            new HashSet<Type>
+        {
+            typeof(ClassDeclarationSyntax),
+            typeof(ConstructorDeclarationSyntax),
+            typeof(FieldDeclarationSyntax),
+            typeof(PropertyDeclarationSyntax),
+            typeof(EventDeclarationSyntax),
+            typeof(MethodDeclarationSyntax),
+            typeof(ParameterSyntax),
+        };
 
         public LocalContext(SyntaxTree tree)
         {
@@ -36,7 +50,9 @@ namespace RoslyJump.Core
 
             walker.Visit(this.tree.GetRoot());
 
-            IReadOnlyCollection<CombinedSyntaxNode> results = walker.Results;
+            IReadOnlyCollection<CombinedSyntaxNode> results = walker.Results
+                .Where(IsKnownNodeType)
+                .ToArray();
 
             if (results.Count <= 0)
             {
@@ -53,6 +69,15 @@ namespace RoslyJump.Core
                 // query nodes
                 this.State.QueryTargetNodes();
             }
+        }
+
+        private static bool IsKnownNodeType(CombinedSyntaxNode node)
+        {
+            _ = node.BaseNode ?? throw new ArgumentNullException(nameof(node));
+
+            Type nodeType = node.BaseNode.GetType();
+
+            return SupportedNodeTypes.Contains(nodeType);
         }
     }
 }

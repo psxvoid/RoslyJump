@@ -71,5 +71,10 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates
                 this.ActiveIndex = 0;
             }
         }
+
+        public virtual bool HasSibling(CombinedSyntaxNode node)
+        {
+            return node.BaseNode.Parent == this.BaseNode.BaseNode;
+        }
     }
 }
