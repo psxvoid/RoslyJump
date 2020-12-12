@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
 using dngrep.core.Extensions.EnumerableExtensions;
-using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 {
-    public class ClassDeclarationState : ClassMemberStateBase<ClassDeclarationSyntax>
+    public class ClassDeclarationState : FileNamespaceClassMemberStateBase<ClassDeclarationSyntax>
     {
         public ClassDeclarationState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
@@ -20,9 +20,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
             _ = this.ContextNode ?? throw new NullReferenceException(
                 $"The context node is not set for {nameof(ClassDeclarationState)}.");
 
-            ClassDeclarationSyntax? parent = this.BaseNode
-                .GetFirstParentOfType<ClassDeclarationSyntax>();
-
+            SyntaxNode? parent = this.BaseNode.Parent;
             _ = parent ?? throw new InvalidOperationException(
                     $"Unable to find the parent for {nameof(ClassDeclarationState)}.");
 
