@@ -22,6 +22,7 @@ namespace RoslyJump.Core
             new HashSet<Type>
         {
             typeof(EnumDeclarationSyntax),
+            typeof(EnumMemberDeclarationSyntax),
             typeof(StructDeclarationSyntax),
             typeof(ClassDeclarationSyntax),
             typeof(ConstructorDeclarationSyntax),
