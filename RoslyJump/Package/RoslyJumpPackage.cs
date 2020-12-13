@@ -48,12 +48,15 @@ namespace RoslyJump
         #region MEF Providers
         private IComponentModel? componentModel;
         private ExportProvider? exportProvider;
+        private IActiveViewAccessor? viewAccessor;
         #endregion
 
-        private IActiveViewAccessor? viewAccessor;
 
         private TextAdornment1? Adornment = null;
 
+        private ITextView? LastView;
+        private ITextSnapshot? LastSnapshot;
+        private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         private LocalContext? LocalContext;
         private IWpfTextView? lastActiveView;
@@ -85,8 +88,14 @@ namespace RoslyJump
 
         private void UpdateContextAndJump(Action<LocalContextState> jumpAction)
         {
-
             var view = this.viewAccessor?.ActiveView;
+
+            if (view == null && this.LastView != null)
+            {
+                this.LastView.LayoutChanged -= this.View_LayoutChanged;
+                this.LastView = null;
+                this.LastSnapshot = null;
+            }
 
             if (view != null && this.lastActiveView != view)
             {
@@ -101,6 +110,9 @@ namespace RoslyJump
                 string text = view.TextSnapshot.GetText();
                 SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
                 this.LocalContext = new LocalContext(tree);
+
+                view.LayoutChanged += View_LayoutChanged;
+                this.LastView = view;
             }
 
             if (this.Adornment != null && view != null)
@@ -146,6 +158,43 @@ namespace RoslyJump
                             EnsureSpanVisibleOptions.AlwaysCenter);
                     }
                 }
+            }
+        }
+
+        private async void View_LayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
+        {
+            await semaphoreSlim.WaitAsync();
+
+            ITextSnapshot snapshot = e.NewSnapshot;
+            this.LastSnapshot = snapshot;
+
+            semaphoreSlim.Release();
+
+            await Task.Delay(1000);
+
+            await semaphoreSlim.WaitAsync();
+
+            try
+            {
+                if (this.LastSnapshot != snapshot ||
+                    this.viewAccessor?.ActiveView == null ||
+                    this.viewAccessor.ActiveView != this.LastView)
+                {
+                    return;
+                }
+
+                string text = snapshot.GetText();
+                SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
+                this.LocalContext = new LocalContext(tree);
+            }
+            finally
+            {
+                if (semaphoreSlim.CurrentCount == 0)
+                {
+                    this.LastSnapshot = null;
+                }
+
+                semaphoreSlim.Release();
             }
         }
 
