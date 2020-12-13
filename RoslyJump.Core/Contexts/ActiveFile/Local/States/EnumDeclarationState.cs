@@ -7,7 +7,7 @@ using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 {
-    public class EnumDeclarationState : FileNamespaceClassMemberStateBase<EnumDeclarationSyntax>
+    public class EnumDeclarationState : MixedNestableMemberStateBase<EnumDeclarationSyntax>
     {
         public EnumDeclarationState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)

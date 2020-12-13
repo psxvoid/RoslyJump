@@ -8,9 +8,9 @@ using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 {
-    public class ClassDeclarationState : MixedNestableMemberStateBase<ClassDeclarationSyntax>
+    public class StructDeclarationState : MixedNestableMemberStateBase<StructDeclarationSyntax>
     {
-        public ClassDeclarationState(LocalContext context, CombinedSyntaxNode contextNode)
+        public StructDeclarationState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
         }
@@ -18,21 +18,22 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
             _ = this.ContextNode ?? throw new NullReferenceException(
-                $"The context node is not set for {nameof(ClassDeclarationState)}.");
+                $"The context node is not set for {nameof(StructDeclarationState)}.");
 
             SyntaxNode? parent = this.BaseNode.Parent;
+
             _ = parent ?? throw new InvalidOperationException(
-                    $"Unable to find the parent for {nameof(ClassDeclarationState)}.");
+                    $"Unable to find the parent for {nameof(StructDeclarationState)}.");
 
             CombinedSyntaxNode[] results = parent.ChildNodes()
-                .Where(x => x.GetType() == typeof(ClassDeclarationSyntax))
+                .Where(x => x.GetType() == typeof(StructDeclarationSyntax))
                 .Select(x => new CombinedSyntaxNode(x))
                 .ToArray();
 
             if (results.IsNullOrEmpty())
             {
                 throw new InvalidOperationException(
-                    $"Unable to find target nodes for {nameof(ClassDeclarationState)}.");
+                    $"Unable to find target nodes for {nameof(StructDeclarationState)}.");
             }
 
             return results;

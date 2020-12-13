@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using dngrep.core.Extensions.EnumerableExtensions;
-using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.Queries;
 using dngrep.core.Queries.Specifiers;
 using dngrep.core.Queries.SyntaxWalkers;
 using dngrep.core.VirtualNodes;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
@@ -23,10 +23,9 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
             _ = this.ContextNode ?? throw new NullReferenceException(
                 $"The context node is not set for {nameof(MethodDeclarationState)}.");
 
-            ClassDeclarationSyntax? containingClass =
-                this.BaseNode.GetFirstParentOfType<ClassDeclarationSyntax>();
+            SyntaxNode? containingClasOrStruct = this.BaseNode.Parent;
             
-            _ = containingClass ?? throw new InvalidOperationException(
+            _ = containingClasOrStruct ?? throw new InvalidOperationException(
                 $"Unable to query the parent for {nameof(MethodDeclarationState)}.");
 
             SyntaxTreeQuery query = SyntaxTreeQueryBuilder.From(
@@ -34,7 +33,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 
             var walker = new SyntaxTreeQueryWalker(query);
 
-            walker.Visit(containingClass);
+            walker.Visit(containingClasOrStruct);
 
             if (walker.Results.IsNullOrEmpty())
             {

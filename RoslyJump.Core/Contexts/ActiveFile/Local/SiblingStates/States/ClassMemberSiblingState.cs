@@ -9,13 +9,15 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
 {
     public class ClassMemberSiblingState : SiblingStateBase
     {
-
         public ClassMemberSiblingState(CombinedSyntaxNode baseNode) : base(baseNode)
         {
-            if (baseNode.BaseNode.GetType() != typeof(ClassDeclarationSyntax))
+            Type baseNodeType = baseNode.BaseNode.GetType();
+
+            if (baseNodeType != typeof(ClassDeclarationSyntax)
+                && baseNodeType != typeof(StructDeclarationSyntax))
             {
                 throw new ArgumentException(
-                    "Only base node of type ClassDeclarationSyntax is supported for this state.",
+                    "Only base nodes of type class or sruct are supported by this state.",
                     nameof(baseNode));
             }
         }
