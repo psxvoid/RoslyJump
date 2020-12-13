@@ -283,6 +283,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new NamespaceDeclarationState(context, node.Value);
             }
+            else if (nodeType == typeof(UsingDirectiveSyntax))
+            {
+                this.Context.State = new UsingDirectiveState(context, node.Value);
+            }
             else
             //else if (nodeType == typeof(BlockSyntax))
             {
