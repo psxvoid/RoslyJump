@@ -156,7 +156,8 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                 parent =
                     (SyntaxNode?)fileParent ??
                     (SyntaxNode?)namespaceParent ??
-                    (SyntaxNode?)classParent;
+                    (SyntaxNode?)classParent ??
+                    (SyntaxNode?)structParent;
             }
             else
             {
