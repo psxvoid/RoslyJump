@@ -56,10 +56,11 @@ namespace RoslyJump
 
         private ITextView? LastView;
         private ITextSnapshot? LastSnapshot;
-        private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+        private SemaphoreSlim snapshotSemaphorSlim = new SemaphoreSlim(1, 1);
 
         private LocalContext? LocalContext;
         private IWpfTextView? lastActiveView;
+        private SemaphoreSlim operationSemaphorSlim = new SemaphoreSlim(1, 1);
 
         private void ContextJumpNext()
         {
@@ -88,91 +89,100 @@ namespace RoslyJump
 
         private void UpdateContextAndJump(Action<LocalContextState> jumpAction)
         {
-            var view = this.viewAccessor?.ActiveView;
+            this.operationSemaphorSlim.Wait();
 
-            if (view == null && this.LastView != null)
+            try
             {
-                this.LastView.LayoutChanged -= this.View_LayoutChanged;
-                this.LastView = null;
-                this.LastSnapshot = null;
-            }
+                var view = this.viewAccessor?.ActiveView;
 
-            if (view != null && this.lastActiveView != view)
-            {
-                if (this.Adornment != null)
+                if (view == null && this.LastView != null)
                 {
-                    this.Adornment.Remove();
+                    this.LastView.LayoutChanged -= this.View_LayoutChanged;
+                    this.LastView = null;
+                    this.LastSnapshot = null;
                 }
 
-                this.Adornment = new TextAdornment1(view);
-                this.lastActiveView = view;
-
-                string text = view.TextSnapshot.GetText();
-                SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
-                this.LocalContext = new LocalContext(tree);
-
-                view.LayoutChanged += View_LayoutChanged;
-                this.LastView = view;
-            }
-
-            if (this.Adornment != null && view != null)
-            {
-                _ = this.LocalContext ?? throw new NullReferenceException(
-                    "The local context should be initialized first.");
-
-                this.Adornment.Remove();
-
-                SnapshotPoint caret = view.Caret.Position.BufferPosition;
-                IWpfTextViewLine textViewLine = view.GetTextViewLineContainingBufferPosition(caret);
-                int line = caret.GetContainingLine().LineNumber;
-                int startChar = textViewLine.Start.Difference(caret);
-
-                this.LocalContext.TransitionTo(line, startChar);
-
-                jumpAction(this.LocalContext.State);
-
-                LocalContextState state = this.LocalContext.State;
-
-                if (state.IsJumpTargetSet)
+                if (view != null && this.lastActiveView != view)
                 {
-                    this.Adornment.EndorseTextBounds(
-                        state.JumpTargetStartLine,
-                        state.JumpTargetEndLine,
-                        state.JumpTargetStartChar,
-                        state.JumpTargetEndChar);
-
-                    ITextSnapshotLine jumpTargetLine = view.TextSnapshot
-                        .GetLineFromLineNumber(state.JumpTargetStartLine);
-                    SnapshotPoint jumpPoint = jumpTargetLine.Start.Add(state.JumpTargetStartChar);
-
-                    view.Caret.MoveTo(new SnapshotPoint(view.TextSnapshot, jumpPoint));
-
-                    if (!view.TextViewLines.ContainsBufferPosition(jumpPoint))
+                    if (this.Adornment != null)
                     {
-                        SnapshotSpan span = new SnapshotSpan(
-                            view.TextSnapshot,
-                            Span.FromBounds(jumpTargetLine.Start, jumpTargetLine.End));
+                        this.Adornment.Remove();
+                    }
 
-                        view.ViewScroller.EnsureSpanVisible(
-                            span,
-                            EnsureSpanVisibleOptions.AlwaysCenter);
+                    this.Adornment = new TextAdornment1(view);
+                    this.lastActiveView = view;
+
+                    string text = view.TextSnapshot.GetText();
+                    SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
+                    this.LocalContext = new LocalContext(tree);
+
+                    view.LayoutChanged += View_LayoutChanged;
+                    this.LastView = view;
+                }
+
+                if (this.Adornment != null && view != null)
+                {
+                    _ = this.LocalContext ?? throw new NullReferenceException(
+                        "The local context should be initialized first.");
+
+                    this.Adornment.Remove();
+
+                    SnapshotPoint caret = view.Caret.Position.BufferPosition;
+                    IWpfTextViewLine textViewLine = view.GetTextViewLineContainingBufferPosition(caret);
+                    int line = caret.GetContainingLine().LineNumber;
+                    int startChar = textViewLine.Start.Difference(caret);
+
+                    this.LocalContext.TransitionTo(line, startChar);
+
+                    jumpAction(this.LocalContext.State);
+
+                    LocalContextState state = this.LocalContext.State;
+
+                    if (state.IsJumpTargetSet)
+                    {
+                        this.Adornment.EndorseTextBounds(
+                            state.JumpTargetStartLine,
+                            state.JumpTargetEndLine,
+                            state.JumpTargetStartChar,
+                            state.JumpTargetEndChar);
+
+                        ITextSnapshotLine jumpTargetLine = view.TextSnapshot
+                            .GetLineFromLineNumber(state.JumpTargetStartLine);
+                        SnapshotPoint jumpPoint = jumpTargetLine.Start.Add(state.JumpTargetStartChar);
+
+                        view.Caret.MoveTo(new SnapshotPoint(view.TextSnapshot, jumpPoint));
+
+                        if (!view.TextViewLines.ContainsBufferPosition(jumpPoint))
+                        {
+                            SnapshotSpan span = new SnapshotSpan(
+                                view.TextSnapshot,
+                                Span.FromBounds(jumpTargetLine.Start, jumpTargetLine.End));
+
+                            view.ViewScroller.EnsureSpanVisible(
+                                span,
+                                EnsureSpanVisibleOptions.AlwaysCenter);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                this.operationSemaphorSlim.Release();
             }
         }
 
         private async void View_LayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
-            await semaphoreSlim.WaitAsync();
+            await snapshotSemaphorSlim.WaitAsync();
 
             ITextSnapshot snapshot = e.NewSnapshot;
             this.LastSnapshot = snapshot;
 
-            semaphoreSlim.Release();
+            snapshotSemaphorSlim.Release();
 
             await Task.Delay(1000);
 
-            await semaphoreSlim.WaitAsync();
+            await snapshotSemaphorSlim.WaitAsync();
 
             try
             {
@@ -185,16 +195,26 @@ namespace RoslyJump
 
                 string text = snapshot.GetText();
                 SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
-                this.LocalContext = new LocalContext(tree);
+
+                await this.operationSemaphorSlim.WaitAsync();
+
+                try
+                {
+                    this.LocalContext = new LocalContext(tree);
+                }
+                finally
+                {
+                    this.operationSemaphorSlim.Release();
+                }
             }
             finally
             {
-                if (semaphoreSlim.CurrentCount == 0)
+                if (snapshotSemaphorSlim.CurrentCount == 0)
                 {
                     this.LastSnapshot = null;
                 }
 
-                semaphoreSlim.Release();
+                snapshotSemaphorSlim.Release();
             }
         }
 
