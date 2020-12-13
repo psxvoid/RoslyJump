@@ -21,6 +21,7 @@ namespace RoslyJump.Core
         private readonly static HashSet<Type> SupportedNodeTypes =
             new HashSet<Type>
         {
+            typeof(NamespaceDeclarationSyntax),
             typeof(EnumDeclarationSyntax),
             typeof(EnumMemberDeclarationSyntax),
             typeof(StructDeclarationSyntax),
