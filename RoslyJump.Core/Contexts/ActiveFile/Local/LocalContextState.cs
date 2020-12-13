@@ -271,6 +271,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new EnumDeclarationState(context, node.Value);
             }
+            else if (nodeType == typeof(StructDeclarationSyntax))
+            {
+                this.Context.State = new StructDeclarationState(context, node.Value);
+            }
             else
             //else if (nodeType == typeof(BlockSyntax))
             {

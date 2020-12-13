@@ -135,11 +135,15 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             ClassDeclarationSyntax? classParent = target
                 .GetFirstParentOfType<ClassDeclarationSyntax>();
+            
+            StructDeclarationSyntax? structParent = target
+                .GetFirstParentOfType<StructDeclarationSyntax>();
 
             int nonNullableParentCount =
                 (fileParent == null ? 0 : 1) +
                 (namespaceParent == null ? 0 : 1) +
-                (classParent == null ? 0 : 1);
+                (classParent == null ? 0 : 1) +
+                (structParent == null ? 0 : 1);
 
             SyntaxNode? parent;
 
@@ -160,6 +164,7 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                 if (fileParent != null) nonNullableParents.Add(fileParent);
                 if (namespaceParent != null) nonNullableParents.Add(namespaceParent);
                 if (classParent != null) nonNullableParents.Add(classParent);
+                if (structParent != null) nonNullableParents.Add(structParent);
 
                 parent = nonNullableParents
                     .Select(x =>

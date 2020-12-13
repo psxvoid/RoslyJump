@@ -15,6 +15,7 @@ namespace RoslyJump.Core.Infrastructure
         private readonly static Type[] ClassMemberSiblings = new[]
         {
             typeof(ConstructorDeclarationSyntax),
+            typeof(StructDeclarationSyntax),
             typeof(ClassDeclarationSyntax),
             typeof(PropertyDeclarationSyntax),
             typeof(EventDeclarationSyntax),

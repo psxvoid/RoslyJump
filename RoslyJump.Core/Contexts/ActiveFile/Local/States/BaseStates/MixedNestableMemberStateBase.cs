@@ -7,11 +7,11 @@ using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
 {
-    public abstract class FileNamespaceClassMemberStateBase<TNode>
+    public abstract class MixedNestableMemberStateBase<TNode>
         : LocalContextState<TNode, FileNamespaceClassMemberSiblingState>
         where TNode : SyntaxNode
     {
-        protected FileNamespaceClassMemberStateBase(
+        protected MixedNestableMemberStateBase(
             LocalContext context,
             CombinedSyntaxNode contextNode)
             : base(context, contextNode)

@@ -16,8 +16,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            CombinedSyntaxNode[]? nodes = this.BaseNode
-                .Parent
+            CombinedSyntaxNode[]? nodes = this.BaseNode.Parent
                 ?.ChildNodes()
                 ?.Where(x => x.GetType() == typeof(FieldDeclarationSyntax))
                 .Select(x => new CombinedSyntaxNode(x))

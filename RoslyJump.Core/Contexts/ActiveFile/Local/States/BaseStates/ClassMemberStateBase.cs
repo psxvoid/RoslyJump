@@ -22,11 +22,16 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
             _ = this.ContextNode ?? throw new InvalidOperationException(
                 "The context node should be initialized before initializing the sibling state.");
 
-            ClassDeclarationSyntax? siblingParent = this.BaseNode
+            ClassDeclarationSyntax? classParent = this.BaseNode
                 .GetFirstParentOfType<ClassDeclarationSyntax>();
+            
+            StructDeclarationSyntax? structParent = this.BaseNode
+                .GetFirstParentOfType<StructDeclarationSyntax>();
+
+            SyntaxNode? siblingParent = (SyntaxNode?)classParent ?? (SyntaxNode?)structParent;
 
             _ = siblingParent ?? throw new InvalidOperationException(
-                "Unable to get the parent ClassDeclarationSyntax node.");
+                "Unable to get the parent class or struct node.");
 
             return new ClassMemberSiblingState(new CombinedSyntaxNode(siblingParent));
         }
