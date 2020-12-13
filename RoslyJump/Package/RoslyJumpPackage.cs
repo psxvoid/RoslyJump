@@ -56,11 +56,11 @@ namespace RoslyJump
 
         private ITextView? LastView;
         private ITextSnapshot? LastSnapshot;
-        private SemaphoreSlim snapshotSemaphorSlim = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim delaySemaphorSlim = new SemaphoreSlim(1, 1);
 
         private LocalContext? LocalContext;
         private IWpfTextView? lastActiveView;
-        private SemaphoreSlim operationSemaphorSlim = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim operationSemaphorSlim = new SemaphoreSlim(1, 1);
 
         private void ContextJumpNext()
         {
@@ -173,16 +173,16 @@ namespace RoslyJump
 
         private async void View_LayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
-            await snapshotSemaphorSlim.WaitAsync();
+            await delaySemaphorSlim.WaitAsync();
 
             ITextSnapshot snapshot = e.NewSnapshot;
             this.LastSnapshot = snapshot;
 
-            snapshotSemaphorSlim.Release();
+            delaySemaphorSlim.Release();
 
             await Task.Delay(1000);
 
-            await snapshotSemaphorSlim.WaitAsync();
+            await delaySemaphorSlim.WaitAsync();
 
             try
             {
@@ -209,12 +209,12 @@ namespace RoslyJump
             }
             finally
             {
-                if (snapshotSemaphorSlim.CurrentCount == 0)
+                if (delaySemaphorSlim.CurrentCount == 0)
                 {
                     this.LastSnapshot = null;
                 }
 
-                snapshotSemaphorSlim.Release();
+                delaySemaphorSlim.Release();
             }
         }
 
