@@ -9,7 +9,7 @@ using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
 {
     public abstract class MixedNestableMemberStateBase<TNode>
-        : LocalContextState<TNode, FileNamespaceClassMemberSiblingState>
+        : LocalContextState<TNode, MixedMemberSiblingState>
         where TNode : SyntaxNode
     {
         protected MixedNestableMemberStateBase(
@@ -19,7 +19,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
         {
         }
 
-        protected override FileNamespaceClassMemberSiblingState InitSiblingState()
+        protected override MixedMemberSiblingState InitSiblingState()
         {
             _ = this.ContextNode ?? throw new InvalidOperationException(
                 "The context node should be initialized before initializing the sibling state.");
@@ -37,7 +37,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
                 siblingParent = this.BaseNode.GetContainingParent();
             }
 
-            return new FileNamespaceClassMemberSiblingState(new CombinedSyntaxNode(siblingParent));
+            return new MixedMemberSiblingState(new CombinedSyntaxNode(siblingParent));
         }
     }
 }

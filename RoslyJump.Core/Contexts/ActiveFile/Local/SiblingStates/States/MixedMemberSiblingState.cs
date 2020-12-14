@@ -8,9 +8,9 @@ using RoslyJump.Core.Infrastructure;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
 {
-    public class FileNamespaceClassMemberSiblingState : SiblingStateBase
+    public class MixedMemberSiblingState : SiblingStateBase
     {
-        public FileNamespaceClassMemberSiblingState(CombinedSyntaxNode baseNode) : base(baseNode)
+        public MixedMemberSiblingState(CombinedSyntaxNode baseNode) : base(baseNode)
         {
         }
 
