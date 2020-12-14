@@ -14,10 +14,12 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
             Type baseNodeType = baseNode.BaseNode.GetType();
 
             if (baseNodeType != typeof(ClassDeclarationSyntax)
-                && baseNodeType != typeof(StructDeclarationSyntax))
+                && baseNodeType != typeof(StructDeclarationSyntax)
+                && baseNodeType != typeof(InterfaceDeclarationSyntax))
             {
                 throw new ArgumentException(
-                    "Only base nodes of type class or sruct are supported by this state.",
+                    "Only base nodes of type class, struct or interface " +
+                    "are supported by this state.",
                     nameof(baseNode));
             }
         }

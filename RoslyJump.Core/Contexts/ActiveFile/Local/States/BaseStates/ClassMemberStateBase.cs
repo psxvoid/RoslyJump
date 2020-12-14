@@ -28,7 +28,13 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
             StructDeclarationSyntax? structParent = this.BaseNode
                 .GetFirstParentOfType<StructDeclarationSyntax>();
 
-            SyntaxNode? siblingParent = (SyntaxNode?)classParent ?? (SyntaxNode?)structParent;
+            InterfaceDeclarationSyntax? interfaceParent = this.BaseNode
+                .GetFirstParentOfType<InterfaceDeclarationSyntax>();
+
+            SyntaxNode? siblingParent = 
+                (SyntaxNode?)classParent ??
+                (SyntaxNode?)structParent ??
+                (SyntaxNode?)interfaceParent;
 
             _ = siblingParent ?? throw new InvalidOperationException(
                 "Unable to get the parent class or struct node.");
