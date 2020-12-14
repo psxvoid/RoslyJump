@@ -1,10 +1,9 @@
 ﻿using System;
-using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States;
 using RoslyJump.Core.Contexts.Local;
+using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
 {
@@ -22,19 +21,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
             _ = this.ContextNode ?? throw new InvalidOperationException(
                 "The context node should be initialized before initializing the sibling state.");
 
-            ClassDeclarationSyntax? classParent = this.BaseNode
-                .GetFirstParentOfType<ClassDeclarationSyntax>();
-            
-            StructDeclarationSyntax? structParent = this.BaseNode
-                .GetFirstParentOfType<StructDeclarationSyntax>();
-
-            InterfaceDeclarationSyntax? interfaceParent = this.BaseNode
-                .GetFirstParentOfType<InterfaceDeclarationSyntax>();
-
-            SyntaxNode? siblingParent = 
-                (SyntaxNode?)classParent ??
-                (SyntaxNode?)structParent ??
-                (SyntaxNode?)interfaceParent;
+            SyntaxNode? siblingParent = this.BaseNode.GetContainingParent();
 
             _ = siblingParent ?? throw new InvalidOperationException(
                 "Unable to get the parent class or struct node.");
