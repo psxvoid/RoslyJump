@@ -30,6 +30,10 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
             {
                 match = ClassMemberSyntaxNodeMatcher.Instance.Match;
             }
+            else if (baseNode.BaseNode is StructDeclarationSyntax)
+            {
+                match = StructMemberSyntaxNodeMatcher.Instance.Match;
+            }
             else
             {
                 throw new ArgumentException("Unsupported node type", nameof(baseNode));

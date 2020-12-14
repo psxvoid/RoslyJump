@@ -4,6 +4,7 @@ using System.Linq;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoslyJump.Core.Infrastructure.Helpers.Generics;
 
 namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 {
@@ -139,11 +140,23 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             StructDeclarationSyntax? structParent = target
                 .GetFirstParentOfType<StructDeclarationSyntax>();
 
+            MethodDeclarationSyntax? methodParent = target
+                .GetFirstParentOfType<MethodDeclarationSyntax>();
+
+            ConstructorDeclarationSyntax? ctorParent = target
+                .GetFirstParentOfType<ConstructorDeclarationSyntax>();
+
+            OperatorDeclarationSyntax? operatorParent = target
+                .GetFirstParentOfType<OperatorDeclarationSyntax>();
+
             int nonNullableParentCount =
                 (fileParent == null ? 0 : 1) +
                 (namespaceParent == null ? 0 : 1) +
                 (classParent == null ? 0 : 1) +
-                (structParent == null ? 0 : 1);
+                (structParent == null ? 0 : 1) +
+                (methodParent == null ? 0 : 1) +
+                (ctorParent == null ? 0 : 1) +
+                (operatorParent == null ? 0 : 1);
 
             SyntaxNode? parent;
 
@@ -157,15 +170,24 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                     (SyntaxNode?)fileParent ??
                     (SyntaxNode?)namespaceParent ??
                     (SyntaxNode?)classParent ??
-                    (SyntaxNode?)structParent;
+                    (SyntaxNode?)structParent ??
+                    (SyntaxNode?)methodParent ??
+                    (SyntaxNode?)ctorParent ??
+                    (SyntaxNode?)operatorParent;
             }
             else
             {
                 List<SyntaxNode> nonNullableParents = new List<SyntaxNode>();
-                if (fileParent != null) nonNullableParents.Add(fileParent);
-                if (namespaceParent != null) nonNullableParents.Add(namespaceParent);
-                if (classParent != null) nonNullableParents.Add(classParent);
-                if (structParent != null) nonNullableParents.Add(structParent);
+
+#pragma warning disable CS8604 // Possible null reference argument.
+                nonNullableParents.AddIfNotNull(fileParent);
+                nonNullableParents.AddIfNotNull(namespaceParent);
+                nonNullableParents.AddIfNotNull(classParent);
+                nonNullableParents.AddIfNotNull(structParent);
+                nonNullableParents.AddIfNotNull(methodParent);
+                nonNullableParents.AddIfNotNull(ctorParent);
+                nonNullableParents.AddIfNotNull(operatorParent);
+#pragma warning restore CS8604 // Possible null reference argument.
 
                 parent = nonNullableParents
                     .Select(x =>
