@@ -299,6 +299,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new FileContextState(context, node.Value);
             }
+            else if (nodeType == typeof(DestructorDeclarationSyntax))
+            {
+                this.Context.State = new DestructorSyntaxState(context, node.Value);
+            }
             else
             //else if (nodeType == typeof(BlockSyntax))
             {
