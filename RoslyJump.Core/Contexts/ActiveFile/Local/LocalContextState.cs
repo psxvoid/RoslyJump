@@ -251,6 +251,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new MethodDeclarationState(context, node.Value);
             }
+            else if (nodeType == typeof(OperatorDeclarationSyntax))
+            {
+                this.Context.State = new OperatorDeclarationState(context, node.Value);
+            }
             else if (nodeType == typeof(FieldDeclarationSyntax))
             {
                 this.Context.State = new FieldDeclarationState(context, node.Value);
@@ -287,6 +291,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new UsingDirectiveState(context, node.Value);
             }
+            else if (nodeType == typeof(CompilationUnitSyntax))
+            {
+                this.Context.State = new FileContextState(context, node.Value);
+            }
             else
             //else if (nodeType == typeof(BlockSyntax))
             {
@@ -296,7 +304,14 @@ namespace RoslyJump.Core.Contexts.Local
         }
 
         protected abstract CombinedSyntaxNode[] QueryTargetNodesFunc();
-        protected virtual CombinedSyntaxNode? QueryParentContextNode() => null;
+        protected virtual CombinedSyntaxNode? QueryParentContextNode()
+        {
+            SyntaxNode? parent = this.ContextNode?.BaseNode?.Parent;
+
+            return parent == null
+                ? (CombinedSyntaxNode?) null
+                : new CombinedSyntaxNode(parent);
+        }
 
         public virtual void JumpNext()
         {
@@ -343,7 +358,10 @@ namespace RoslyJump.Core.Contexts.Local
 
             this.TransitionTo(parentContextNode, this.Context);
             this.Context.State.QueryTargetNodes();
-            this.Context.State.JumpNext();
+            this.Context.State.SetJumpTarget(
+                this.Context.State.ContextNode ?? throw new InvalidOperationException(
+                    "Jump target for the upper context is missing."));
+            // this.Context.State.JumpNext();
         }
 
         public virtual void JumpToNextSiblingContext()

@@ -7,16 +7,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace RoslyJump.Core.Infrastructure
 {
     // TODO: move to dngrep
-    public class ClassMemberSyntaxNodeMatcher : ISyntaxNodeMatcher
+    public class StructMemberSyntaxNodeMatcher : ISyntaxNodeMatcher
     {
-        private static readonly ClassMemberSyntaxNodeMatcher instance =
-            new ClassMemberSyntaxNodeMatcher();
+        private static readonly StructMemberSyntaxNodeMatcher instance =
+            new StructMemberSyntaxNodeMatcher();
 
-        private readonly static Type[] ClassMemberSiblings = new[]
+        private readonly static Type[] StructMemberSiblings = new[]
         {
             typeof(ConstructorDeclarationSyntax),
-            typeof(StructDeclarationSyntax),
-            typeof(ClassDeclarationSyntax),
             typeof(PropertyDeclarationSyntax),
             typeof(EventDeclarationSyntax),
             typeof(FieldDeclarationSyntax),
@@ -24,7 +22,7 @@ namespace RoslyJump.Core.Infrastructure
             typeof(OperatorDeclarationSyntax),
         };
 
-        private ClassMemberSyntaxNodeMatcher()
+        private StructMemberSyntaxNodeMatcher()
         {
         }
 
@@ -32,9 +30,9 @@ namespace RoslyJump.Core.Infrastructure
         {
             _ = node ?? throw new ArgumentNullException(nameof(node));
 
-            return ClassMemberSiblings.Contains(node.GetType());
+            return StructMemberSiblings.Contains(node.GetType());
         }
 
-        public static ClassMemberSyntaxNodeMatcher Instance => instance;
+        public static StructMemberSyntaxNodeMatcher Instance => instance;
     }
 }

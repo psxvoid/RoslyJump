@@ -3,10 +3,11 @@ using System.Linq;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
 namespace RoslyJump.Core.Contexts.Local.States
 {
-    public sealed class MethodParameterState : LocalContextState
+    public sealed class MethodParameterState : LocalContextState<ParameterSyntax>
     {
         public MethodParameterState(LocalContext context, CombinedSyntaxNode contextNode) :
             base(context, contextNode)
@@ -43,10 +44,7 @@ namespace RoslyJump.Core.Contexts.Local.States
 
         protected override CombinedSyntaxNode? QueryParentContextNode()
         {
-            return new CombinedSyntaxNode(
-                this.ContextNode?.BaseNode.GetFirstParentOfType<MethodDeclarationSyntax>()
-                ?? throw new NullReferenceException(
-                    "Unable to query parent context node for the MethodParameterState."));
+            return new CombinedSyntaxNode(this.BaseNode.GetContainingParent());
         }
     }
 }
