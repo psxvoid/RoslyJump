@@ -26,7 +26,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
             {
                 match = NamespaceMemberSyntaxNodeMatcher.Instance.Match;
             }
-            else if (baseNode.BaseNode is ClassDeclarationSyntax)
+            else if (baseNode.BaseNode is ClassDeclarationSyntax
+                || baseNode.BaseNode is InterfaceDeclarationSyntax)
             {
                 match = ClassMemberSyntaxNodeMatcher.Instance.Match;
             }
