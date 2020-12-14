@@ -149,6 +149,9 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             OperatorDeclarationSyntax? operatorParent = target
                 .GetFirstParentOfType<OperatorDeclarationSyntax>();
 
+            InterfaceDeclarationSyntax? interfaceParent = target
+                .GetFirstParentOfType<InterfaceDeclarationSyntax>();
+
             int nonNullableParentCount =
                 (fileParent == null ? 0 : 1) +
                 (namespaceParent == null ? 0 : 1) +
@@ -156,7 +159,8 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                 (structParent == null ? 0 : 1) +
                 (methodParent == null ? 0 : 1) +
                 (ctorParent == null ? 0 : 1) +
-                (operatorParent == null ? 0 : 1);
+                (operatorParent == null ? 0 : 1) +
+                (interfaceParent == null ? 0 : 1);
 
             SyntaxNode? parent;
 
@@ -173,7 +177,8 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                     (SyntaxNode?)structParent ??
                     (SyntaxNode?)methodParent ??
                     (SyntaxNode?)ctorParent ??
-                    (SyntaxNode?)operatorParent;
+                    (SyntaxNode?)operatorParent ??
+                    (SyntaxNode?)interfaceParent;
             }
             else
             {
@@ -187,11 +192,11 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                 nonNullableParents.AddIfNotNull(methodParent);
                 nonNullableParents.AddIfNotNull(ctorParent);
                 nonNullableParents.AddIfNotNull(operatorParent);
+                nonNullableParents.AddIfNotNull(interfaceParent);
 #pragma warning restore CS8604 // Possible null reference argument.
 
                 parent = nonNullableParents
-                    .Select(x =>
-                        new KeyValuePair<SyntaxNode, int>(x, target.GetLengthToParent(x)))
+                    .Select(x => new KeyValuePair<SyntaxNode, int>(x, target.GetLengthToParent(x)))
                     .OrderBy(x => x.Value)
                     .First().Key;
             }
