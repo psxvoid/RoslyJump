@@ -5,7 +5,6 @@ using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RoslyJump.Core.Abstractions;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
@@ -122,7 +121,7 @@ namespace RoslyJump.Core.Contexts.Local
             this.TransitionTo(target, this.Context);
 
             this.Context.State.QueryTargetNodes();
-            this.Context.State.JumpNext();
+            this.Context.State.SetJumpTargetToActiveNode();
         }
     }
 
@@ -171,7 +170,7 @@ namespace RoslyJump.Core.Contexts.Local
         }
     }
 
-    public abstract class LocalContextState : ICanJumpNext, ICanJumpPrev
+    public abstract class LocalContextState
     {
         public LocalContextState(
             LocalContext context,
@@ -317,7 +316,7 @@ namespace RoslyJump.Core.Contexts.Local
             SyntaxNode? parent = this.ContextNode?.BaseNode?.Parent;
 
             return parent == null
-                ? (CombinedSyntaxNode?) null
+                ? (CombinedSyntaxNode?)null
                 : new CombinedSyntaxNode(parent);
         }
 
@@ -325,9 +324,27 @@ namespace RoslyJump.Core.Contexts.Local
         {
             if (this.IsJumpTargetNodesSet)
             {
-                this.JumpTargetIndex++;
+                bool isCurrentFound = false;
 
-                if (this.JumpTargetIndex == nodes.Length)
+                if (this.ContextNode != null)
+                {
+                    for (int i = 0; i < this.nodes.Length; i++)
+                    {
+                        if (this.nodes[i] == this.ActiveNode)
+                        {
+                            this.JumpTargetIndex = i + 1;
+                            isCurrentFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (this.ContextNode == null || !isCurrentFound)
+                {
+                    this.JumpTargetIndex++;
+                }
+
+                if (this.JumpTargetIndex >= nodes.Length)
                 {
                     this.JumpTargetIndex = 0;
                 }
@@ -342,7 +359,25 @@ namespace RoslyJump.Core.Contexts.Local
         {
             if (this.IsJumpTargetNodesSet)
             {
-                this.JumpTargetIndex--;
+                bool isCurrentFound = false;
+
+                if (this.ActiveNode != null)
+                {
+                    for (int i = 0; i < this.nodes.Length; i++)
+                    {
+                        if (this.nodes[i] == this.ActiveNode)
+                        {
+                            this.JumpTargetIndex = i - 1;
+                            isCurrentFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (this.ActiveNode == null || !isCurrentFound)
+                {
+                    this.JumpTargetIndex--;
+                }
 
                 if (this.JumpTargetIndex < 0)
                 {
@@ -369,7 +404,6 @@ namespace RoslyJump.Core.Contexts.Local
             this.Context.State.SetJumpTarget(
                 this.Context.State.ContextNode ?? throw new InvalidOperationException(
                     "Jump target for the upper context is missing."));
-            // this.Context.State.JumpNext();
         }
 
         public virtual void JumpToNextSiblingContext()
@@ -382,7 +416,15 @@ namespace RoslyJump.Core.Contexts.Local
             // do nothing
         }
 
-        private void SetJumpTarget(CombinedSyntaxNode target)
+        protected internal void SetJumpTargetToActiveNode()
+        {
+            if (this.ActiveNode != null)
+            {
+                this.SetJumpTarget(this.ActiveNode.Value);
+            }
+        }
+
+        protected void SetJumpTarget(CombinedSyntaxNode target)
         {
             var (lineStart, lineEnd, charStart, charEnd) = target.BaseNode.GetSourceTextBounds();
 
