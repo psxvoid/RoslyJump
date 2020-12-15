@@ -77,6 +77,11 @@ namespace RoslyJump
             UpdateContextAndJump((state) => state.JumpContextUp());
         }
 
+        private void ContextJumpDown()
+        {
+            UpdateContextAndJump((state) => state.JumpContextDown());
+        }
+
         private void ContextJumpNextSubling()
         {
             UpdateContextAndJump((state) => state.JumpToNextSiblingContext());
@@ -243,6 +248,8 @@ namespace RoslyJump
                     CreateMenuCommand((int)CommandIds.ContextJumpPrev, ContextJumpPrev));
                 mcs.AddCommand(
                     CreateMenuCommand((int)CommandIds.ContextJumpUp, ContextJumpUp));
+                mcs.AddCommand(
+                    CreateMenuCommand((int)CommandIds.ContextJumpDown, ContextJumpDown));
                 mcs.AddCommand(
                     CreateMenuCommand((int)CommandIds.ContextJumpNextSibling, ContextJumpNextSubling));
                 mcs.AddCommand(
