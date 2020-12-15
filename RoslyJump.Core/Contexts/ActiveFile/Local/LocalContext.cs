@@ -37,7 +37,11 @@ namespace RoslyJump.Core
             typeof(ParameterSyntax),
             typeof(InterfaceDeclarationSyntax),
             typeof(DestructorDeclarationSyntax),
+            typeof(BlockSyntax),
+
+            // method body types
             typeof(IfStatementSyntax),
+            typeof(LocalDeclarationStatementSyntax),
         };
 
         public LocalContext(SyntaxTree tree)
