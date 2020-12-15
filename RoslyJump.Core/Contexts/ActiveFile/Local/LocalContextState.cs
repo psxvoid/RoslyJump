@@ -303,9 +303,17 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new DestructorSyntaxState(context, node.Value);
             }
+            else if (MethodBodyState.IsSupportedContextNode(node.Value.BaseNode))
+            {
+                this.Context.State = new MethodBodyState(context, node.Value);
+            }
             else if (nodeType == typeof(IfStatementSyntax))
             {
                 this.Context.State = new IfStatementState(context, node.Value);
+            }
+            else if (nodeType == typeof(LocalDeclarationStatementSyntax))
+            {
+                this.Context.State = new LocalDeclarationState(context, node.Value);
             }
             else
             //else if (nodeType == typeof(BlockSyntax))

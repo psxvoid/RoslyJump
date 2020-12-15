@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using dngrep.core.VirtualNodes;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates
 {
@@ -22,6 +24,18 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates
         public void QueryTargets()
         {
             this.Targets = this.QueryTargetsProtected(this.BaseNode);
+
+            bool hasSiblingsOfTheSameKind = this.Targets
+                .GroupBy(x => x.BaseNode.Kind())
+                .Any(x => x.Count() > 1);
+
+            if (hasSiblingsOfTheSameKind)
+            {
+                throw new InvalidOperationException(
+                    "Only unique kinds are allowed for sibling states. " +
+                    "Please, filter siblings first before providing them as query targets. " +
+                    "This is required in order to correctly find next/prev sibling.");
+            }
         }
 
         public virtual CombinedSyntaxNode Target
