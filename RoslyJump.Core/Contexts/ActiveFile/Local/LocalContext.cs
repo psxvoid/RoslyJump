@@ -80,13 +80,20 @@ namespace RoslyJump.Core
             }
         }
 
-        private static bool IsKnownNodeType(CombinedSyntaxNode node)
+        internal static bool IsKnownNodeType(CombinedSyntaxNode node)
         {
             _ = node.BaseNode ?? throw new ArgumentNullException(nameof(node));
 
             Type nodeType = node.BaseNode.GetType();
 
             return SupportedNodeTypes.Contains(nodeType);
+        }
+
+        internal static bool IsKnownNodeType(SyntaxNode node)
+        {
+            _ = node ?? throw new ArgumentNullException(nameof(node));
+
+            return SupportedNodeTypes.Contains(node.GetType());
         }
     }
 }
