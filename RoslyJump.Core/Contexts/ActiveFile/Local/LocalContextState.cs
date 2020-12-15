@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
+using RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates;
 using RoslyJump.Core.Contexts.Local.States;
 using RoslyJump.Core.Infrastructure.Helpers.Reflection;
 
@@ -301,6 +302,10 @@ namespace RoslyJump.Core.Contexts.Local
             else if (nodeType == typeof(DestructorDeclarationSyntax))
             {
                 this.Context.State = new DestructorSyntaxState(context, node.Value);
+            }
+            else if (nodeType == typeof(IfStatementSyntax))
+            {
+                this.Context.State = new IfStatementState(context, node.Value);
             }
             else
             //else if (nodeType == typeof(BlockSyntax))
