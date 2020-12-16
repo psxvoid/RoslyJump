@@ -211,42 +211,5 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             return parent;
         }
-
-        public static SyntaxNode GetBody(this SyntaxNode nodeWithBody)
-        {
-            return TryGetBody(nodeWithBody) ?? throw new InvalidOperationException(
-                "Unable to get the body for the node.");
-        }
-
-        public static SyntaxNode? TryGetBody(this SyntaxNode nodeWithBody)
-        {
-            BlockSyntax? blockBody = null;
-            ExpressionSyntax? expressionBody = null;
-
-            if (nodeWithBody is MethodDeclarationSyntax method) {
-                blockBody = method.Body;
-                expressionBody = method.ExpressionBody?.Expression;
-            }
-            else if (nodeWithBody is ConstructorDeclarationSyntax ctor) {
-                blockBody = ctor.Body;
-                expressionBody = ctor.ExpressionBody?.Expression;
-            }
-            else if (nodeWithBody is AccessorDeclarationSyntax accessor) {
-                blockBody = accessor.Body;
-                expressionBody = accessor.ExpressionBody?.Expression;
-            }
-            else if(nodeWithBody is AnonymousFunctionExpressionSyntax anonymouseFunc)
-            {
-                blockBody = anonymouseFunc.Block;
-                expressionBody = anonymouseFunc.ExpressionBody;
-            }
-            else if(nodeWithBody is ArrowExpressionClauseSyntax arrowExpressionClause)
-            {
-                expressionBody = arrowExpressionClause.Expression;
-            }
-
-            return (SyntaxNode?)blockBody
-                ?? (SyntaxNode?)expressionBody;
-        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes;
+using dngrep.core.VirtualNodes.VirtualQueries;
 using Microsoft.CodeAnalysis;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States;
 using RoslyJump.Core.Contexts.Local;
@@ -15,7 +17,22 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
             : base(context, contextNode)
         {
         }
-        
+
+        protected override CombinedSyntaxNode? QueryParentContextNode()
+        {
+            SyntaxNode parent = this.BaseNode.GetContainingParent();
+
+            SyntaxNode body = parent.GetBody();
+
+            if (!MethodBodyVirtualQuery.Instance.CanQuery(body))
+            {
+                throw new InvalidOperationException(
+                    $"Unable to query parent node for {nameof(MethodBodyMemberSiblingState)}");
+            }
+
+            return new CombinedSyntaxNode(MethodBodyVirtualQuery.Instance.Query(body));
+        }
+
         protected override MethodBodyMemberSiblingState InitSiblingState()
         {
             SyntaxNode? siblingParent = this.BaseNode.GetContainingParent().GetBody();
