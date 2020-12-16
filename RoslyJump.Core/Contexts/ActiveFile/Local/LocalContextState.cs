@@ -315,6 +315,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new LocalDeclarationState(context, node.Value);
             }
+            else if (nodeType == typeof(ReturnStatementSyntax))
+            {
+                this.Context.State = new ReturnStatementState(context, node.Value);
+            }
             else
             //else if (nodeType == typeof(BlockSyntax))
             {
