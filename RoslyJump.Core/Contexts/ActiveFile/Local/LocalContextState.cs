@@ -144,7 +144,8 @@ namespace RoslyJump.Core.Contexts.Local
         protected LocalContextState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
-            if (contextNode.BaseNode == null || contextNode.BaseNode.GetType() != typeof(TNode))
+            if (contextNode.BaseNode == null
+                || !(contextNode.BaseNode is TNode))
             {
                 throw new ArgumentException(ConstraintMismatchError, nameof(contextNode));
             }
@@ -241,7 +242,7 @@ namespace RoslyJump.Core.Contexts.Local
                 return;
             }
 
-            Type nodeType = node.Value.BaseNode.GetType();
+            Type nodeType = node.Value.MixedNode.GetType();
 
             if (nodeType == typeof(ParameterSyntax))
             {
@@ -303,7 +304,11 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new DestructorSyntaxState(context, node.Value);
             }
-            else if (MethodBodyState.IsSupportedContextNode(node.Value.BaseNode))
+            else if (nodeType == typeof(ParameterListSyntax))
+            {
+                this.Context.State = new ParameterListState(context, node.Value);
+            }
+            else if (nodeType == typeof(MethodBodyDeclarationSyntax))
             {
                 this.Context.State = new MethodBodyState(context, node.Value);
             }

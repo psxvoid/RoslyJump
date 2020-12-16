@@ -69,7 +69,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates
 
                 for (int i = 0; i < this.Targets.Length; i++)
                 {
-                    if (this.Targets[i].BaseNode.GetType() == node?.BaseNode.GetType())
+                    if (this.Targets[i].MixedNode.GetType() == node?.MixedNode.GetType())
                     {
                         activeIndex = i;
                         break;

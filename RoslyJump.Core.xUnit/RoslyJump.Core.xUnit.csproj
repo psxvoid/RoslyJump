@@ -28,4 +28,8 @@
     <ProjectReference Include="..\RoslyJump.Core\RoslyJump.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\Helpers\" />
+  </ItemGroup>
+
 </Project>

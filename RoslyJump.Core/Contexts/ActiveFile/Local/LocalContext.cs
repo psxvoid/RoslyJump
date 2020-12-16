@@ -34,15 +34,17 @@ namespace RoslyJump.Core
             typeof(EventDeclarationSyntax),
             typeof(MethodDeclarationSyntax),
             typeof(OperatorDeclarationSyntax),
+            typeof(ParameterListSyntax),
             typeof(ParameterSyntax),
             typeof(InterfaceDeclarationSyntax),
             typeof(DestructorDeclarationSyntax),
-            typeof(BlockSyntax),
+            typeof(MethodBodyDeclarationSyntax),
 
             // method body types
             typeof(IfStatementSyntax),
             typeof(LocalDeclarationStatementSyntax),
             typeof(ReturnStatementSyntax),
+            // typeof(BlockSyntax),
         };
 
         public LocalContext(SyntaxTree tree)
@@ -90,7 +92,7 @@ namespace RoslyJump.Core
         {
             _ = node.BaseNode ?? throw new ArgumentNullException(nameof(node));
 
-            Type nodeType = node.BaseNode.GetType();
+            Type nodeType = node.MixedNode.GetType();
 
             return SupportedNodeTypes.Contains(nodeType);
         }
