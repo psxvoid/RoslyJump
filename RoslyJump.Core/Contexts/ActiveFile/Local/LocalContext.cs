@@ -42,6 +42,7 @@ namespace RoslyJump.Core
             // method body types
             typeof(IfStatementSyntax),
             typeof(LocalDeclarationStatementSyntax),
+            typeof(ReturnStatementSyntax),
         };
 
         public LocalContext(SyntaxTree tree)
