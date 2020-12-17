@@ -17,6 +17,7 @@ namespace RoslyJump.Core.Infrastructure
             typeof(IfStatementSyntax),
             typeof(LocalDeclarationStatementSyntax),
             typeof(ReturnStatementSyntax),
+            typeof(ForStatementSyntax),
         };
 
         private MethodBodyMemberSyntaxNodeMatcher()
