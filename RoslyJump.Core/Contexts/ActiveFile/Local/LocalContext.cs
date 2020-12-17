@@ -45,6 +45,7 @@ namespace RoslyJump.Core
             typeof(LocalDeclarationStatementSyntax),
             typeof(ReturnStatementSyntax),
             typeof(ForStatementSyntax),
+            typeof(ForEachStatementSyntax),
             // typeof(BlockSyntax),
         };
 

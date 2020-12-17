@@ -328,6 +328,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new ForStatementState(context, node.Value);
             }
+            else if (nodeType == typeof(ForEachStatementSyntax))
+            {
+                this.Context.State = new ForEachStatementState(context, node.Value);
+            }
             else
             //else if (nodeType == typeof(BlockSyntax))
             {
