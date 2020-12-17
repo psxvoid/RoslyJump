@@ -332,6 +332,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new ForEachStatementState(context, node.Value);
             }
+            else if (nodeType == typeof(WhileStatementSyntax))
+            {
+                this.Context.State = new WhileStatementState(context, node.Value);
+            }
             else
             //else if (nodeType == typeof(BlockSyntax))
             {
