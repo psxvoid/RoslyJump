@@ -3,6 +3,7 @@ using System.Linq;
 using dngrep.core.Queries.SyntaxNodeMatchers.Targets;
 using dngrep.core.VirtualNodes;
 using dngrep.core.VirtualNodes.VirtualQueries;
+using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis.CSharp;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
@@ -25,17 +26,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
         {
             return root.BaseNode
                 ?.ChildNodes()
-                .Select(x =>
-                {
-                    if (MethodBodySyntaxNodeMatcher.Instance.Match(x)
-                        && MethodBodyVirtualQuery.Instance.CanQuery(x))
-                    {
-                        IVirtualSyntaxNode methodBody = MethodBodyVirtualQuery.Instance.Query(x);
-
-                        return new CombinedSyntaxNode(methodBody);
-                    }
-                    return new CombinedSyntaxNode(x);
-                })
+                .QueryVirtualAndCombine(MethodBodyVirtualQuery.Instance)
                 .Where(MethodMemberSyntaxNodeMatcher.Instance.Match)
                 .GroupBy(x => x.MixedNode.GetType())
                 .Select(x => x.First())

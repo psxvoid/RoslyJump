@@ -16,7 +16,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            return this.BaseNode.GetContainingParent()
+            return this.BaseNode.GetContainerNode()
                 ?.ChildNodes()
                 .Where(x => x.GetType() == typeof(LocalDeclarationStatementSyntax))
                 .Select(x => new CombinedSyntaxNode(x))

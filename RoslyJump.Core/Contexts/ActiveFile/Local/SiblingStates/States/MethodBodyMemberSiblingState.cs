@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
+using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.Queries.SyntaxNodeMatchers.Targets;
 using dngrep.core.VirtualNodes;
-using Microsoft.CodeAnalysis.CSharp;
-using RoslyJump.Core.Infrastructure;
+using dngrep.core.VirtualNodes.VirtualQueries;
+using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
 {
@@ -11,7 +12,18 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
     {
         public MethodBodyMemberSiblingState(CombinedSyntaxNode baseNode) : base(baseNode)
         {
-            if (!MethodBodySyntaxNodeMatcher.Instance.Match(baseNode.BaseNode))
+            Type mixedNodeType = baseNode.MixedNode.GetType();
+
+            if (mixedNodeType != typeof(MethodBodyDeclarationSyntax)
+                && mixedNodeType != typeof(NestedBlockSyntax))
+
+            {
+                throw new ArgumentException(
+                    "The provided node is not a method body nor a nested block.");
+            }
+
+            if (!MethodBodySyntaxNodeMatcher.Instance.Match(baseNode.BaseNode)
+                && !baseNode.BaseNode.IsContainer())
             {
                 throw new ArgumentException(
                     "The provided base node is not a method body.",
@@ -23,9 +35,10 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
         {
             return root.BaseNode
                 ?.ChildNodes()
+                .QueryVirtualAndCombine(NestedBlockVirtualQuery.Instance)
                 .Where(MethodBodyMemberSyntaxNodeMatcher.Instance.Match)
-                .GroupBy(x => x.Kind())
-                .Select(x => new CombinedSyntaxNode(x.First()))
+                .GroupBy(x => x.MixedNode.GetType())
+                .Select(x => x.First())
                 .ToArray()
                 ?? Array.Empty<CombinedSyntaxNode>();
         }
