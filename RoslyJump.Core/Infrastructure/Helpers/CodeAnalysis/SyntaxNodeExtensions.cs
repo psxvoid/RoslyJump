@@ -111,6 +111,21 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             return length;
         }
 
+        public static SyntaxNode GetContainerNode(this SyntaxNode target)
+        {
+            _ = target ?? throw new ArgumentNullException(nameof(target));
+
+            SyntaxNode? current = target.Parent;
+
+            while(current != null && !current.IsContainer())
+            {
+                current = current.Parent;
+            }
+
+            return current ?? throw new InvalidOperationException(
+                "The target node does not have a container.");
+        }
+
         /// <summary>
         /// Retrieves the first containing parent node that contains the specified node.
         /// The containing parent node can be a class, namespace, file
@@ -129,6 +144,8 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
         /// </returns>
         public static SyntaxNode GetContainingParent(this SyntaxNode target)
         {
+            _ = target ?? throw new ArgumentNullException(nameof(target));
+
             const string ErrorMessage = "Unable to get the parent for the target";
 
             CompilationUnitSyntax? fileParent = target

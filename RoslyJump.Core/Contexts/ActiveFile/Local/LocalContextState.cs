@@ -312,6 +312,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new MethodBodyState(context, node.Value);
             }
+            else if (nodeType == typeof(NestedBlockSyntax))
+            {
+                this.Context.State = new NestedBlockState(context, node.Value);
+            }
             else if (nodeType == typeof(IfStatementSyntax))
             {
                 this.Context.State = new IfStatementState(context, node.Value);

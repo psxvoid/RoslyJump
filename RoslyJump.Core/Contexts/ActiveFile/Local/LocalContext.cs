@@ -47,7 +47,7 @@ namespace RoslyJump.Core
             typeof(ForStatementSyntax),
             typeof(ForEachStatementSyntax),
             typeof(WhileStatementSyntax),
-            // typeof(BlockSyntax),
+            typeof(NestedBlockSyntax),
         };
 
         public LocalContext(SyntaxTree tree)

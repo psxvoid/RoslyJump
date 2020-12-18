@@ -1,7 +1,7 @@
 ﻿using System;
-using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes;
 using dngrep.core.VirtualNodes.VirtualQueries;
+using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States;
 using RoslyJump.Core.Contexts.Local;
@@ -20,27 +20,25 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
 
         protected override CombinedSyntaxNode? QueryParentContextNode()
         {
-            SyntaxNode parent = this.BaseNode.GetContainingParent();
+            SyntaxNode parent = this.BaseNode.GetContainerNode();
 
-            SyntaxNode body = parent.GetBody();
-
-            if (!MethodBodyVirtualQuery.Instance.CanQuery(body))
-            {
-                throw new InvalidOperationException(
-                    $"Unable to query parent node for {nameof(MethodBodyMemberSiblingState)}");
-            }
-
-            return new CombinedSyntaxNode(MethodBodyVirtualQuery.Instance.Query(body));
+            return parent.QueryVirtualAndCombine(
+                MethodBodyVirtualQuery.Instance,
+                NestedBlockVirtualQuery.Instance);
         }
 
         protected override MethodBodyMemberSiblingState InitSiblingState()
         {
-            SyntaxNode? siblingParent = this.BaseNode.GetContainingParent().GetBody();
+            SyntaxNode? siblingParent = this.BaseNode.GetContainerNode();
 
             _ = siblingParent ?? throw new InvalidOperationException(
                 "Unable to get the parent class or struct node.");
 
-            return new MethodBodyMemberSiblingState(new CombinedSyntaxNode(siblingParent));
+            CombinedSyntaxNode combinedSiblingParent = siblingParent.QueryVirtualAndCombine(
+                MethodBodyVirtualQuery.Instance,
+                NestedBlockVirtualQuery.Instance);
+
+            return new MethodBodyMemberSiblingState(combinedSiblingParent);
         }
     }
 }
