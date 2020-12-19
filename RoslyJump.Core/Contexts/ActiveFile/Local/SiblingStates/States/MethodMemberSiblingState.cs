@@ -4,7 +4,6 @@ using dngrep.core.Queries.SyntaxNodeMatchers.Targets;
 using dngrep.core.VirtualNodes;
 using dngrep.core.VirtualNodes.VirtualQueries;
 using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
-using Microsoft.CodeAnalysis.CSharp;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States

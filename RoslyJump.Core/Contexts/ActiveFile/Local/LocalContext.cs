@@ -43,6 +43,7 @@ namespace RoslyJump.Core
             // method body types
             typeof(IfStatementSyntax),
             typeof(LocalDeclarationStatementSyntax),
+            typeof(LocalFunctionStatementSyntax),
             typeof(ReturnStatementSyntax),
             typeof(ForStatementSyntax),
             typeof(ForEachStatementSyntax),
