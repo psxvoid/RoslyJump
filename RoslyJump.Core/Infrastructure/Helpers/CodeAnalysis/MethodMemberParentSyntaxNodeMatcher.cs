@@ -16,6 +16,8 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
         {
             typeof(MethodDeclarationSyntax),
             typeof(ConstructorDeclarationSyntax),
+            typeof(DestructorDeclarationSyntax),
+            typeof(LocalFunctionStatementSyntax),
         };
 
         private MethodMemberParentSyntaxNodeMatcher()
