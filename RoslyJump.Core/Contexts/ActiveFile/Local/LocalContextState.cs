@@ -344,6 +344,14 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new WhileStatementState(context, node.Value);
             }
+            else if (nodeType == typeof(EventDeclarationSyntax))
+            {
+                this.Context.State = new EventDeclarationState(context, node.Value);
+            }
+            else if (nodeType == typeof(EventFieldDeclarationSyntax))
+            {
+                this.Context.State = new EventFieldDeclarationState(context, node.Value);
+            }
             else
             //else if (nodeType == typeof(BlockSyntax))
             {

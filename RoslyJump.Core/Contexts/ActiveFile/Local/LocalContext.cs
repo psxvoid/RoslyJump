@@ -32,13 +32,14 @@ namespace RoslyJump.Core
             typeof(FieldDeclarationSyntax),
             typeof(PropertyDeclarationSyntax),
             typeof(EventDeclarationSyntax),
+            typeof(EventFieldDeclarationSyntax),
             typeof(MethodDeclarationSyntax),
             typeof(OperatorDeclarationSyntax),
             typeof(ParameterListSyntax),
             typeof(ParameterSyntax),
             typeof(InterfaceDeclarationSyntax),
             typeof(DestructorDeclarationSyntax),
-            typeof(MethodBodyDeclarationSyntax),
+            typeof(MethodBodyDeclarationSyntax),    // virtual
 
             // method body types
             typeof(IfStatementSyntax),
@@ -48,7 +49,7 @@ namespace RoslyJump.Core
             typeof(ForStatementSyntax),
             typeof(ForEachStatementSyntax),
             typeof(WhileStatementSyntax),
-            typeof(NestedBlockSyntax),
+            typeof(NestedBlockSyntax),              // virtual
         };
 
         public LocalContext(SyntaxTree tree)
