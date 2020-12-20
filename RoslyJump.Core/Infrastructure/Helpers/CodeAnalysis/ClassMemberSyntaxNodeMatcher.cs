@@ -20,6 +20,7 @@ namespace RoslyJump.Core.Infrastructure
             typeof(ClassDeclarationSyntax),
             typeof(PropertyDeclarationSyntax),
             typeof(EventDeclarationSyntax),
+            typeof(EventFieldDeclarationSyntax),
             typeof(FieldDeclarationSyntax),
             typeof(MethodDeclarationSyntax),
             typeof(OperatorDeclarationSyntax),
