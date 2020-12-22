@@ -32,16 +32,19 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
             AccessorListSyntax? accessorList;
             ArrowExpressionClauseSyntax? arrowExpression = null;
 
-            if (this.BaseNode is PropertyDeclarationSyntax prop && prop != null)
+            SyntaxNode baseNode = this.ActiveNode?.BaseNode ?? throw new NullReferenceException(
+                $"The active node isn't set for {nameof(PropOrEventClassMemberStateBase<T>)}");
+
+            if (baseNode is PropertyDeclarationSyntax prop && prop != null)
             {
                 accessorList = prop.AccessorList;
                 arrowExpression = prop.ExpressionBody;
             }
-            else if (this.BaseNode is EventDeclarationSyntax @event && @event != null)
+            else if (baseNode is EventDeclarationSyntax @event && @event != null)
             {
                 accessorList = @event.AccessorList;
             }
-            else if (this.BaseNode is EventFieldDeclarationSyntax eventField && eventField != null)
+            else if (baseNode is EventFieldDeclarationSyntax eventField && eventField != null)
             {
                 return null;
             }
