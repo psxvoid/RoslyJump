@@ -245,5 +245,23 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             return parent;
         }
+
+        /// <summary>
+        /// Checks whether the specified node is an event.
+        /// </summary>
+        /// <param name="node">
+        /// The node that should be verified whether it is
+        /// an event or not.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when the specified <see cref="SyntaxNode"/>
+        /// is an event, else <see langword="false"/>.
+        /// </returns>
+        public static bool IsEvent(this SyntaxNode node)
+        {
+            _ = node ?? throw new ArgumentNullException(nameof(node));
+
+            return node is EventDeclarationSyntax || node is EventFieldDeclarationSyntax;
+        }
     }
 }
