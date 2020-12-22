@@ -495,7 +495,7 @@ namespace RoslyJump.Core.Contexts.Local
             this.Context.State.QueryTargetNodes();
             this.Context.State.SetJumpTarget(
                 this.Context.State.ContextNode ?? throw new InvalidOperationException(
-                    "Jump target for the upper context is missing."));
+                    "Jump target for the lower context is missing."));
         }
 
         public virtual void JumpToNextSiblingContext()
