@@ -26,6 +26,7 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
         private readonly static Type[] MaybeMethodMembers = new[]
         {
             typeof(PropertyDeclarationSyntax),
+            typeof(EventDeclarationSyntax),
         };
 
         private readonly static Type[] VirtualMethodMembers = new[]
@@ -62,6 +63,14 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                     || (prop.AccessorList != null && prop.AccessorList.Accessors.Count > 0
                         && prop.AccessorList.Accessors.Any(
                             x => x.Body != null || x.ExpressionBody != null))))
+            {
+                return true;
+            }
+            
+            if (node is EventDeclarationSyntax @event
+                    && @event.AccessorList != null && @event.AccessorList.Accessors.Count > 0
+                        && @event.AccessorList.Accessors.Any(
+                            x => x.Body != null || x.ExpressionBody != null))
             {
                 return true;
             }

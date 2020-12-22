@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using dngrep.core.VirtualNodes;
 using dngrep.core.VirtualNodes.VirtualQueries;
 using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
