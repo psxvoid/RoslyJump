@@ -174,6 +174,9 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             
             LocalFunctionStatementSyntax? localFunctionParent = target
                 .GetFirstParentOfType<LocalFunctionStatementSyntax>();
+            
+            PropertyDeclarationSyntax? propParent = target
+                .GetFirstParentOfType<PropertyDeclarationSyntax>();
 
             int nonNullableParentCount =
                 (fileParent == null ? 0 : 1) +
@@ -184,7 +187,8 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                 (ctorParent == null ? 0 : 1) +
                 (operatorParent == null ? 0 : 1) +
                 (interfaceParent == null ? 0 : 1) +
-                (localFunctionParent == null ? 0 : 1);
+                (localFunctionParent == null ? 0 : 1) +
+                (propParent == null ? 0 : 1);
 
             SyntaxNode? parent;
 
@@ -203,7 +207,8 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                     (SyntaxNode?)ctorParent ??
                     (SyntaxNode?)operatorParent ??
                     (SyntaxNode?)interfaceParent ??
-                    (SyntaxNode?)localFunctionParent;
+                    (SyntaxNode?)localFunctionParent ??
+                    (SyntaxNode?)propParent;
             }
             else
             {
@@ -219,6 +224,7 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                 nonNullableParents.AddIfNotNull(operatorParent);
                 nonNullableParents.AddIfNotNull(interfaceParent);
                 nonNullableParents.AddIfNotNull(localFunctionParent);
+                nonNullableParents.AddIfNotNull(propParent);
 #pragma warning restore CS8604 // Possible null reference argument.
 
                 parent = nonNullableParents
