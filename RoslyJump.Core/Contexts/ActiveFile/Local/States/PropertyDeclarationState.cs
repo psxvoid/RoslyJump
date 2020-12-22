@@ -7,7 +7,8 @@ using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 {
-    public class PropertyDeclarationState : ClassMemberStateBase<PropertyDeclarationSyntax>
+    public class PropertyDeclarationState
+        : PropOrEventClassMemberStateBase<PropertyDeclarationSyntax>
     {
         public PropertyDeclarationState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
