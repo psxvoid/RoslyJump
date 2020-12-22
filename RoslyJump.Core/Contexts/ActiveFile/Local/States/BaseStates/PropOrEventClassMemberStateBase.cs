@@ -5,7 +5,6 @@ using dngrep.core.VirtualNodes.VirtualQueries;
 using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers.Properties;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
 {
@@ -55,7 +54,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
 
             if (accessorList != null)
             {
-                return new CombinedSyntaxNode(accessorList.Accessors.First());
+                return accessorList.Accessors.First().QueryVirtualAndCombine(
+                    MethodBodyVirtualQuery.Instance);
             }
 
             return arrowExpression != null
