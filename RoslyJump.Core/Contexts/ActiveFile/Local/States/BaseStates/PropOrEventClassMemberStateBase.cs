@@ -55,7 +55,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
 
             if (accessorList != null)
             {
-                return new CombinedSyntaxNode(accessorList);
+                return new CombinedSyntaxNode(accessorList.Accessors.First());
             }
 
             return arrowExpression != null
