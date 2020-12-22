@@ -3,11 +3,13 @@ using System.Linq;
 using dngrep.core.Extensions.EnumerableExtensions;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes;
+using dngrep.core.VirtualNodes.Syntax;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
+using RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers.Properties;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates;
 using RoslyJump.Core.Contexts.Local.States;
 using RoslyJump.Core.Infrastructure.Helpers.Reflection;
@@ -263,6 +265,18 @@ namespace RoslyJump.Core.Contexts.Local
             else if (nodeType == typeof(PropertyDeclarationSyntax))
             {
                 this.Context.State = new PropertyDeclarationState(context, node.Value);
+            }
+            else if (nodeType == typeof(AutoPropertyDeclarationSyntax))
+            {
+                this.Context.State = new AutoPropertyDeclarationState(context, node.Value);
+            }
+            else if (nodeType == typeof(ReadOnlyPropertyDeclarationSyntax))
+            {
+                this.Context.State = new ReadOnlyPropertyDeclarationState(context, node.Value);
+            }
+            else if (nodeType == typeof(AccessorDeclarationSyntax))
+            {
+                this.Context.State = new AccessorDeclarationState(context, node.Value);
             }
             else if (nodeType == typeof(ConstructorDeclarationSyntax))
             {

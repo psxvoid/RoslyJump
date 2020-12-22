@@ -2,6 +2,7 @@
 using System.Linq;
 using dngrep.core.Queries.SyntaxNodeMatchers.Targets;
 using dngrep.core.VirtualNodes;
+using dngrep.core.VirtualNodes.Syntax;
 using dngrep.core.VirtualNodes.VirtualQueries;
 using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis;

@@ -6,6 +6,7 @@ using dngrep.core.Queries;
 using dngrep.core.Queries.SyntaxWalkers;
 using dngrep.core.Queries.SyntaxWalkers.MatchStrategies;
 using dngrep.core.VirtualNodes;
+using dngrep.core.VirtualNodes.Syntax;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -30,16 +31,25 @@ namespace RoslyJump.Core
             typeof(ClassDeclarationSyntax),
             typeof(ConstructorDeclarationSyntax),
             typeof(FieldDeclarationSyntax),
-            typeof(PropertyDeclarationSyntax),
-            typeof(EventDeclarationSyntax),
-            typeof(EventFieldDeclarationSyntax),
             typeof(MethodDeclarationSyntax),
             typeof(OperatorDeclarationSyntax),
             typeof(ParameterListSyntax),
             typeof(ParameterSyntax),
             typeof(InterfaceDeclarationSyntax),
             typeof(DestructorDeclarationSyntax),
-            typeof(MethodBodyDeclarationSyntax),    // virtual
+            typeof(MethodBodyDeclarationSyntax),        // virtual
+
+            // property types
+            typeof(PropertyDeclarationSyntax),
+            typeof(ReadOnlyPropertyDeclarationSyntax),  // virtual
+            typeof(AutoPropertyDeclarationSyntax),      // virtual
+
+            // event types
+            typeof(EventDeclarationSyntax),
+            typeof(EventFieldDeclarationSyntax),
+
+            // property or event types
+            typeof(AccessorDeclarationSyntax),
 
             // method body types
             typeof(IfStatementSyntax),
@@ -49,7 +59,7 @@ namespace RoslyJump.Core
             typeof(ForStatementSyntax),
             typeof(ForEachStatementSyntax),
             typeof(WhileStatementSyntax),
-            typeof(NestedBlockSyntax),              // virtual
+            typeof(NestedBlockSyntax),                  // virtual
         };
 
         public LocalContext(SyntaxTree tree)
