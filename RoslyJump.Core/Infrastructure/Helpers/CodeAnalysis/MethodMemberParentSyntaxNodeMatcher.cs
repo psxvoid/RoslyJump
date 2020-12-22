@@ -57,10 +57,11 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                 return false;
             }
 
-            // read-only property with ExpressionBody
             if (node is PropertyDeclarationSyntax prop
-                && prop.AccessorList == null
-                && prop.ExpressionBody != null)
+                && ((prop.AccessorList == null && prop.ExpressionBody != null)
+                    || (prop.AccessorList != null && prop.AccessorList.Accessors.Count > 0
+                        && prop.AccessorList.Accessors.Any(
+                            x => x.Body != null || x.ExpressionBody != null))))
             {
                 return true;
             }
