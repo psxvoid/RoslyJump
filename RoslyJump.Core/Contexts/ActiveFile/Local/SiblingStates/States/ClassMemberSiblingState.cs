@@ -28,7 +28,16 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
         {
             CombinedSyntaxNode[] members = baseNode.BaseNode.ChildNodes()
                 .Where(ClassMemberSyntaxNodeMatcher.Instance.Match)
-                .GroupBy(x => x.Kind())
+                .GroupBy(x =>
+                    {
+                        SyntaxKind kind = x.Kind();
+
+                        // "patch" event-field to treat it as a general event
+                        // it allows to treat them as the same sibling kind
+                        return kind == SyntaxKind.EventFieldDeclaration
+                            ? SyntaxKind.EventDeclaration
+                            : kind;
+                    })
                 .Select(x => new CombinedSyntaxNode(x.First()))
                 .ToArray();
 
