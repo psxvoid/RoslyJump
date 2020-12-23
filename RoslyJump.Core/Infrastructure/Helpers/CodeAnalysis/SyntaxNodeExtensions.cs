@@ -117,7 +117,7 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             SyntaxNode? current = target.Parent;
 
-            while(current != null && !current.IsContainer())
+            while (current != null && !current.IsContainer())
             {
                 current = current.Parent;
             }
@@ -171,13 +171,13 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             InterfaceDeclarationSyntax? interfaceParent = target
                 .GetFirstParentOfType<InterfaceDeclarationSyntax>();
-            
+
             LocalFunctionStatementSyntax? localFunctionParent = target
                 .GetFirstParentOfType<LocalFunctionStatementSyntax>();
-            
+
             PropertyDeclarationSyntax? propParent = target
                 .GetFirstParentOfType<PropertyDeclarationSyntax>();
-            
+
             EventDeclarationSyntax? eventParent = target
                 .GetFirstParentOfType<EventDeclarationSyntax>();
 
@@ -262,6 +262,110 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             _ = node ?? throw new ArgumentNullException(nameof(node));
 
             return node is EventDeclarationSyntax || node is EventFieldDeclarationSyntax;
+        }
+
+        /// <summary>
+        /// Verifies that the target class has a specified name.
+        /// </summary>
+        /// <param name="class">
+        /// The <see cref="SyntaxNode"/> the for which the name should be verified.
+        /// </param>
+        /// <param name="name">
+        /// The name that the target class should have.
+        /// </param>
+        /// <returns>
+        /// <see cref="true"/> when the target has the specified name,
+        /// else <see cref="false"/>.
+        /// </returns>
+        public static bool HasName(this ClassDeclarationSyntax @class, string name)
+        {
+            _ = @class ?? throw new ArgumentNullException(nameof(@class));
+            _ = name ?? throw new ArgumentNullException(nameof(name));
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("The name cannot be empty.", nameof(name));
+            }
+
+            return @class.Identifier.ValueText == name;
+        }
+
+        /// <summary>
+        /// Verifies that the target method has a specified name.
+        /// </summary>
+        /// <param name="method">
+        /// The <see cref="SyntaxNode"/> the for which the name should be verified.
+        /// </param>
+        /// <param name="name">
+        /// The name that the target method should have.
+        /// </param>
+        /// <returns>
+        /// <see cref="true"/> when the target has the specified name,
+        /// else <see cref="false"/>.
+        /// </returns>
+        public static bool HasName(this MethodDeclarationSyntax method, string name)
+        {
+            _ = method ?? throw new ArgumentNullException(nameof(method));
+            _ = name ?? throw new ArgumentNullException(nameof(name));
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("The name cannot be empty.", nameof(name));
+            }
+
+            return method.Identifier.ValueText == name;
+        }
+
+        /// <summary>
+        /// Verifies that the target field has a specified name.
+        /// </summary>
+        /// <param name="field">
+        /// The <see cref="SyntaxNode"/> the for which the name should be verified.
+        /// </param>
+        /// <param name="name">
+        /// The name that the target field should have.
+        /// </param>
+        /// <returns>
+        /// <see cref="true"/> when the target has the specified name,
+        /// else <see cref="false"/>.
+        /// </returns>
+        public static bool HasName(this FieldDeclarationSyntax field, string name)
+        {
+            _ = field ?? throw new ArgumentNullException(nameof(field));
+            _ = name ?? throw new ArgumentNullException(nameof(name));
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("The name cannot be empty.", nameof(name));
+            }
+
+            return field.GetIdentifierName() == name;
+        }
+
+        /// <summary>
+        /// Verifies that the target property has a specified name.
+        /// </summary>
+        /// <param name="prop">
+        /// The <see cref="SyntaxNode"/> the for which the name should be verified.
+        /// </param>
+        /// <param name="name">
+        /// The name that the target property should have.
+        /// </param>
+        /// <returns>
+        /// <see cref="true"/> when the target has the specified name,
+        /// else <see cref="false"/>.
+        /// </returns>
+        public static bool HasName(this PropertyDeclarationSyntax prop, string name)
+        {
+            _ = prop ?? throw new ArgumentNullException(nameof(prop));
+            _ = name ?? throw new ArgumentNullException(nameof(name));
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("The name cannot be empty.", nameof(name));
+            }
+
+            return prop.GetIdentifierName() == name;
         }
     }
 }
