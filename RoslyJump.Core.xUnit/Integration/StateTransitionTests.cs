@@ -1,56 +1,24 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
 using RoslyJump.Core.Contexts.Local;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
+using RoslyJump.Core.xUnit.Integration.Fixtures;
 using Xunit;
 
 namespace RoslyJump.Core.xUnit.Integration
 {
-    public class StateTransitionTests
+    public class StateTransitionTests : IClassFixture<StateTransitionFixture>
     {
-#pragma warning disable
-        private class C1
+        private readonly StateTransitionFixture classFixture;
+
+        public StateTransitionTests(StateTransitionFixture classFixture)
         {
-            private int field1 = 2;
-
-            public int Method1(int x, int y)
-            {
-                if (x == 3)
-                {
-                    return x * 3 + y;
-                }
-                else if (x == 4)
-                {
-                    return x * 6 + y;
-                }
-                else if (x == 5)
-                {
-                    return x * 7 + y;
-                }
-
-                return 0;
-            }
-
-            public (int x, int y) Method2(int x, int y)
-            {
-                return (x, y);
-            }
-
-            public void Method3()
-            {
-                return;
-            }
-
-            public int Prop1 => field1;
+            this.classFixture = classFixture;
         }
-#pragma warning restore
 
         [Fact]
         public void MethodDeclaration_JumpDown_ParameterList()
@@ -110,7 +78,6 @@ namespace RoslyJump.Core.xUnit.Integration
                 x => x.ActiveNodeAs<FieldDeclarationSyntax>().HasName("field1"));
         }
 
-
         private enum ActionKind
         {
             JumpNext,
@@ -121,20 +88,16 @@ namespace RoslyJump.Core.xUnit.Integration
             JumpContextDown,
         }
 
-        private static void AssertTransition<TStartPositionNode, TExpectedState>(
+        private void AssertTransition<TStartPositionNode, TExpectedState>(
             ActionKind action,
             Func<TStartPositionNode, bool>? startNodePredicate = null,
-            Func<TExpectedState, bool>? statePredicate = null,
-            [CallerFilePath] string sourceFilePath = "")
+            Func<TExpectedState, bool>? statePredicate = null)
             where TStartPositionNode : SyntaxNode
             where TExpectedState : LocalContextState
         {
-            string sourceText = File.ReadAllText(sourceFilePath);
-            SyntaxTree tree = CSharpSyntaxTree.ParseText(sourceText);
+            LocalContext context = new LocalContext(this.classFixture.SyntaxTree);
 
-            LocalContext context = new LocalContext(tree);
-
-            TStartPositionNode? node = tree.GetRoot().ChildNodes()
+            TStartPositionNode? node = this.classFixture.SyntaxTree.GetRoot().ChildNodes()
                 .GetNodesOfTypeRecursively<TStartPositionNode>()
                 .Where(x => startNodePredicate == null || startNodePredicate(x))
                 .First();
