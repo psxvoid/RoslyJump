@@ -367,5 +367,72 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             return prop.GetIdentifierName() == name;
         }
+
+        /// <summary>
+        /// Retrieves the parent node of the specified node
+        /// and casts it to the specified type. Throws an exception
+        /// when the parent node cannot be retrieved or casted.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The target type to which the parent node should be casted.
+        /// </typeparam>
+        /// <param name="node">
+        /// The target node for which the parent should be retrieved.
+        /// </param>
+        /// <returns>
+        /// The parent node of the specified node casted to
+        /// the specified type.
+        /// </returns>
+        /// <exception cref="InvalidCastException">
+        /// Thrown when the parent node cannot be casted to the
+        /// target type.
+        /// </exception>
+        public static T ParentAs<T>(this SyntaxNode node)
+            where T : SyntaxNode
+        {
+            _ = node ?? throw new ArgumentNullException(nameof(node));
+
+            if (node.Parent == null)
+            {
+                throw new InvalidOperationException(
+                    "The parent doesn't exist on the target node.");
+            }
+
+            if (!(node.Parent is T notNullableParent))
+            {
+                throw new InvalidCastException(
+                    "The parent exists on the target node " +
+                    "but it doesn't match the expected type. " +
+                    $"The actual type: {node.Parent.GetType()}. " +
+                    $"The expected type: {typeof(T)}.");
+            }
+
+            return notNullableParent;
+        }
+
+        /// <summary>
+        /// Determines whether the provided <see cref="IfStatementSyntax"/>
+        /// condition equals to the specified string representation of the
+        /// same condition.
+        /// </summary>
+        /// <param name="if">
+        /// The syntax node for which the condition should be verified on
+        /// the equality with it's string representation.
+        /// </param>
+        /// <param name="condition">
+        /// The string representation of the condition.
+        /// </param>
+        /// <returns>
+        /// <see cref="true"/> when the condition of the specified
+        /// <see cref="IfStatementSyntax"/> matches it's string
+        /// representation, else <see cref="false"/>.
+        /// </returns>
+        public static bool HasCondition(this IfStatementSyntax @if, string condition)
+        {
+            _ = @if ?? throw new ArgumentNullException(nameof(@if));
+            _ = condition ?? throw new ArgumentNullException(nameof(condition));
+            
+            return @if.Condition.ToString() == condition;
+        }
     }
 }

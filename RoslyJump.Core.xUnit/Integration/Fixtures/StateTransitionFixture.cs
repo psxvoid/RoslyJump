@@ -31,6 +31,11 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                     return x * 7 + y;
                 }
 
+                if (x == 6)
+                {
+                    return -1;
+                }
+
                 return 0;
             }
 
