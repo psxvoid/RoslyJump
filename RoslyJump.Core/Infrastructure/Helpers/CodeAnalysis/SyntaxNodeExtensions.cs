@@ -457,7 +457,7 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
         /// </summary>
         /// <param name="if">
         /// The syntax node for which the condition should be verified on
-        /// the equality with it's string representation.
+        /// the equality to it's string representation.
         /// </param>
         /// <param name="condition">
         /// The string representation of the condition.
@@ -472,7 +472,107 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             _ = @if ?? throw new ArgumentNullException(nameof(@if));
             _ = condition ?? throw new ArgumentNullException(nameof(condition));
 
+            if (string.IsNullOrWhiteSpace(condition))
+            {
+                throw new ArgumentException(
+                    "The provided string representation of the condition cannot be empty.",
+                    nameof(condition));
+            }
+
             return @if.Condition.ToString() == condition;
+        }
+
+        /// <summary>
+        /// Determines whether the provided <see cref="ExpressionStatementSyntax"/>
+        /// equals to the specified string representation of the same expression.
+        /// </summary>
+        /// <param name="expression">
+        /// The expression for which the expression should be verified on
+        /// the equality to it's string representation.
+        /// </param>
+        /// <param name="expressionString">
+        /// The string representation of the expression.
+        /// </param>
+        /// <returns>
+        /// <see cref="ExpressionStatementSyntax"/> matches it's string
+        /// representation, else <see cref="false"/>.
+        /// </returns>
+        public static bool HasExpression(
+            this ExpressionStatementSyntax expression, string expressionString)
+        {
+            _ = expression ?? throw new ArgumentNullException(nameof(expression));
+            _ = expressionString ?? throw new ArgumentNullException(nameof(expressionString));
+
+            if (string.IsNullOrWhiteSpace(expressionString))
+            {
+                throw new ArgumentException(
+                    "The provided string representation of the expression cannot be empty.",
+                    nameof(expressionString));
+            }
+
+            return expression.Expression.ToString() == expressionString;
+        }
+
+        /// <summary>
+        /// Determines whether the provided <see cref="ReturnStatementSyntax"/>
+        /// equals to the specified string representation of the same expression.
+        /// </summary>
+        /// <param name="return">
+        /// The expression for which the expression should be verified on
+        /// the equality to it's string representation.
+        /// </param>
+        /// <param name="expression">
+        /// The string representation of the expression.
+        /// </param>
+        /// <returns>
+        /// <see cref="ReturnStatementSyntax"/> matches it's string
+        /// representation, else <see cref="false"/>.
+        /// </returns>
+        public static bool HasExpression(
+            this ReturnStatementSyntax @return, string expression)
+        {
+            _ = @return ?? throw new ArgumentNullException(nameof(@return));
+            _ = expression ?? throw new ArgumentNullException(nameof(expression));
+
+            if (string.IsNullOrWhiteSpace(expression))
+            {
+                throw new ArgumentException(
+                    "The provided string representation of the expression cannot be empty.",
+                    nameof(expression));
+            }
+
+            return @return.Expression?.ToString() == expression;
+        }
+
+        /// <summary>
+        /// Determines whether the provided <see cref="LocalDeclarationStatementSyntax"/>
+        /// equals to the specified string representation of the same declaration.
+        /// </summary>
+        /// <param name="declaration">
+        /// The node for which the declaration should be verified on
+        /// the equality to it's string representation.
+        /// </param>
+        /// <param name="declarationString">
+        /// The string representation of the declaration.
+        /// </param>
+        /// <returns>
+        /// <see cref="LocalDeclarationStatementSyntax"/> matches it's string
+        /// representation, else <see cref="false"/>.
+        /// </returns>
+        public static bool HasDeclaration(
+            this LocalDeclarationStatementSyntax declaration, string declarationString)
+        {
+            _ = declaration ?? throw new ArgumentNullException(nameof(declaration));
+            _ = declarationString ?? throw new ArgumentNullException(nameof(declarationString));
+
+            if (string.IsNullOrWhiteSpace(declarationString))
+            {
+                throw new ArgumentException(
+                    "The provided string representation of the declaration cannot be empty.",
+                    nameof(declarationString));
+            }
+
+            return declaration.Declaration.ToString() == declarationString;
         }
     }
 }

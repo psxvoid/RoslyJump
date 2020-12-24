@@ -292,6 +292,86 @@ namespace RoslyJump.Core.xUnit.Integration
                     .HasName("Method1"));
         }
 
+        [Fact]
+        public void ExpressionStatement_JumpNext_NextMethodMember()
+        {
+            AssertTransition<ExpressionStatementSyntax, ExpressionStatementState>(
+                ActionKind.JumpNext,
+                x => x.HasExpression("var (x, y) = this.Method2(2, 3)")
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method3")
+                        ?? false),
+                x => x.ActiveBaseNode.HasExpression("var (v1, v2) = this.Method2(3, 3)"));
+        }
+
+        [Fact]
+        public void ExpressionStatement_JumpPrev_PrevMethodMember()
+        {
+            AssertTransition<ExpressionStatementSyntax, ExpressionStatementState>(
+                ActionKind.JumpPrev,
+                x => x.HasExpression("var (x, y) = this.Method2(2, 3)")
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method3")
+                        ?? false),
+                x => x.ActiveBaseNode.HasExpression("var (v3, v4) = this.Method2(4, 3)"));
+        }
+
+        [Fact]
+        public void ExpressionStatement_JumpNextSibling_NextMethodMember()
+        {
+            AssertTransition<ExpressionStatementSyntax, LocalDeclarationState>(
+                ActionKind.JumpNextSibling,
+                x => x.HasExpression("var (x, y) = this.Method2(2, 3)")
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method3")
+                        ?? false),
+                x => x.ActiveBaseNode.HasDeclaration("int z = 3")
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method3"));
+        }
+
+        [Fact]
+        public void ExpressionStatement_JumpPrevSibling_PrevMethodMember()
+        {
+            AssertTransition<ExpressionStatementSyntax, ReturnStatementState>(
+                ActionKind.JumpPrevSibling,
+                x => x.HasExpression("var (x, y) = this.Method2(2, 3)")
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method3")
+                        ?? false),
+                x => x.ActiveBaseNode.HasExpression("y + v2 + z")
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method3"));
+        }
+
+        [Fact]
+        public void ExpressionStatement_JumpUp_MethodBody()
+        {
+            AssertTransition<ExpressionStatementSyntax, MethodBodyState>(
+                ActionKind.JumpContextUp,
+                x => x.HasExpression("var (x, y) = this.Method2(2, 3)")
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method3")
+                        ?? false),
+                x => x.ActiveBaseNode
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method3"));
+        }
+
+        [Fact]
+        public void ExpressionStatement_JumpDown_SameStatement()
+        {
+            AssertTransition<ExpressionStatementSyntax, ExpressionStatementState>(
+                ActionKind.JumpContextDown,
+                x => x.HasExpression("var (x, y) = this.Method2(2, 3)")
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method3")
+                        ?? false),
+                x => x.ActiveBaseNode.HasExpression("var (x, y) = this.Method2(2, 3)")
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method3"));
+        }
+
         private enum ActionKind
         {
             JumpNext,

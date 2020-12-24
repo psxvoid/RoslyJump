@@ -48,7 +48,10 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
             public int Method3()
             {
                 var (x, y) = this.Method2(2, 3);            // ExpressionStatementSyntax
-                return y;
+                var (v1, v2) = this.Method2(3, 3);          // ExpressionStatementSyntax
+                var (v3, v4) = this.Method2(4, 3);          // ExpressionStatementSyntax
+                int z = 3;                                  // LocalDeclarationSyntax
+                return y + v2 + z;
             }
 
             public int Prop1 => field1;
