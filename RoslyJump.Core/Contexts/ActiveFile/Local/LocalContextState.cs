@@ -172,6 +172,26 @@ namespace RoslyJump.Core.Contexts.Local
                 return node;
             }
         }
+
+        public TNode ActiveBaseNode
+        {
+            get
+            {
+                if (this.ActiveNode == null || this.ActiveNode?.BaseNode == null)
+                {
+                    throw new NullReferenceException(
+                        "The context node should be initialized before accessing.");
+                }
+
+
+                if (!(this.ActiveNode.Value.BaseNode is TNode node))
+                {
+                    throw new InvalidOperationException(ConstraintMismatchError);
+                }
+
+                return node;
+            }
+        }
     }
 
     public abstract class LocalContextState
