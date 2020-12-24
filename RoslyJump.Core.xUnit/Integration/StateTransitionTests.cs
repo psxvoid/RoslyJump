@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
+using dngrep.core.VirtualNodes.Syntax;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
+using RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates;
 using RoslyJump.Core.Contexts.Local;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
+using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis.VirtualNodes;
 using RoslyJump.Core.xUnit.Integration.Fixtures;
 using Xunit;
 
@@ -57,7 +60,7 @@ namespace RoslyJump.Core.xUnit.Integration
                     && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
                 x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method3"));
         }
-        
+
         [Fact]
         public void MethodDeclaration_JumpNextSibling_NextSibling()
         {
@@ -77,6 +80,71 @@ namespace RoslyJump.Core.xUnit.Integration
                     && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
                 x => x.ActiveNodeAs<FieldDeclarationSyntax>().HasName("field1"));
         }
+
+        [Fact]
+        public void IfStatementCondition_JumpNext_NextConditionStatement()
+        {
+            AssertTransition<IfStatementSyntax, IfStatementState>(
+                ActionKind.JumpNext,
+                x => x.HasCondition("x == 3"),
+                x => x.ActiveNodeAs<IfStatementSyntax>().HasCondition("x == 6"));
+        }
+
+        [Fact]
+        public void IfStatementCondition_JumpPrev_PrevConditionStatement()
+        {
+            AssertTransition<IfStatementSyntax, IfStatementState>(
+                ActionKind.JumpPrev,
+                x => x.HasCondition("x == 3"),
+                x => x.ActiveNodeAs<IfStatementSyntax>().HasCondition("x == 6"));
+        }
+
+        [Fact]
+        public void IfStatementCondition_JumpNextSibling_NextMethodMember()
+        {
+            AssertTransition<IfStatementSyntax, ReturnStatementState>(
+                ActionKind.JumpNextSibling,
+                x => x.HasCondition("x == 3"),
+                x => x.ActiveNodeAs<ReturnStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method1"));
+        }
+
+        [Fact]
+        public void IfStatementCondition_JumpPrevSibling_PrevMethodMember()
+        {
+            AssertTransition<IfStatementSyntax, ReturnStatementState>(
+                ActionKind.JumpPrevSibling,
+                x => x.HasCondition("x == 3"),
+                x => x.ActiveNodeAs<ReturnStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method1"));
+        }
+
+        [Fact]
+        public void IfStatementDeclaration_JumpDown_ConditionStatement()
+        {
+            AssertTransition<IfStatementSyntax, MethodBodyState>(
+                ActionKind.JumpContextDown,
+                x => x.HasCondition("x == 3"),
+                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>().HasExpression("x == 3"));
+        }
+
+        [Fact]
+        public void IfStatementDeclaration_JumpUp_ConditionStatement()
+        {
+            AssertTransition<IfStatementSyntax, MethodBodyState>(
+                ActionKind.JumpContextUp,
+                x => x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method1")
+                    ?? false,
+                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>()
+                    .BaseNodeAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method1"));
+        }
+
 
         private enum ActionKind
         {

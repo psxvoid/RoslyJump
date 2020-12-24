@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using dngrep.core.VirtualNodes;
+using dngrep.core.VirtualNodes.VirtualQueries;
+using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
@@ -23,6 +25,12 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
                 .ToArray()
                 ?? throw new InvalidOperationException(
                     $"Unable to query target nodes for {nameof(IfStatementState)}");
+        }
+
+        protected override CombinedSyntaxNode? QueryChildContextNode()
+        {
+            return this.BaseNode.Condition.QueryVirtualAndCombine(
+                MethodBodyVirtualQuery.Instance);
         }
     }
 }
