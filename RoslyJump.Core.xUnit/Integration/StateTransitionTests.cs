@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates;
 using RoslyJump.Core.Contexts.Local;
+using RoslyJump.Core.Contexts.Local.States;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis.VirtualNodes;
 using RoslyJump.Core.xUnit.Integration.Fixtures;
@@ -82,6 +83,68 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
+        public void ParameterList_JumpNext_MethodBody()
+        {
+            AssertTransition<ParameterListSyntax, ParameterListState>(
+                ActionKind.JumpNext,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAs<ParameterListSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void ParameterList_JumpPrev_MethodBody()
+        {
+            AssertTransition<ParameterListSyntax, ParameterListState>(
+                ActionKind.JumpPrev,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAs<ParameterListSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void ParameterList_JumpNextSibling_MethodBody()
+        {
+            AssertTransition<ParameterListSyntax, MethodBodyState>(
+                ActionKind.JumpNextSibling,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>()
+                    .BaseNodeAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void ParameterList_JumpPrevSibling_MethodBody()
+        {
+            AssertTransition<ParameterListSyntax, MethodBodyState>(
+                ActionKind.JumpPrevSibling,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>()
+                    .BaseNodeAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void ParameterList_JumpDown_FirstParameter()
+        {
+            AssertTransition<ParameterListSyntax, MethodParameterState>(
+                ActionKind.JumpContextDown,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAs<ParameterSyntax>()
+                    .ParentAs<ParameterListSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void ParameterList_JumpUp_MethodDeclaration()
+        {
+            AssertTransition<ParameterListSyntax, MethodDeclarationState>(
+                ActionKind.JumpContextUp,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
         public void IfStatementCondition_JumpNext_NextConditionStatement()
         {
             AssertTransition<IfStatementSyntax, IfStatementState>(
@@ -144,7 +207,6 @@ namespace RoslyJump.Core.xUnit.Integration
                     .ParentAs<MethodDeclarationSyntax>()
                     .HasName("Method1"));
         }
-
 
         private enum ActionKind
         {
