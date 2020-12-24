@@ -18,7 +18,7 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
 
             public int Method1(int x, int y)
             {
-                if (x == 3)
+                if (x == 3)                                 // IfDeclarationStatementSyntax
                 {
                     return x * 3 + y;
                 }
@@ -36,17 +36,19 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                     return -1;
                 }
 
-                return 0;
+                return 0;                                   // ReturnStatementSyntax
             }
 
             public (int x, int y) Method2(int x, int y)
             {
+                var z = 5;                                  // LocalDeclarationStatementSyntax
                 return (x, y);
             }
 
-            public void Method3()
+            public int Method3()
             {
-                return;
+                var (x, y) = this.Method2(2, 3);            // ExpressionStatementSyntax
+                return y;
             }
 
             public int Prop1 => field1;

@@ -366,6 +366,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new EventFieldDeclarationState(context, node.Value);
             }
+            else if (nodeType == typeof(ExpressionStatementSyntax))
+            {
+                this.Context.State = new ExpressionStatementState(context, node.Value);
+            }
             else
             //else if (nodeType == typeof(BlockSyntax))
             {

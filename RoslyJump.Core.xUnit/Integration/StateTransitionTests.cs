@@ -136,6 +136,90 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
+        public void MethodBody_JumpNext_MethodBody()
+        {
+            AssertTransition<BlockSyntax, MethodBodyState>(
+                ActionKind.JumpNext,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>()
+                    .BaseNodeAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void MethodBody_JumpPrev_MethodBody()
+        {
+            AssertTransition<BlockSyntax, MethodBodyState>(
+                ActionKind.JumpPrev,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>()
+                    .BaseNodeAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void MethodBody_JumpNextSibling_ParameterList()
+        {
+            AssertTransition<BlockSyntax, ParameterListState>(
+                ActionKind.JumpNextSibling,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAs<ParameterListSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void MethodBody_JumpPrevSibling_ParameterList()
+        {
+            AssertTransition<BlockSyntax, ParameterListState>(
+                ActionKind.JumpPrevSibling,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAs<ParameterListSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void MethodBody_JumpUp_MethodDeclaration()
+        {
+            AssertTransition<BlockSyntax, MethodDeclarationState>(
+                ActionKind.JumpContextUp,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.BaseNode.HasName("Method1"));
+        }
+
+        [Fact]
+        public void MethodBody_JumpDown_FirstIfStatement()
+        {
+            AssertTransition<BlockSyntax, IfStatementState>(
+                ActionKind.JumpContextDown,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAs<IfStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void MethodBody_JumpDown_FirstLocalDeclaration()
+        {
+            AssertTransition<BlockSyntax, LocalDeclarationState>(
+                ActionKind.JumpContextDown,
+                x => x.ParentAsOrNull<MethodDeclarationSyntax>()?.HasName("Method2") ?? false,
+                x => x.ActiveNodeAs<LocalDeclarationStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method2"));
+        }
+
+        [Fact]
+        public void MethodBody_JumpDown_FirstExpressionStatement()
+        {
+            AssertTransition<BlockSyntax, ExpressionStatementState>(
+                ActionKind.JumpContextDown,
+                x => x.ParentAsOrNull<MethodDeclarationSyntax>()?.HasName("Method3") ?? false,
+                x => x.ActiveNodeAs<ExpressionStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method3"));
+        }
+
+        [Fact]
         public void ParameterList_JumpUp_MethodDeclaration()
         {
             AssertTransition<ParameterListSyntax, MethodDeclarationState>(

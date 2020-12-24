@@ -383,6 +383,10 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
         /// The parent node of the specified node casted to
         /// the specified type.
         /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the parent node of the target cannot be
+        /// obtained.
+        /// </exception>
         /// <exception cref="InvalidCastException">
         /// Thrown when the parent node cannot be casted to the
         /// target type.
@@ -411,6 +415,42 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
         }
 
         /// <summary>
+        /// Retrieves the parent node of the specified node
+        /// and casts it to the specified type. In contrast to
+        /// <see cref="ParentAs{T}(SyntaxNode)"/> it does not throw
+        /// an exception when the parent node cannot be casted to
+        /// the specified type but instead returns <see cref="null"/>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The target type to which the parent node should be casted.
+        /// </typeparam>
+        /// <param name="node">
+        /// The target node for which the parent should be retrieved.
+        /// </param>
+        /// <returns>
+        /// The parent node of the specified node casted to
+        /// the specified type or <see cref="null"/> in case it
+        /// cannot be casted.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the parent node of the target cannot be
+        /// obtained.
+        /// </exception>
+        public static T? ParentAsOrNull<T>(this SyntaxNode node)
+            where T : SyntaxNode
+        {
+            _ = node ?? throw new ArgumentNullException(nameof(node));
+
+            if (node.Parent == null)
+            {
+                throw new InvalidOperationException(
+                    "The parent doesn't exist on the target node.");
+            }
+
+            return node.Parent as T;
+        }
+
+        /// <summary>
         /// Determines whether the provided <see cref="IfStatementSyntax"/>
         /// condition equals to the specified string representation of the
         /// same condition.
@@ -431,7 +471,7 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
         {
             _ = @if ?? throw new ArgumentNullException(nameof(@if));
             _ = condition ?? throw new ArgumentNullException(nameof(condition));
-            
+
             return @if.Condition.ToString() == condition;
         }
     }
