@@ -5,6 +5,8 @@ using dngrep.core.VirtualNodes.Syntax;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
+using RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers;
+using RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers.Properties;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates;
 using RoslyJump.Core.Contexts.Local;
 using RoslyJump.Core.Contexts.Local.States;
@@ -22,6 +24,67 @@ namespace RoslyJump.Core.xUnit.Integration
         public StateTransitionTests(StateTransitionFixture classFixture)
         {
             this.classFixture = classFixture;
+        }
+
+
+        [Fact]
+        public void Indexer_JumpNext_NextIndexer()
+        {
+            AssertTransition<IndexerDeclarationSyntax, IndexerDeclarationState>(
+                ActionKind.JumpNext,
+                x => x.ParentAs<ClassDeclarationSyntax>().HasName("C1")
+                    && x.HasIndexerParam("int i"),
+                x => x.ActiveBaseNode.HasIndexerParam("string str"));
+        }
+
+        [Fact]
+        public void Indexer_JumpPrev_PrevIndexer()
+        {
+            AssertTransition<IndexerDeclarationSyntax, IndexerDeclarationState>(
+                ActionKind.JumpPrev,
+                x => x.ParentAs<ClassDeclarationSyntax>().HasName("C1")
+                    && x.HasIndexerParam("int i"),
+                x => x.ActiveBaseNode.HasIndexerParam("object o"));
+        }
+
+        [Fact]
+        public void Indexer_JumpNextSibling_NextClassMember()
+        {
+            AssertTransition<IndexerDeclarationSyntax, ReadOnlyPropertyDeclarationState>(
+                ActionKind.JumpNextSibling,
+                x => x.ParentAs<ClassDeclarationSyntax>().HasName("C1")
+                    && x.HasIndexerParam("int i"),
+                x => x.ActiveBaseNode.HasName("Prop1"));
+        }
+
+        [Fact]
+        public void Indexer_JumpPrevSibling_PrevClassMember()
+        {
+            AssertTransition<IndexerDeclarationSyntax, MethodDeclarationState>(
+                ActionKind.JumpPrevSibling,
+                x => x.ParentAs<ClassDeclarationSyntax>().HasName("C1")
+                    && x.HasIndexerParam("int i"),
+                x => x.ActiveBaseNode.HasName("Method1"));
+        }
+
+        [Fact]
+        public void Indexer_JumpUp_ClassDeclaration()
+        {
+            AssertTransition<IndexerDeclarationSyntax, ClassDeclarationState>(
+                ActionKind.JumpContextUp,
+                x => x.ParentAs<ClassDeclarationSyntax>().HasName("C1")
+                    && x.HasIndexerParam("int i"),
+                x => x.ActiveBaseNode.HasName("C1"));
+        }
+
+        [Fact]
+        public void Indexer_JumpDown_SameIndexer()
+        {
+            AssertTransition<IndexerDeclarationSyntax, IndexerDeclarationState>(
+                ActionKind.JumpContextDown,
+                x => x.ParentAs<ClassDeclarationSyntax>().HasName("C1")
+                    && x.HasIndexerParam("int i"),
+                x => x.ActiveBaseNode.HasIndexerParam("int i"));
         }
 
         [Fact]
@@ -65,11 +128,11 @@ namespace RoslyJump.Core.xUnit.Integration
         [Fact]
         public void MethodDeclaration_JumpNextSibling_NextSibling()
         {
-            AssertTransition<MethodDeclarationSyntax, PropertyDeclarationState>(
+            AssertTransition<MethodDeclarationSyntax, IndexerDeclarationState>(
                 ActionKind.JumpNextSibling,
                 x => x.HasName("Method1")
                     && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
-                x => x.ActiveNodeAs<PropertyDeclarationSyntax>().HasName("Prop1"));
+                x => x.ActiveBaseNode.HasIndexerParam("int i"));
         }
 
         [Fact]

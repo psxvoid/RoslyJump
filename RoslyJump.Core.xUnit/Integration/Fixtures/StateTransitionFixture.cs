@@ -54,6 +54,29 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 return y + v2 + z;
             }
 
+            public string this[int i]
+            {
+                get
+                {
+                    return $"Indexer1: {i}";
+                }
+
+                set
+                {
+                    this.field1 = i;
+                }
+            }
+
+            public string this[string str] => $"Indexer2: {str}";
+            
+            public string this[object o]
+            {
+                get
+                {
+                    return $"Indexer3: {o.GetType()}";
+                }
+            }
+
             public int Prop1 => field1;
         }
 #pragma warning restore

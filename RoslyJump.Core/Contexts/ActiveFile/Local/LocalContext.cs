@@ -37,6 +37,7 @@ namespace RoslyJump.Core
             typeof(ParameterSyntax),
             typeof(InterfaceDeclarationSyntax),
             typeof(DestructorDeclarationSyntax),
+            typeof(IndexerDeclarationSyntax),
             typeof(MethodBodyDeclarationSyntax),        // virtual
 
             // property types
