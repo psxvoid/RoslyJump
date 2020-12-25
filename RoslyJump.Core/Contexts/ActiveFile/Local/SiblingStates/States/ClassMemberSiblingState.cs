@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using dngrep.core.VirtualNodes;
+using dngrep.core.VirtualNodes.VirtualQueries;
+using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Infrastructure;
@@ -38,7 +40,10 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
                             ? SyntaxKind.EventDeclaration
                             : kind;
                     })
-                .Select(x => new CombinedSyntaxNode(x.First()))
+                .Select(x => x.First())
+                .QueryVirtualAndCombine(
+                    AutoPropertyVirtualQuery.Instance,
+                    ReadOnlyPropertyVirtualQuery.Instance)
                 .ToArray();
 
             return members;

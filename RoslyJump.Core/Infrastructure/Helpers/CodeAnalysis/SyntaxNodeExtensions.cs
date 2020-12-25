@@ -574,5 +574,42 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             return declaration.Declaration.ToString() == declarationString;
         }
+
+        /// <summary>
+        /// Determines whether the <see cref="IndexerDeclarationSyntax"/> has a specified
+        /// indexer parameter (it's string representation). Basically, an indexer parameter
+        /// is what contained inside the square brackets. For example, for <code><this[int i]/code>
+        /// the indexer parameter will be "int i".
+        /// </summary>
+        /// <param name="indexer">
+        /// The target indexer that may contain the expected parameter.
+        /// </param>
+        /// <param name="param">
+        /// The string representation of the indexer parameter.
+        /// Basically, an indexer parameter is what contained inside the square brackets.
+        /// For example, for <code><this[int i]/code> the indexer parameter will be "int i".
+        /// </param>
+        /// <returns>
+        /// <see cref="true"/> when the string representation of the indexer parameter matches
+        /// the actual indexer parameter, else <see cref="false"/>.
+        /// </returns>
+        public static bool HasIndexerParam(this IndexerDeclarationSyntax indexer, string param)
+        {
+            _ = indexer ?? throw new ArgumentNullException(nameof(indexer));
+            _ = param ?? throw new ArgumentNullException(nameof(param));
+
+            if (string.IsNullOrEmpty(param))
+            {
+                throw new ArgumentException(
+                    "The provided string representation of the indexer parameter cannot be empty.",
+                    nameof(param));
+            }
+
+            SyntaxNode? match = indexer.ParameterList?.ChildNodes()
+                .FirstOrDefault(
+                    x => x.GetType() == typeof(ParameterSyntax) && x.ToString() == param);
+            
+            return match != null;
+        }
     }
 }

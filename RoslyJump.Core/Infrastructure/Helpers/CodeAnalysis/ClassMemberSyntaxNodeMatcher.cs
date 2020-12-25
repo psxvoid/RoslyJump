@@ -25,6 +25,7 @@ namespace RoslyJump.Core.Infrastructure
             typeof(MethodDeclarationSyntax),
             typeof(OperatorDeclarationSyntax),
             typeof(DestructorDeclarationSyntax),
+            typeof(IndexerDeclarationSyntax),
         };
 
         private ClassMemberSyntaxNodeMatcher()
