@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 
-namespace RoslyJump
+namespace RoslyJump.Infrastructure.VisualStudio.TextEditor
 {
 #nullable enable
     public interface IActiveViewAccessor
@@ -24,7 +24,7 @@ namespace RoslyJump
             SVsServiceProvider vsServiceProvider,
             IVsEditorAdaptersFactoryService editorAdaptersFactoryService)
         {
-            this.serviceProvider = vsServiceProvider;
+            serviceProvider = vsServiceProvider;
             this.editorAdaptersFactoryService = editorAdaptersFactoryService;
         }
 
