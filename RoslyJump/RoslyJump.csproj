@@ -61,7 +61,7 @@
     <Compile Include="Package\PackageIds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Package\RoslyJumpPackage.cs" />
-    <Compile Include="TextHighlightAdornment.cs" />
+    <Compile Include="VisualComponents\TextEditor\Adornments\TextHighlightAdornment.cs" />
     <Compile Include="TextHighlightAdornmentTextViewCreationListener.cs" />
   </ItemGroup>
   <ItemGroup>
