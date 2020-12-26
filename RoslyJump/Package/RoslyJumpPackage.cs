@@ -53,7 +53,7 @@ namespace RoslyJump
         #endregion
 
 
-        private TextAdornment1? Adornment = null;
+        private TextHighlightAdornment? Adornment = null;
 
         private ITextView? LastView;
         private ITextSnapshot? LastSnapshot;
@@ -115,7 +115,7 @@ namespace RoslyJump
                         this.Adornment.Remove();
                     }
 
-                    this.Adornment = new TextAdornment1(view);
+                    this.Adornment = new TextHighlightAdornment(view);
                     this.lastActiveView = view;
 
                     string text = view.TextSnapshot.GetText();
