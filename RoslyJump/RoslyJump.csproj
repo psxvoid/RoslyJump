@@ -55,7 +55,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ActiveViewConnectionListener.cs" />
+    <Compile Include="ActiveViewAccessor.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Package\CommandIds.cs" />
     <Compile Include="Package\PackageIds.cs" />
