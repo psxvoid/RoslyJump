@@ -14,13 +14,13 @@ namespace RoslyJump
     }
 
     [Export(typeof(IActiveViewAccessor))]
-    internal sealed class ActiveViewConnectionListener : IActiveViewAccessor
+    internal sealed class ActiveViewAccessor : IActiveViewAccessor
     {
         private readonly SVsServiceProvider serviceProvider;
         private readonly IVsEditorAdaptersFactoryService editorAdaptersFactoryService;
 
         [ImportingConstructor]
-        public ActiveViewConnectionListener(
+        public ActiveViewAccessor(
             SVsServiceProvider vsServiceProvider,
             IVsEditorAdaptersFactoryService editorAdaptersFactoryService)
         {
