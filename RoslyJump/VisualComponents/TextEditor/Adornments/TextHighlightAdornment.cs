@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Formatting;
 
-namespace RoslyJump
+namespace RoslyJump.VisualComponents.TextEditor.Adornments
 {
     /// <summary>
     /// Highlights a specified text range with a purple box.
@@ -45,19 +45,19 @@ namespace RoslyJump
                 throw new ArgumentNullException("view");
             }
 
-            this.layer = view.GetAdornmentLayer("TextHighlightAdornment");
+            layer = view.GetAdornmentLayer("TextHighlightAdornment");
 
             this.view = view;
-            this.view.LayoutChanged += this.OnLayoutChanged;
+            this.view.LayoutChanged += OnLayoutChanged;
 
             // Create the pen and brush to color the box behind the a's
-            this.brush = new SolidColorBrush(Color.FromArgb(0x20, 0x00, 0x00, 0xff));
-            this.brush.Freeze();
+            brush = new SolidColorBrush(Color.FromArgb(0x20, 0x00, 0x00, 0xff));
+            brush.Freeze();
 
             var penBrush = new SolidColorBrush(Colors.Red);
             penBrush.Freeze();
-            this.pen = new Pen(penBrush, 0.5);
-            this.pen.Freeze();
+            pen = new Pen(penBrush, 0.5);
+            pen.Freeze();
         }
 
         /// <summary>
@@ -72,10 +72,10 @@ namespace RoslyJump
         internal void OnLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            SnapshotPoint caretPositionInBuffer = this.view.Caret.Position.BufferPosition;
+            SnapshotPoint caretPositionInBuffer = view.Caret.Position.BufferPosition;
 
             IWpfTextViewLine line =
-                this.view.GetTextViewLineContainingBufferPosition(caretPositionInBuffer);
+                view.GetTextViewLineContainingBufferPosition(caretPositionInBuffer);
 
             if (e.NewOrReformattedLines.Contains(line))
             {
@@ -90,33 +90,33 @@ namespace RoslyJump
 
         public void EndorseActiveLine()
         {
-            if (this.applied) throw new InvalidOperationException("This adornment is already applied.");
-            SnapshotPoint caretPositionInBuffer = this.view.Caret.Position.BufferPosition;
+            if (applied) throw new InvalidOperationException("This adornment is already applied.");
+            SnapshotPoint caretPositionInBuffer = view.Caret.Position.BufferPosition;
             IWpfTextViewLine line =
-                this.view.GetTextViewLineContainingBufferPosition(caretPositionInBuffer);
+                view.GetTextViewLineContainingBufferPosition(caretPositionInBuffer);
 
-            this.CreateVisuals(line);
-            this.applied = true;
+            CreateVisuals(line);
+            applied = true;
         }
 
         internal void EndorseLine(int line, int charStart, int charEnd)
         {
-            if (this.applied) throw new InvalidOperationException("This adornment is already applied.");
+            if (applied) throw new InvalidOperationException("This adornment is already applied.");
 
-            ITextSnapshot textSnapshot = this.view.TextSnapshot;
+            ITextSnapshot textSnapshot = view.TextSnapshot;
             ITextSnapshotLine textViewStartLine = textSnapshot.GetLineFromLineNumber(line);
 
             SnapshotSpan span = new SnapshotSpan(
-                this.view.TextSnapshot,
+                view.TextSnapshot,
                 Span.FromBounds(
                     textViewStartLine.Start + charStart,
                     textViewStartLine.Start + charEnd));
 
-            IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
+            IWpfTextViewLineCollection textViewLines = view.TextViewLines;
             Geometry geometry = textViewLines.GetMarkerGeometry(span);
             if (geometry != null)
             {
-                var drawing = new GeometryDrawing(this.brush, this.pen, geometry);
+                var drawing = new GeometryDrawing(brush, pen, geometry);
                 drawing.Freeze();
 
                 var drawingImage = new DrawingImage(drawing);
@@ -131,31 +131,31 @@ namespace RoslyJump
                 Canvas.SetLeft(image, geometry.Bounds.Left);
                 Canvas.SetTop(image, geometry.Bounds.Top);
 
-                this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, this, image, null);
+                layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, this, image, null);
             }
 
-            this.applied = true;
+            applied = true;
         }
 
         internal void EndorseTextBounds(int lineStart, int lineEnd, int charStart, int charEnd)
         {
-            if (this.applied) throw new InvalidOperationException("This adornment is already applied.");
+            if (applied) throw new InvalidOperationException("This adornment is already applied.");
 
-            ITextSnapshot textSnapshot = this.view.TextSnapshot;
+            ITextSnapshot textSnapshot = view.TextSnapshot;
             ITextSnapshotLine textViewStartLine = textSnapshot.GetLineFromLineNumber(lineStart);
             ITextSnapshotLine textViewEndLine = textSnapshot.GetLineFromLineNumber(lineEnd);
 
             SnapshotSpan span = new SnapshotSpan(
-                this.view.TextSnapshot,
+                view.TextSnapshot,
                 Span.FromBounds(
                     textViewStartLine.Start + charStart,
                     textViewEndLine.Start + charEnd));
 
-            IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
+            IWpfTextViewLineCollection textViewLines = view.TextViewLines;
             Geometry geometry = textViewLines.GetMarkerGeometry(span);
             if (geometry != null)
             {
-                var drawing = new GeometryDrawing(this.brush, this.pen, geometry);
+                var drawing = new GeometryDrawing(brush, pen, geometry);
                 drawing.Freeze();
 
                 var drawingImage = new DrawingImage(drawing);
@@ -170,16 +170,16 @@ namespace RoslyJump
                 Canvas.SetLeft(image, geometry.Bounds.Left);
                 Canvas.SetTop(image, geometry.Bounds.Top);
 
-                this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, this, image, null);
+                layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, this, image, null);
             }
 
-            this.applied = true;
+            applied = true;
         }
 
         public void Remove()
         {
-            this.layer.RemoveAdornmentsByTag(this);
-            this.applied = false;
+            layer.RemoveAdornmentsByTag(this);
+            applied = false;
         }
 
         /// <summary>
@@ -188,18 +188,18 @@ namespace RoslyJump
         /// <param name="line">Line to add the adornments</param>
         private void CreateVisuals(ITextViewLine line)
         {
-            IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
+            IWpfTextViewLineCollection textViewLines = view.TextViewLines;
 
             // Loop through each character, and place a box around any 'a'
             for (int charIndex = line.Start; charIndex < line.End; charIndex++)
             {
-                if (this.view.TextSnapshot[charIndex] == 'a')
+                if (view.TextSnapshot[charIndex] == 'a')
                 {
-                    SnapshotSpan span = new SnapshotSpan(this.view.TextSnapshot, Span.FromBounds(charIndex, charIndex + 1));
+                    SnapshotSpan span = new SnapshotSpan(view.TextSnapshot, Span.FromBounds(charIndex, charIndex + 1));
                     Geometry geometry = textViewLines.GetMarkerGeometry(span);
                     if (geometry != null)
                     {
-                        var drawing = new GeometryDrawing(this.brush, this.pen, geometry);
+                        var drawing = new GeometryDrawing(brush, pen, geometry);
                         drawing.Freeze();
 
                         var drawingImage = new DrawingImage(drawing);
@@ -214,7 +214,7 @@ namespace RoslyJump
                         Canvas.SetLeft(image, geometry.Bounds.Left);
                         Canvas.SetTop(image, geometry.Bounds.Top);
 
-                        this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, this, image, null);
+                        layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, this, image, null);
                     }
                 }
             }
