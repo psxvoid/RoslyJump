@@ -169,6 +169,8 @@ namespace RoslyJump
                                 span,
                                 EnsureSpanVisibleOptions.AlwaysCenter);
                         }
+
+                        view.Caret.EnsureVisible();
                     }
                 }
             }
