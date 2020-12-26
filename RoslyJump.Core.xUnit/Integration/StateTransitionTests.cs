@@ -122,7 +122,7 @@ namespace RoslyJump.Core.xUnit.Integration
                 ActionKind.JumpPrev,
                 x => x.HasName("Method1")
                     && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
-                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method3"));
+                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method4"));
         }
 
         [Fact]
@@ -433,6 +433,95 @@ namespace RoslyJump.Core.xUnit.Integration
                     .ParentAs<BlockSyntax>()
                     .ParentAs<MethodDeclarationSyntax>()
                     .HasName("Method3"));
+        }
+
+        [Fact]
+        public void LocalDeclarationStatement_JumpNext_NextLocalDeclarationStatement()
+        {
+            AssertTransition<LocalDeclarationStatementSyntax, LocalDeclarationState>(
+                ActionKind.JumpNext,
+                x => x.ToString() == "var x = this.isTrue;"
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method4")
+                        ?? false),
+                x => x.ActiveBaseNode.ToString() == "var y = false;"
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method4"));
+        }
+
+        [Fact]
+        public void LocalDeclarationStatement_JumpPrev_PrevLocalDeclarationStatement()
+        {
+            AssertTransition<LocalDeclarationStatementSyntax, LocalDeclarationState>(
+                ActionKind.JumpPrev,
+                x => x.ToString() == "var x = this.isTrue;"
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method4")
+                        ?? false),
+                x => x.ActiveBaseNode.ToString() == "var z = x && y;"
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method4"));
+        }
+
+        [Fact]
+        public void LocalDeclarationStatement_JumpNextSibling_NextLocalDeclarationStatement()
+        {
+            AssertTransition<LocalDeclarationStatementSyntax, ExpressionStatementState>(
+                ActionKind.JumpNextSibling,
+                x => x.ToString() == "var x = this.isTrue;"
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method4")
+                        ?? false),
+                x => x.ActiveBaseNode
+                        .HasExpression("this.isTrue = string.IsNullOrWhiteSpace(\"\")")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method4"));
+        }
+
+        [Fact]
+        public void LocalDeclarationStatement_JumpPrevSibling_NextLocalDeclarationStatement()
+        {
+            AssertTransition<LocalDeclarationStatementSyntax, ExpressionStatementState>(
+                ActionKind.JumpPrevSibling,
+                x => x.ToString() == "var x = this.isTrue;"
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method4")
+                        ?? false),
+                x => x.ActiveBaseNode
+                        .HasExpression("this.isTrue = string.IsNullOrWhiteSpace(\"\")")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method4"));
+        }
+
+        [Fact]
+        public void LocalDeclarationStatement_JumpUp_MethodBody()
+        {
+            AssertTransition<LocalDeclarationStatementSyntax, MethodBodyState>(
+                ActionKind.JumpContextUp,
+                x => x.ToString() == "var x = this.isTrue;"
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method4")
+                        ?? false),
+                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>() != null
+                    && x.ActiveBaseNode
+                        .ParentAs<MethodDeclarationSyntax>().HasName("Method4"));
+        }
+
+        [Fact]
+        public void LocalDeclarationStatement_JumpDown_SameLocalDeclarationStatement()
+        {
+            AssertTransition<LocalDeclarationStatementSyntax, LocalDeclarationState>(
+                ActionKind.JumpContextDown,
+                x => x.ToString() == "var x = this.isTrue;"
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method4")
+                        ?? false),
+                x => x.ActiveBaseNode.ToString() == "var x = this.isTrue;"
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>().HasName("Method4"));
         }
 
         private enum ActionKind

@@ -16,6 +16,8 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
         {
             private int field1 = 2;
 
+            private bool isTrue = false;
+
             public int Method1(int x, int y)
             {
                 if (x == 3)                                 // IfDeclarationStatementSyntax
@@ -52,6 +54,15 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 var (v3, v4) = this.Method2(4, 3);          // ExpressionStatementSyntax
                 int z = 3;                                  // LocalDeclarationSyntax
                 return y + v2 + z;
+            }
+
+            public void Method4()
+            {
+                var x = this.isTrue;                        // LocalDeclarationStatementSyntax
+                var y = false;                              // LocalDeclarationStatementSyntax
+                var z = x && y;                             // LocalDeclarationStatementSyntax
+
+                this.isTrue = string.IsNullOrWhiteSpace("");// ExpressionStatementSyntax
             }
 
             public string this[int i]
