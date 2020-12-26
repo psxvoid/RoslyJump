@@ -237,7 +237,8 @@ namespace RoslyJump
             await base.InitializeAsync(cancellationToken, progress);
             object componentModel = await GetServiceAsync(typeof(SComponentModel));
 
-            OleMenuCommandService? mcs = await this.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+            OleMenuCommandService? mcs = await this.GetServiceAsync(typeof(IMenuCommandService))
+                as OleMenuCommandService;
             Debug.Assert(mcs != null);
 
             if (null != mcs)
@@ -260,7 +261,9 @@ namespace RoslyJump
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-            this.componentModel = (IComponentModel)componentModel;
+            this.componentModel = componentModel as IComponentModel
+                ?? throw new InvalidOperationException("Unable to access the component model.");
+
             this.exportProvider = this.componentModel.DefaultExportProvider;
 
             this.viewAccessor = this.exportProvider.GetExportedValue<IActiveViewAccessor>();

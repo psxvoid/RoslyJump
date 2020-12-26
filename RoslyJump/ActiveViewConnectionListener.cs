@@ -1,36 +1,59 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Text;
+﻿using System.ComponentModel.Composition;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Editor;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
+using Microsoft.VisualStudio.TextManager.Interop;
 
 namespace RoslyJump
 {
-    #nullable enable
-
+#nullable enable
     public interface IActiveViewAccessor
     {
         IWpfTextView? ActiveView { get; }
     }
 
-    [Export(typeof(IWpfTextViewConnectionListener))]
     [Export(typeof(IActiveViewAccessor))]
-    [ContentType("text")]
-    [TextViewRole(PredefinedTextViewRoles.Document)]
-    internal sealed class ActiveViewConnectionListener : IWpfTextViewConnectionListener, IActiveViewAccessor
+    internal sealed class ActiveViewConnectionListener : IActiveViewAccessor
     {
-        public IWpfTextView? ActiveView { get; private set; }
+        private readonly SVsServiceProvider serviceProvider;
+        private readonly IVsEditorAdaptersFactoryService editorAdaptersFactoryService;
 
-        public void SubjectBuffersConnected(IWpfTextView textView, ConnectionReason reason, Collection<ITextBuffer> subjectBuffers)
+        [ImportingConstructor]
+        public ActiveViewConnectionListener(
+            SVsServiceProvider vsServiceProvider,
+            IVsEditorAdaptersFactoryService editorAdaptersFactoryService)
         {
-            this.ActiveView = textView;
+            this.serviceProvider = vsServiceProvider;
+            this.editorAdaptersFactoryService = editorAdaptersFactoryService;
         }
 
-        public void SubjectBuffersDisconnected(IWpfTextView textView, ConnectionReason reason, Collection<ITextBuffer> subjectBuffers)
+        public IWpfTextView? ActiveView
         {
-            this.ActiveView = null;
+            get
+            {
+                IVsTextManager2 textManager =
+                    serviceProvider.GetService<SVsTextManager, IVsTextManager2>();
+
+                if (textManager == null)
+                {
+                    return null;
+                }
+
+                int hr = textManager.GetActiveView2(
+                    fMustHaveFocus: 1,
+                    pBuffer: null,
+                    grfIncludeViewFrameType: (uint)_VIEWFRAMETYPE.vftCodeWindow,
+                    ppView: out IVsTextView vsTextView);
+
+                if (ErrorHandler.Failed(hr))
+                {
+                    return null;
+                }
+
+                return editorAdaptersFactoryService.GetWpfTextView(vsTextView);
+            }
         }
     }
-
-    #nullable disable
+#nullable disable
 }
