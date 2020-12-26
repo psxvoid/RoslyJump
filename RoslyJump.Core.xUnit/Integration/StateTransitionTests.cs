@@ -26,7 +26,6 @@ namespace RoslyJump.Core.xUnit.Integration
             this.classFixture = classFixture;
         }
 
-
         [Fact]
         public void Indexer_JumpNext_NextIndexer()
         {
@@ -88,24 +87,6 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
-        public void MethodDeclaration_JumpDown_ParameterList()
-        {
-            AssertTransition<MethodDeclarationSyntax, ParameterListState>(
-                ActionKind.JumpContextDown,
-                x => x.HasName("Method1")
-                    && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false));
-        }
-
-        [Fact]
-        public void MethodDeclaration_JumpUp_ClassDeclaration()
-        {
-            AssertTransition<MethodDeclarationSyntax, ClassDeclarationState>(
-                ActionKind.JumpContextUp,
-                x => x.HasName("Method1")
-                    && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false));
-        }
-
-        [Fact]
         public void MethodDeclaration_JumpNext_NextMethodDeclaration()
         {
             AssertTransition<MethodDeclarationSyntax, MethodDeclarationState>(
@@ -143,6 +124,24 @@ namespace RoslyJump.Core.xUnit.Integration
                 x => x.HasName("Method1")
                     && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
                 x => x.ActiveNodeAs<FieldDeclarationSyntax>().HasName("field1"));
+        }
+
+        [Fact]
+        public void MethodDeclaration_JumpUp_ClassDeclaration()
+        {
+            AssertTransition<MethodDeclarationSyntax, ClassDeclarationState>(
+                ActionKind.JumpContextUp,
+                x => x.HasName("Method1")
+                    && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false));
+        }
+
+        [Fact]
+        public void MethodDeclaration_JumpDown_ParameterList()
+        {
+            AssertTransition<MethodDeclarationSyntax, ParameterListState>(
+                ActionKind.JumpContextDown,
+                x => x.HasName("Method1")
+                    && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false));
         }
 
         [Fact]
@@ -185,6 +184,15 @@ namespace RoslyJump.Core.xUnit.Integration
                 x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>()
                     .BaseNodeAs<BlockSyntax>()
                     .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
+        }
+
+        [Fact]
+        public void ParameterList_JumpUp_MethodDeclaration()
+        {
+            AssertTransition<ParameterListSyntax, MethodDeclarationState>(
+                ActionKind.JumpContextUp,
+                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method1"));
         }
 
         [Fact]
@@ -283,15 +291,6 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
-        public void ParameterList_JumpUp_MethodDeclaration()
-        {
-            AssertTransition<ParameterListSyntax, MethodDeclarationState>(
-                ActionKind.JumpContextUp,
-                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
-                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method1"));
-        }
-
-        [Fact]
         public void IfStatementCondition_JumpNext_NextConditionStatement()
         {
             AssertTransition<IfStatementSyntax, IfStatementState>(
@@ -334,15 +333,6 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
-        public void IfStatementDeclaration_JumpDown_ConditionStatement()
-        {
-            AssertTransition<IfStatementSyntax, MethodBodyState>(
-                ActionKind.JumpContextDown,
-                x => x.HasCondition("x == 3"),
-                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>().HasExpression("x == 3"));
-        }
-
-        [Fact]
         public void IfStatementDeclaration_JumpUp_ConditionStatement()
         {
             AssertTransition<IfStatementSyntax, MethodBodyState>(
@@ -353,6 +343,15 @@ namespace RoslyJump.Core.xUnit.Integration
                     .BaseNodeAs<BlockSyntax>()
                     .ParentAs<MethodDeclarationSyntax>()
                     .HasName("Method1"));
+        }
+
+        [Fact]
+        public void IfStatementDeclaration_JumpDown_ConditionStatement()
+        {
+            AssertTransition<IfStatementSyntax, MethodBodyState>(
+                ActionKind.JumpContextDown,
+                x => x.HasCondition("x == 3"),
+                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>().HasExpression("x == 3"));
         }
 
         [Fact]
