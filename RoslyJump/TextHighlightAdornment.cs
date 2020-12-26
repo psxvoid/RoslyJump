@@ -8,9 +8,9 @@ using Microsoft.VisualStudio.Text.Formatting;
 namespace RoslyJump
 {
     /// <summary>
-    /// TextAdornment1 places red boxes behind all the "a"s in the editor window
+    /// Highlights a specified text range with a purple box.
     /// </summary>
-    internal sealed class TextAdornment1
+    internal sealed class TextHighlightAdornment
     {
         /// <summary>
         /// The layer of the adornment.
@@ -35,17 +35,17 @@ namespace RoslyJump
         private bool applied = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TextAdornment1"/> class.
+        /// Initializes a new instance of the <see cref="TextHighlightAdornment"/> class.
         /// </summary>
         /// <param name="view">Text view to create the adornment for</param>
-        public TextAdornment1(IWpfTextView view)
+        public TextHighlightAdornment(IWpfTextView view)
         {
             if (view == null)
             {
                 throw new ArgumentNullException("view");
             }
 
-            this.layer = view.GetAdornmentLayer("TextAdornment1");
+            this.layer = view.GetAdornmentLayer("TextHighlightAdornment");
 
             this.view = view;
             this.view.LayoutChanged += this.OnLayoutChanged;
