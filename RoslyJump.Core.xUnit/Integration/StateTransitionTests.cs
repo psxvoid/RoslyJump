@@ -518,16 +518,17 @@ namespace RoslyJump.Core.xUnit.Integration
                         .HasName("Method5"));
         }
 
-        [Fact(Skip = "Should be implemented later.")]
-        public void TryStatement_JumpDown_MethodBody()
+        [Fact]
+        public void TryStatement_JumpDown_TryBody()
         {
-            AssertTransition<TryStatementSyntax, MethodBodyState>(
+            AssertTransition<TryStatementSyntax, TryBodyState>(
                 ActionKind.JumpContextDown,
                 x => x.Block
                         .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
                         .HasExpression("x++"),
-                x => x.ActiveBaseNode
+                x => x.ActiveNodeAsVirtual<TryBodySyntax>().Body
                         .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
                         .ParentAs<MethodDeclarationSyntax>()
                         .HasName("Method5"));
         }
