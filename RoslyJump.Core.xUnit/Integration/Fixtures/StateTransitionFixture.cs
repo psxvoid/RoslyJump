@@ -22,6 +22,21 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
             {
                 if (x == 3)                                 // IfDeclarationStatementSyntax
                 {
+                    if (y == 3)
+                    {
+                        y = y + 1;
+                    }
+
+                    if (y == 7)
+                    {
+                        y = y + 2;
+                    }
+
+                    if (y == 11)
+                    {
+                        y = y + 4;
+                    }
+
                     return x * 3 + y;
                 }
                 else if (x == 4)

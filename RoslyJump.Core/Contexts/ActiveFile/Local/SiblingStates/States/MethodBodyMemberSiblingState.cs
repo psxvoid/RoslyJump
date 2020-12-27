@@ -20,7 +20,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
 
             {
                 throw new ArgumentException(
-                    "The provided node is not a method body nor a nested block.");
+                    "The provided node is not a method body nor a nested block. " +
+                    $"Actual node type is {mixedNodeType}.");
             }
 
             if (!MethodBodySyntaxNodeMatcher.Instance.Match(baseNode.BaseNode)
