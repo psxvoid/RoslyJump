@@ -355,6 +355,95 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
+        public void NestedIfStatementDeclaration_JumpNext_NextNestedIfStatement()
+        {
+            AssertTransition<IfStatementSyntax, IfStatementState>(
+                ActionKind.JumpNext,
+                x => x.HasCondition("y == 3"),
+                x => x.ActiveBaseNode.HasCondition("y == 7")
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<IfStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method1"));
+        }
+
+        [Fact]
+        public void NestedIfStatementDeclaration_JumpPrev_PrevNestedIfStatement()
+        {
+            AssertTransition<IfStatementSyntax, IfStatementState>(
+                ActionKind.JumpPrev,
+                x => x.HasCondition("y == 3"),
+                x => x.ActiveBaseNode.HasCondition("y == 11")
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<IfStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method1"));
+        }
+
+        [Fact]
+        public void NestedIfStatementDeclaration_JumpNextSibling_NextNestedSibling()
+        {
+            AssertTransition<IfStatementSyntax, ReturnStatementState>(
+                ActionKind.JumpNextSibling,
+                x => x.HasCondition("y == 3"),
+                x => x.ActiveBaseNode.HasExpression("x * 3 + y")
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<IfStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method1"));
+        }
+
+        [Fact]
+        public void NestedIfStatementDeclaration_JumpPrevSibling_PrevNestedSibling()
+        {
+            AssertTransition<IfStatementSyntax, ReturnStatementState>(
+                ActionKind.JumpPrevSibling,
+                x => x.HasCondition("y == 3"),
+                x => x.ActiveBaseNode.HasExpression("x * 3 + y")
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<IfStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method1"));
+        }
+
+        [Fact]
+        public void NestedIfStatementDeclaration_JumpUp_ParentIfStatement()
+        {
+            AssertTransition<IfStatementSyntax, MethodBodyState>(
+                ActionKind.JumpContextUp,
+                x => x.HasCondition("y == 3"),
+                x => x.ActiveBaseNode
+                    .ParentAs<IfStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method1"));
+        }
+
+        [Fact]
+        public void NestedIfStatementDeclaration_JumpDown_ConditionMethodBody()
+        {
+            AssertTransition<IfStatementSyntax, MethodBodyState>(
+                ActionKind.JumpContextDown,
+                x => x.HasCondition("y == 3"),
+                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>().HasExpression("y == 3")
+                    && x.ActiveBaseNode
+                    .ParentAs<IfStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<IfStatementSyntax>()
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method1"));
+        }
+
+        [Fact]
         public void ExpressionStatement_JumpNext_NextMethodMember()
         {
             AssertTransition<ExpressionStatementSyntax, ExpressionStatementState>(
