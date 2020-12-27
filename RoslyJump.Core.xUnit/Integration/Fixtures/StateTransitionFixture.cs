@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -80,6 +81,39 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 this.isTrue = string.IsNullOrWhiteSpace("");// ExpressionStatementSyntax
             }
 
+            public int Method5(int x, int y)
+            {
+                try
+                {
+                    x++;
+                }
+                finally
+                {
+                    x = x + 1 + y;
+                }
+
+                try
+                {
+                    x += 3;
+                }
+                finally
+                {
+                    x = x + 2 + y;
+                }
+
+                try
+                {
+                    x--;
+                    throw new InvalidDataException();
+                }
+                catch (Exception e)
+                {
+                    x = y + 1;
+                }
+
+                return x;
+            }
+
             public string this[int i]
             {
                 get
@@ -94,7 +128,7 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
             }
 
             public string this[string str] => $"Indexer2: {str}";
-            
+
             public string this[object o]
             {
                 get

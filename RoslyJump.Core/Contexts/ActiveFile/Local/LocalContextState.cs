@@ -395,8 +395,11 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new ExpressionStatementState(context, node.Value);
             }
+            else if (nodeType == typeof(TryStatementSyntax))
+            {
+                this.Context.State = new TryStatementState(context, node.Value);
+            }
             else
-            //else if (nodeType == typeof(BlockSyntax))
             {
                 this.Context.State = new InactiveState(context);
                 return;

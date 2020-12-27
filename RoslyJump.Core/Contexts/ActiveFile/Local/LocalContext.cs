@@ -62,6 +62,7 @@ namespace RoslyJump.Core
             typeof(WhileStatementSyntax),
             typeof(NestedBlockSyntax),                  // virtual
             typeof(ExpressionStatementSyntax),
+            typeof(TryStatementSyntax),
         };
 
         public LocalContext(SyntaxTree tree)
