@@ -103,7 +103,7 @@ namespace RoslyJump.Core.xUnit.Integration
                 ActionKind.JumpPrev,
                 x => x.HasName("Method1")
                     && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
-                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method4"));
+                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method5"));
         }
 
         [Fact]
@@ -441,6 +441,95 @@ namespace RoslyJump.Core.xUnit.Integration
                     .ParentAs<BlockSyntax>()
                     .ParentAs<MethodDeclarationSyntax>()
                     .HasName("Method1"));
+        }
+
+        [Fact]
+        public void TryStatement_JumpNext_NextTryStatement()
+        {
+            AssertTransition<TryStatementSyntax, TryStatementState>(
+                ActionKind.JumpNext,
+                x => x.Block
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x++"),
+                x => x.ActiveBaseNode.Block
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x += 3")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void TryStatement_JumpPrev_NextTryStatement()
+        {
+            AssertTransition<TryStatementSyntax, TryStatementState>(
+                ActionKind.JumpPrev,
+                x => x.Block
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x++"),
+                x => x.ActiveBaseNode.Block
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x--")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void TryStatement_JumpNextSibling_NextSibling()
+        {
+            AssertTransition<TryStatementSyntax, ReturnStatementState>(
+                ActionKind.JumpNextSibling,
+                x => x.Block
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x++"),
+                x => x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void TryStatement_JumpPrevSibling_PrevSibling()
+        {
+            AssertTransition<TryStatementSyntax, ReturnStatementState>(
+                ActionKind.JumpPrevSibling,
+                x => x.Block
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x++"),
+                x => x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void TryStatement_JumpUp_MethodBody()
+        {
+            AssertTransition<TryStatementSyntax, MethodBodyState>(
+                ActionKind.JumpContextUp,
+                x => x.Block
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x++"),
+                x => x.ActiveBaseNode
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact(Skip = "Should be implemented later.")]
+        public void TryStatement_JumpDown_MethodBody()
+        {
+            AssertTransition<TryStatementSyntax, MethodBodyState>(
+                ActionKind.JumpContextDown,
+                x => x.Block
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x++"),
+                x => x.ActiveBaseNode
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
         }
 
         [Fact]
