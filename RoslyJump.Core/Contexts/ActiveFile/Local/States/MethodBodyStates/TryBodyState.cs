@@ -12,6 +12,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
     {
         private readonly CombinedSyntaxNode[] targets;
 
+        protected override int JumpDownCount => 2;
+
         public TryBodyState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
