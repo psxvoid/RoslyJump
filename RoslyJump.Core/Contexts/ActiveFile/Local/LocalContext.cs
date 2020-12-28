@@ -6,6 +6,7 @@ using dngrep.core.Queries;
 using dngrep.core.Queries.SyntaxWalkers;
 using dngrep.core.Queries.SyntaxWalkers.MatchStrategies;
 using dngrep.core.VirtualNodes;
+using dngrep.core.VirtualNodes.Routings.ConflictResolution;
 using dngrep.core.VirtualNodes.Syntax;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -63,6 +64,9 @@ namespace RoslyJump.Core
             typeof(NestedBlockSyntax),                  // virtual
             typeof(ExpressionStatementSyntax),
             typeof(TryStatementSyntax),
+            typeof(TryBodySyntax),                      // virtual
+            typeof(FinallyClauseSyntax),
+            typeof(CatchClauseSyntax),
         };
 
         public LocalContext(SyntaxTree tree)
@@ -81,6 +85,7 @@ namespace RoslyJump.Core
             var walker = new CombinedSyntaxTreeQueryWalker(
                 query,
                 new VirtualQueryRoutingFactory(),
+                new VirtualQueryOverrideRouting(),
                 new BaseScopedSyntaxNodeMatchStrategy(query.VirtualNodeSubQueries));
 
             walker.Visit(this.tree.GetRoot());

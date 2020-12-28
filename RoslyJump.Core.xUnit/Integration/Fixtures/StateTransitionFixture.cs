@@ -96,7 +96,7 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 {
                     x += 3;
                 }
-                finally
+                catch
                 {
                     x = x + 2 + y;
                 }
@@ -109,6 +109,10 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 catch (Exception e)
                 {
                     x = y + 1;
+                }
+                finally
+                {
+                    x = x + 3 + y;
                 }
 
                 return x;

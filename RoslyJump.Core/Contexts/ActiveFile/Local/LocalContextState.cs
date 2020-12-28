@@ -187,7 +187,10 @@ namespace RoslyJump.Core.Contexts.Local
 
                 if (!(this.ActiveNode.Value.BaseNode is TNode node))
                 {
-                    throw new InvalidOperationException(ConstraintMismatchError);
+                    throw new InvalidOperationException(
+                        ConstraintMismatchError +
+                        $" Constraint type: {typeof(TNode)}. " +
+                        $"Node type: {this.ActiveNode.Value.BaseNode.GetType()}.");
                 }
 
                 return node;
@@ -402,6 +405,14 @@ namespace RoslyJump.Core.Contexts.Local
             else if (nodeType == typeof(TryBodySyntax))
             {
                 this.Context.State = new TryBodyState(context, node.Value);
+            }
+            else if (nodeType == typeof(FinallyClauseSyntax))
+            {
+                this.Context.State = new FinallyClauseState(context, node.Value);
+            }
+            else if (nodeType == typeof(CatchClauseSyntax))
+            {
+                this.Context.State = new CatchClauseState(context, node.Value);
             }
             else
             {
