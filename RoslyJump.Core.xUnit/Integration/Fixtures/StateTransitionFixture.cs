@@ -106,9 +106,17 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                     x--;
                     throw new InvalidDataException();
                 }
-                catch (Exception e)
+                catch(InvalidOperationException e)
                 {
                     x = y + 1;
+                }
+                catch(ArgumentException e)
+                {
+                    x = y + 11;
+                }
+                catch (Exception e)
+                {
+                    x = y + 111;
                 }
                 finally
                 {

@@ -860,6 +860,117 @@ namespace RoslyJump.Core.xUnit.Integration
                         .ParentAs<MethodDeclarationSyntax>()
                         .HasName("Method5"));
         }
+        
+        [Fact]
+        public void CatchClause_JumpNextAndTryCatchFinally_NextCatchStatement()
+        {
+            AssertTransition<CatchClauseSyntax, CatchClauseState>(
+                ActionKind.JumpNext,
+                x => x.Parent is TryStatementSyntax tryStatement
+                    && tryStatement
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x--"),
+                x => x.ActiveBaseNode.GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x = y + 11")
+                    && x.ActiveBaseNode
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void CatchClause_JumpPrevAndTryCatchFinally_PrevCatchStatement()
+        {
+            AssertTransition<CatchClauseSyntax, CatchClauseState>(
+                ActionKind.JumpPrev,
+                x => x.Parent is TryStatementSyntax tryStatement
+                    && tryStatement
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x--"),
+                x => x.ActiveBaseNode.GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x = y + 111")
+                    && x.ActiveBaseNode
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void CatchClause_JumpNextSiblingAndTryCatchFinally_FinallyClause()
+        {
+            AssertTransition<CatchClauseSyntax, FinallyClauseState>(
+                ActionKind.JumpNextSibling,
+                x => x.Parent is TryStatementSyntax tryStatement
+                    && tryStatement
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x--"),
+                x => x.ActiveBaseNode
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x = x + 3 + y")
+                    && x.ActiveBaseNode
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void CatchClause_JumpPrevSiblingAndTryCatchFinally_TryBody()
+        {
+            AssertTransition<CatchClauseSyntax, TryBodyState>(
+                ActionKind.JumpPrevSibling,
+                x => x.Parent is TryStatementSyntax tryStatement
+                    && tryStatement
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x--"),
+                x => x.ActiveBaseNode
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x--")
+                    && x.ActiveBaseNode
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void CatchClause_JumpUpAndTryCatchFinally_TryStatement()
+        {
+            AssertTransition<CatchClauseSyntax, TryStatementState>(
+                ActionKind.JumpContextUp,
+                x => x.Parent is TryStatementSyntax tryStatement
+                    && tryStatement
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x--"),
+                x => x.ActiveBaseNode
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x--")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void CatchClause_JumpDownAndTryCatchFinally_FirstNestedBodyMember()
+        {
+            AssertTransition<CatchClauseSyntax, ExpressionStatementState>(
+                ActionKind.JumpContextDown,
+                x => x.Parent is TryStatementSyntax tryStatement
+                    && tryStatement
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x--"),
+                x => x.ActiveBaseNode.HasExpression("x = y + 1")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<CatchClauseSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
 
         [Fact]
         public void ExpressionStatement_JumpNext_NextMethodMember()
