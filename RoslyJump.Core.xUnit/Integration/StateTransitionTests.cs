@@ -519,7 +519,7 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
-        public void TryStatement_JumpDown_TryBody()
+        public void TryStatement_JumpDown_ExpressionStatement()
         {
             AssertTransition<TryStatementSyntax, TryBodyState>(
                 ActionKind.JumpContextDown,
@@ -623,20 +623,16 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
-        public void TryBody_JumpDownAndTryFinally_NestedBlock()
+        public void TryBody_JumpDownAndTryFinally_FirstMethodBodyMemberState()
         {
-            AssertTransition<BlockSyntax, NestedBlockState>(
+            AssertTransition<BlockSyntax, ExpressionStatementState>(
                 ActionKind.JumpContextDown,
                 x => x.Parent is TryStatementSyntax
                     && x.GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
                         .HasExpression("x++"),
-                x => x.ActiveNodeAsVirtual<NestedBlockSyntax>()
-                        .BaseNodeAs<BlockSyntax>()
-                        .ParentAs<TryStatementSyntax>()
-                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
-                        .HasExpression("x++")
-                    && x.ActiveNodeAsVirtual<NestedBlockSyntax>()
-                        .BaseNodeAs<BlockSyntax>()
+                x => x.ActiveBaseNode.HasExpression("x++")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
                         .ParentAs<TryStatementSyntax>()
                         .ParentAs<BlockSyntax>()
                         .ParentAs<MethodDeclarationSyntax>()
