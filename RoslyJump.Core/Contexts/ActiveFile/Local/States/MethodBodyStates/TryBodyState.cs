@@ -2,13 +2,13 @@
 using dngrep.core.VirtualNodes;
 using dngrep.core.VirtualNodes.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RoslyJump.Core.Contexts.Local;
+using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 {
-    public class TryBodyState : LocalContextState<BlockSyntax>
+    public class TryBodyState : TryMemberStateBase<BlockSyntax>
     {
-        private readonly CombinedSyntaxNode[] targetNodes;
+        private readonly CombinedSyntaxNode[] targets;
 
         public TryBodyState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
@@ -20,13 +20,13 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
                     nameof(contextNode));
             }
 
-            // try block can have only a single body
-            this.targetNodes = new[] { contextNode };
+            // try statement can only have a single try block
+            this.targets = new[] { contextNode };
         }
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            return targetNodes;
+            return this.targets;
         }
     }
 }

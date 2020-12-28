@@ -218,7 +218,6 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             {
                 List<SyntaxNode> nonNullableParents = new List<SyntaxNode>();
 
-#pragma warning disable CS8604 // Possible null reference argument.
                 nonNullableParents.AddIfNotNull(fileParent);
                 nonNullableParents.AddIfNotNull(namespaceParent);
                 nonNullableParents.AddIfNotNull(classParent);
@@ -230,7 +229,6 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
                 nonNullableParents.AddIfNotNull(localFunctionParent);
                 nonNullableParents.AddIfNotNull(propParent);
                 nonNullableParents.AddIfNotNull(eventParent);
-#pragma warning restore CS8604 // Possible null reference argument.
 
                 parent = nonNullableParents
                     .Select(x => new KeyValuePair<SyntaxNode, int>(x, target.GetLengthToParent(x)))
