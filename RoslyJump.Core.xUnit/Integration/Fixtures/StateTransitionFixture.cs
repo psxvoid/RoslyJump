@@ -105,12 +105,46 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 {
                     x--;
                     throw new InvalidDataException();
+                    try
+                    {
+                        x += 17;
+                    }
+                    catch (ArgumentNullException e)
+                    {
+                        x = y + 101;
+                    }
+                    catch (InvalidCastException e)
+                    {
+                        x = y + 111;
+                    }
+                    finally
+                    {
+                        x = x + 33 + 7;
+                    }
+
+                    try
+                    {
+                        x += 171;
+                    }
+                    finally
+                    {
+                        x = x + 33 + 71;
+                    }
+
+                    try
+                    {
+                        x += 1711;
+                    }
+                    finally
+                    {
+                        x = x + 33 + 711;
+                    }
                 }
-                catch(InvalidOperationException e)
+                catch (InvalidOperationException e)
                 {
                     x = y + 1;
                 }
-                catch(ArgumentException e)
+                catch (ArgumentException e)
                 {
                     x = y + 11;
                 }

@@ -67,6 +67,7 @@ namespace RoslyJump.Core
             typeof(TryBodySyntax),                      // virtual
             typeof(FinallyClauseSyntax),
             typeof(CatchClauseSyntax),
+            typeof(ThrowStatementSyntax),
         };
 
         public LocalContext(SyntaxTree tree)

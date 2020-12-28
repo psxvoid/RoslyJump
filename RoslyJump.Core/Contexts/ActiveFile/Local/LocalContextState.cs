@@ -415,6 +415,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new CatchClauseState(context, node.Value);
             }
+            else if (nodeType == typeof(ThrowStatementSyntax))
+            {
+                this.Context.State = new ThrowStatementState(context, node.Value);
+            }
             else
             {
                 this.Context.State = new InactiveState(context);
