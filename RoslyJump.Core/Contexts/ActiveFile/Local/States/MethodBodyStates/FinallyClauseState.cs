@@ -1,5 +1,7 @@
 ﻿using System;
 using dngrep.core.VirtualNodes;
+using dngrep.core.VirtualNodes.VirtualQueries;
+using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
@@ -8,6 +10,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
     public class FinallyClauseState : TryMemberStateBase<FinallyClauseSyntax>
     {
         private readonly CombinedSyntaxNode[] targetNodes;
+
+        protected override int JumpDownCount => 2;
 
         public FinallyClauseState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
@@ -25,6 +29,12 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
             return this.targetNodes;
+        }
+
+        protected override CombinedSyntaxNode? QueryChildContextNode()
+        {
+            return this.ActiveBaseNode.Block.QueryVirtualAndCombine(
+                NestedBlockVirtualQuery.Instance);
         }
     }
 }
