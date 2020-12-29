@@ -6,6 +6,7 @@ using dngrep.core.VirtualNodes.Syntax;
 using dngrep.core.VirtualNodes.VirtualQueries;
 using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
@@ -42,6 +43,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
             }
 
             return parent.ChildNodes()
+                .Where(x => x.GetType() == typeof(BlockSyntax))
                 .QueryVirtualAndCombine(NestedBlockVirtualQuery.Instance)
                 .ToArray();
         }
