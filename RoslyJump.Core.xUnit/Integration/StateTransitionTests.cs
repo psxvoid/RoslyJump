@@ -348,10 +348,11 @@ namespace RoslyJump.Core.xUnit.Integration
         [Fact]
         public void IfStatementDeclaration_JumpDown_ConditionStatement()
         {
-            AssertTransition<IfStatementSyntax, MethodBodyState>(
+            AssertTransition<IfStatementSyntax, IfConditionState>(
                 ActionKind.JumpContextDown,
                 x => x.HasCondition("x == 3"),
-                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>().HasExpression("x == 3"));
+                x => x.ActiveNodeAsVirtual<IfConditionSyntax>()
+                    .Expression.ToString() == "x == 3");
         }
 
         [Fact]
@@ -430,10 +431,11 @@ namespace RoslyJump.Core.xUnit.Integration
         [Fact]
         public void NestedIfStatementDeclaration_JumpDown_ConditionMethodBody()
         {
-            AssertTransition<IfStatementSyntax, MethodBodyState>(
+            AssertTransition<IfStatementSyntax, IfConditionState>(
                 ActionKind.JumpContextDown,
                 x => x.HasCondition("y == 3"),
-                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>().HasExpression("y == 3")
+                x => x.ActiveNodeAsVirtual<IfConditionSyntax>()
+                    .Expression.ToString() == "y == 3"
                     && x.ActiveBaseNode
                     .ParentAs<IfStatementSyntax>()
                     .ParentAs<BlockSyntax>()
