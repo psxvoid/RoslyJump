@@ -30,16 +30,5 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
             return this.ActiveBaseNode.Block.QueryVirtualAndCombine(
                 TryBodyVirtualQuery.Instance);
         }
-
-        protected override CombinedSyntaxNode? QueryParentContextNode()
-        {
-            if (this.BaseNode?.Parent?.Parent is TryStatementSyntax)
-            {
-                return this.BaseNode.Parent.QueryVirtualAndCombine(
-                    TryBodyVirtualQuery.Instance);
-            }
-
-            return base.QueryParentContextNode();
-        }
     }
 }
