@@ -163,6 +163,41 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 return x;
             }
 
+            public void Method6(int x)
+            {
+                int y = 3;
+
+                // nested BlockSyntax (NestedBlockState)
+                {
+                    var z = x + 4;
+                    z++;
+                    z--;
+                    z += 3;
+                    z += y;
+                }
+
+                // nested BlockSyntax (NestedBlockState)
+                {
+                    var z = x + 5;
+                    z++;
+                    z--;
+                    z += 4;
+                    z += y;
+                }
+
+                // nested BlockSyntax (NestedBlockState)
+                {
+                    var z = x + 6;
+                    z++;
+                    z--;
+                    z += 5;
+                    z += y;
+                }
+
+                y++;
+                y--;
+            }
+
             public string this[int i]
             {
                 get

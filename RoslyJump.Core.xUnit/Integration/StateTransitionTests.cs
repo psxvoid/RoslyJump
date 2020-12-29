@@ -103,7 +103,7 @@ namespace RoslyJump.Core.xUnit.Integration
                 ActionKind.JumpPrev,
                 x => x.HasName("Method1")
                     && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
-                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method5"));
+                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method6"));
         }
 
         [Fact]
@@ -532,7 +532,7 @@ namespace RoslyJump.Core.xUnit.Integration
                         .ParentAs<MethodDeclarationSyntax>()
                         .HasName("Method5"));
         }
-        
+
         [Fact]
         public void TryStatementNested_JumpNext_NextTryStatement()
         {
@@ -638,7 +638,7 @@ namespace RoslyJump.Core.xUnit.Integration
                         .ParentAs<MethodDeclarationSyntax>()
                         .HasName("Method5"));
         }
-        
+
         [Fact]
         public void ExpressionStatementNestedInBodyTryTry_JumpNext_NextExpressionStatement()
         {
@@ -956,7 +956,7 @@ namespace RoslyJump.Core.xUnit.Integration
                         .ParentAs<MethodDeclarationSyntax>()
                         .HasName("Method5"));
         }
-        
+
         [Fact]
         public void FinallyClause_JumpNextAndTryCatchFinally_SameFinallyClause()
         {
@@ -1067,7 +1067,7 @@ namespace RoslyJump.Core.xUnit.Integration
                         .ParentAs<MethodDeclarationSyntax>()
                         .HasName("Method5"));
         }
-        
+
         [Fact]
         public void CatchClause_JumpNextAndTryCatchFinally_NextCatchStatement()
         {
@@ -1346,6 +1346,105 @@ namespace RoslyJump.Core.xUnit.Integration
                     && x.ActiveBaseNode
                         .ParentAs<BlockSyntax>()
                         .ParentAs<MethodDeclarationSyntax>().HasName("Method4"));
+        }
+
+        [Fact]
+        public void NestedBlock_JumpNext_NextNestedBlock()
+        {
+            AssertTransition<BlockSyntax, NestedBlockState>(
+                ActionKind.JumpNext,
+                x => x.ChildNodes().OfType<ExpressionStatementSyntax>()
+                        .SingleOrDefault(e => e.HasExpression("z += 3")) != null
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method6")
+                        ?? false),
+                x => x.ActiveNodeAsVirtual<NestedBlockSyntax>().BlockBody?.ChildNodes()
+                        .OfType<ExpressionStatementSyntax>()
+                        .SingleOrDefault(e => e.HasExpression("z += 4")) != null
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method6")); ;
+        }
+
+        [Fact]
+        public void NestedBlock_JumpPrev_PrevNestedBlock()
+        {
+            AssertTransition<BlockSyntax, NestedBlockState>(
+                ActionKind.JumpPrev,
+                x => x.ChildNodes().OfType<ExpressionStatementSyntax>()
+                        .SingleOrDefault(e => e.HasExpression("z += 3")) != null
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method6")
+                        ?? false),
+                x => x.ActiveNodeAsVirtual<NestedBlockSyntax>().BlockBody?.ChildNodes()
+                        .OfType<ExpressionStatementSyntax>()
+                        .SingleOrDefault(e => e.HasExpression("z += 5")) != null
+                    && x.ActiveBaseNode
+                    .ParentAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>()
+                    .HasName("Method6")); ;
+        }
+
+        [Fact]
+        public void NestedBlock_JumpNextSibling_NextLocalDeclarationStatement()
+        {
+            AssertTransition<BlockSyntax, ExpressionStatementState>(
+                ActionKind.JumpNextSibling,
+                x => x.ChildNodes().OfType<ExpressionStatementSyntax>()
+                        .SingleOrDefault(e => e.HasExpression("z += 3")) != null
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method6")
+                        ?? false),
+                x => x.ActiveBaseNode.HasExpression("y++")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method6"));
+        }
+
+        [Fact]
+        public void NestedBlock_JumpPrevSibling_NextLocalDeclarationStatement()
+        {
+            AssertTransition<BlockSyntax, LocalDeclarationState>(
+                ActionKind.JumpPrevSibling,
+                x => x.ChildNodes().OfType<ExpressionStatementSyntax>()
+                        .SingleOrDefault(e => e.HasExpression("z += 3")) != null
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method6")
+                        ?? false),
+                x => x.ActiveBaseNode
+                        .HasDeclaration("int y = 3")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method6"));
+        }
+
+        [Fact]
+        public void NestedBlock_JumpUp_MethodBody()
+        {
+            AssertTransition<BlockSyntax, MethodBodyState>(
+                ActionKind.JumpContextUp,
+                x => x.ChildNodes().OfType<ExpressionStatementSyntax>()
+                        .SingleOrDefault(e => e.HasExpression("z += 3")) != null
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method6")
+                        ?? false),
+                x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>() != null
+                    && x.ActiveBaseNode
+                        .ParentAs<MethodDeclarationSyntax>().HasName("Method6"));
+        }
+
+        [Fact]
+        public void NestedBlock_JumpDown_FirstNestedMethodBodyMember()
+        {
+            AssertTransition<BlockSyntax, LocalDeclarationState>(
+                ActionKind.JumpContextDown,
+                x => x.ChildNodes().OfType<ExpressionStatementSyntax>()
+                        .SingleOrDefault(e => e.HasExpression("z += 3")) != null
+                    && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method6")
+                        ?? false),
+                x => x.ActiveBaseNode.HasDeclaration("var z = x + 4")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>().HasName("Method6"));
         }
 
         private enum ActionKind
