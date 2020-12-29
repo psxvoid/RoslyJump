@@ -638,6 +638,107 @@ namespace RoslyJump.Core.xUnit.Integration
                         .ParentAs<MethodDeclarationSyntax>()
                         .HasName("Method5"));
         }
+        
+        [Fact]
+        public void ExpressionStatementNestedInBodyTryTry_JumpNext_NextExpressionStatement()
+        {
+            AssertTransition<ExpressionStatementSyntax, ExpressionStatementState>(
+                ActionKind.JumpNext,
+                x => x.HasExpression("x += 17"),
+                x => x.ActiveBaseNode.HasExpression("x += 99")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void ExpressionStatementNestedInBodyTryTry_JumpPrev_PrevExpressionStatement()
+        {
+            AssertTransition<ExpressionStatementSyntax, ExpressionStatementState>(
+                ActionKind.JumpPrev,
+                x => x.HasExpression("x += 17"),
+                x => x.ActiveBaseNode.HasExpression("x += 999")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void ExpressionStatementNestedInBodyTryTry_JumpNextSibling_NextSibling()
+        {
+            AssertTransition<ExpressionStatementSyntax, ThrowStatementState>(
+                ActionKind.JumpNextSibling,
+                x => x.HasExpression("x += 17"),
+                x => x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void ExpressionStatementNestedInBodyTryTry_JumpPrevSibling_PrevSibling()
+        {
+            AssertTransition<ExpressionStatementSyntax, ThrowStatementState>(
+                ActionKind.JumpPrevSibling,
+                x => x.HasExpression("x += 17"),
+                x => x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void ExpressionStatementNestedInBodyTryTry_JumpUp_ParentTryBody()
+        {
+            AssertTransition<ExpressionStatementSyntax, TryBodyState>(
+                ActionKind.JumpContextUp,
+                x => x.HasExpression("x += 17"),
+                x => x.ActiveBaseNode
+                        .GetFirstChildOfTypeRecursively<ExpressionStatementSyntax>()
+                        .HasExpression("x += 17")
+                    && x.ActiveBaseNode
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
+
+        [Fact]
+        public void ExpressionStatementNestedInBodyTryTry_JumpDown_SameExpressionStatement()
+        {
+            AssertTransition<ExpressionStatementSyntax, ExpressionStatementState>(
+                ActionKind.JumpContextDown,
+                x => x.HasExpression("x += 17"),
+                x => x.ActiveBaseNode.HasExpression("x += 17")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<TryStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method5"));
+        }
 
         [Fact]
         public void TryBody_JumpNextAndTryFinally_SameTryBody()

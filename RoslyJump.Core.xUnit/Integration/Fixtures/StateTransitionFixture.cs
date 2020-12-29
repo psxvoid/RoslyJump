@@ -108,6 +108,9 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                     try
                     {
                         x += 17;
+                        x += 99;
+                        x += 999;
+                        throw new Exception();
                     }
                     catch (ArgumentNullException e)
                     {
