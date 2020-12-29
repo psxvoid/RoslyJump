@@ -30,7 +30,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
         protected override CombinedSyntaxNode? QueryChildContextNode()
         {
             return this.BaseNode.Condition.QueryVirtualAndCombine(
-                MethodBodyVirtualQuery.Instance);
+                IfConditionVirtualQuery.Instance);
         }
     }
 }

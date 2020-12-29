@@ -363,6 +363,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new IfStatementState(context, node.Value);
             }
+            else if (nodeType == typeof(IfConditionSyntax))
+            {
+                this.Context.State = new IfConditionState(context, node.Value);
+            }
             else if (nodeType == typeof(LocalDeclarationStatementSyntax))
             {
                 this.Context.State = new LocalDeclarationState(context, node.Value);
