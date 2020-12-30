@@ -150,7 +150,11 @@ namespace RoslyJump.Core.Contexts.Local
             if (contextNode.BaseNode == null
                 || !(contextNode.BaseNode is TNode))
             {
-                throw new ArgumentException(ConstraintMismatchError, nameof(contextNode));
+                throw new ArgumentException(
+                    ConstraintMismatchError +
+                    $"\nExpected: {typeof(TNode)}" +
+                    $"\nActual  : {contextNode.BaseNode?.GetType()}",
+                    nameof(contextNode));
             }
         }
 
@@ -366,6 +370,14 @@ namespace RoslyJump.Core.Contexts.Local
             else if (nodeType == typeof(IfConditionSyntax))
             {
                 this.Context.State = new IfConditionState(context, node.Value);
+            }
+            else if (nodeType == typeof(IfBodySyntax))
+            {
+                this.Context.State = new IfBodyState(context, node.Value);
+            }
+            else if (nodeType == typeof(ElseClauseSyntax))
+            {
+                this.Context.State = new ElseClauseState(context, node.Value);
             }
             else if (nodeType == typeof(LocalDeclarationStatementSyntax))
             {
