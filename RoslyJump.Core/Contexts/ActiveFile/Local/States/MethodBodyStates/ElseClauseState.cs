@@ -1,23 +1,23 @@
 ﻿using System;
 using dngrep.core.VirtualNodes;
-using dngrep.core.VirtualNodes.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 {
-    public class IfConditionState : IfMemberStateBase<ExpressionSyntax>
+    public class ElseClauseState : IfMemberStateBase<ElseClauseSyntax>
     {
-        private CombinedSyntaxNode[] targets;
+        private readonly CombinedSyntaxNode[] targets;
 
-        public IfConditionState(LocalContext context, CombinedSyntaxNode contextNode)
+        public ElseClauseState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
-            if (contextNode.MixedNode.GetType() != typeof(IfConditionSyntax))
+            if (contextNode.MixedNode.GetType() != typeof(ElseClauseSyntax))
             {
                 throw new ArgumentException(
-                    $"Unsupported context node for {nameof(IfConditionState)}. " +
-                    $"Actual node type: {contextNode.MixedNode.GetType()}.");
+                    $"The provided context node is not supported by {nameof(ElseClauseState)}.\"" +
+                    $"Actual: {contextNode.MixedNode.GetType()}.",
+                    nameof(contextNode));
             }
 
             this.targets = new[] { contextNode };
