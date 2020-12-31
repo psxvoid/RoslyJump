@@ -57,6 +57,7 @@ namespace RoslyJump.Core
             typeof(IfStatementSyntax),
             typeof(IfConditionSyntax),                  // virtual
             typeof(IfBodySyntax),                       // virtual
+            typeof(ElseClauseSyntax),
             typeof(LocalDeclarationStatementSyntax),
             typeof(LocalFunctionStatementSyntax),
             typeof(ReturnStatementSyntax),

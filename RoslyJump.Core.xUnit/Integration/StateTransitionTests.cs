@@ -448,6 +448,132 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
+        public void ElseClause_JumpNext_NextElseClause()
+        {
+            AssertTransition<ElseClauseSyntax, ElseClauseState>(
+                ActionKind.JumpNext,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => ((IfStatementSyntax)x.ActiveBaseNode.Statement).HasCondition("x == 5")
+                    && x.ActiveBaseNode
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ElseClause_JumpPrev_PrevElseClause()
+        {
+            AssertTransition<ElseClauseSyntax, ElseClauseState>(
+                ActionKind.JumpPrev,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => x.ActiveBaseNode
+                        .GetFirstChildOfTypeRecursively<ReturnStatementSyntax>()
+                        .HasExpression("x * 8 + y")
+                    && x.ActiveBaseNode
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ElseClause_JumpNextSibling_IfCondition()
+        {
+            AssertTransition<ElseClauseSyntax, IfConditionState>(
+                ActionKind.JumpNextSibling,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => x.ActiveBaseNode.ToString() == "x == 3"
+                    && x.ActiveBaseNode
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ElseClause_JumpNextSiblingAndNestedElseClause_IfCondition()
+        {
+            AssertTransition<ElseClauseSyntax, IfConditionState>(
+                ActionKind.JumpNextSibling,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 4"),
+                x => x.ActiveBaseNode.ToString() == "x == 4"
+                    && x.ActiveBaseNode
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ElseClause_JumpPrevSibling_IfBody()
+        {
+            AssertTransition<ElseClauseSyntax, IfBodyState>(
+                ActionKind.JumpPrevSibling,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => x.ActiveBaseNode
+                        .GetFirstChildOfTypeRecursively<IfStatementSyntax>()
+                        .HasCondition("y == 3")
+                    && x.ActiveBaseNode
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ElseClause_JumpPrevSiblingAndNestedElseClause_IfBody()
+        {
+            AssertTransition<ElseClauseSyntax, IfBodyState>(
+                ActionKind.JumpPrevSibling,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 4"),
+                x => x.ActiveBaseNode.ChildNodes()
+                        .OfType<ReturnStatementSyntax>().Single()
+                        .HasExpression("x * 6 + y")
+                    && x.ActiveBaseNode
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ElseClause_JumpUp_RootIfStatement()
+        {
+            AssertTransition<ElseClauseSyntax, IfStatementState>(
+                ActionKind.JumpContextUp,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => x.ActiveBaseNode.HasCondition("x == 3")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ElseClause_JumpUpAndNestedElseClause_RootIfStatement()
+        {
+            AssertTransition<ElseClauseSyntax, IfStatementState>(
+                ActionKind.JumpContextUp,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 4"),
+                x => x.ActiveBaseNode.HasCondition("x == 3")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
         public void NestedIfStatementDeclaration_JumpNext_NextNestedIfStatement()
         {
             AssertTransition<IfStatementSyntax, IfStatementState>(
