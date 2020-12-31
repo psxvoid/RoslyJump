@@ -26,9 +26,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
 
         protected override CombinedSyntaxNode[] QueryTargetsProtected(CombinedSyntaxNode root)
         {
-            IfStatementSyntax? ifRoot = root.BaseNode as IfStatementSyntax;
-
-            if (ifRoot == null)
+            if (!(root.BaseNode is IfStatementSyntax ifRoot))
             {
                 throw new InvalidOperationException(
                     $"The provided root is not {nameof(IfStatementSyntax)}.");
@@ -42,7 +40,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
 
             return members.QueryVirtualAndCombine(
                     IfConditionVirtualQuery.Instance,
-                    IfBodyVirtualQuery.Instance)
+                    IfBodyVirtualQuery.Instance,
+                    ElseBodyVirtualQuery.Instance)
                 .ToArray();
         }
     }

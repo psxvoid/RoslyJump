@@ -6,17 +6,17 @@ using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 {
-    public class IfBodyState : IfMemberStateBase<BlockSyntax>
+    public class ElseBodyState : IfMemberStateBase<BlockSyntax>
     {
         private readonly CombinedSyntaxNode[] targets;
 
-        public IfBodyState(LocalContext context, CombinedSyntaxNode contextNode)
+        public ElseBodyState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
-            if (contextNode.MixedNode.GetType() != typeof(IfBodySyntax))
+            if (contextNode.MixedNode.GetType() != typeof(ElseBodySyntax))
             {
                 throw new ArgumentException(
-                    $"Unsupported context node for {nameof(IfBodyState)}. " +
+                    $"Unsupported context node for {nameof(ElseBodyState)}. " +
                     $"Actual node type: {contextNode.MixedNode.GetType()}.");
             }
 
