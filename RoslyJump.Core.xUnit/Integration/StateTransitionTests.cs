@@ -574,6 +574,59 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
+        public void ElseClause_JumpDown_ChildIfStatement()
+        {
+            AssertTransition<ElseClauseSyntax, IfStatementState>(
+                ActionKind.JumpContextDown,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => x.ActiveBaseNode.HasCondition("x == 4")
+                    && x.ActiveBaseNode
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ElseClause_JumpDownAndNestedElseClause_ChildIfStatement()
+        {
+            AssertTransition<ElseClauseSyntax, IfStatementState>(
+                ActionKind.JumpContextDown,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 4"),
+                x => x.ActiveBaseNode.HasCondition("x == 5")
+                    && x.ActiveBaseNode
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ElseClause_JumpDownAndNestedElseBlock_ElseBody()
+        {
+            AssertTransition<ElseClauseSyntax, ElseBodyState>(
+                ActionKind.JumpContextDown,
+                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 5"),
+                x => x.ActiveBaseNode.ChildNodes()
+                        .OfType<ReturnStatementSyntax>().Single()
+                        .HasExpression("x * 8 + y")
+                    && x.ActiveBaseNode
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<ElseClauseSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
         public void NestedIfStatementDeclaration_JumpNext_NextNestedIfStatement()
         {
             AssertTransition<IfStatementSyntax, IfStatementState>(

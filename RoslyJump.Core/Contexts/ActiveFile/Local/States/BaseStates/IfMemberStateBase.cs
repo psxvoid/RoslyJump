@@ -19,7 +19,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
 
             if (mixedType != typeof(IfConditionSyntax)
                 && mixedType != typeof(IfBodySyntax)
-                && mixedType != typeof(ElseClauseSyntax))
+                && mixedType != typeof(ElseClauseSyntax)
+                && mixedType != typeof(ElseBodySyntax))
             {
                 throw new ArgumentException(
                     $"Unsupported context node for {this.GetType()}.");
@@ -30,7 +31,11 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
         {
             return new IfMemberSiblingState(
                 new CombinedSyntaxNode(
-                    this.ContextNode?.BaseNode.ParentAs<IfStatementSyntax>()
+                    (this.ContextNode?.MixedNode.GetType() == typeof(ElseBodySyntax)
+                        ? this.ContextNode?.BaseNode
+                            .ParentAs<ElseClauseSyntax>()
+                            .ParentAs<IfStatementSyntax>()
+                        : this.ContextNode?.BaseNode.ParentAs<IfStatementSyntax>())
                     ?? throw new InvalidOperationException(
                         "Unable to get the parent of a sibling state " +
                         $"for {nameof(IfMemberSiblingState)}.")

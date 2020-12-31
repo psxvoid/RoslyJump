@@ -375,6 +375,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new IfBodyState(context, node.Value);
             }
+            else if (nodeType == typeof(ElseBodySyntax))
+            {
+                this.Context.State = new ElseBodyState(context, node.Value);
+            }
             else if (nodeType == typeof(ElseClauseSyntax))
             {
                 this.Context.State = new ElseClauseState(context, node.Value);

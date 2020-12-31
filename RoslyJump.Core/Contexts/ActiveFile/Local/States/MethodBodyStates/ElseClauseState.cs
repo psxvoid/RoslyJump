@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using dngrep.core.VirtualNodes;
+using dngrep.core.VirtualNodes.VirtualQueries;
+using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
@@ -79,6 +81,12 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
             return new CombinedSyntaxNode(ifRoot ?? throw new InvalidOperationException(
                 $"Unable to find the parent node for {nameof(ElseClauseState)}."));
+        }
+
+        protected override CombinedSyntaxNode? QueryChildContextNode()
+        {
+            return this.BaseNode.Statement.QueryVirtualAndCombine(
+                ElseBodyVirtualQuery.Instance);
         }
     }
 }
