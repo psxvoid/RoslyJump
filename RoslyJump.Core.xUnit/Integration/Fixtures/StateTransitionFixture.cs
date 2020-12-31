@@ -48,6 +48,10 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 {
                     return x * 7 + y;
                 }
+                else
+                {
+                    return x * 8 + y;
+                }
 
                 if (x == 6)
                 {
