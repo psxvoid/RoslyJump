@@ -4,6 +4,8 @@ using dngrep.core.Extensions.EnumerableExtensions;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes;
 using dngrep.core.VirtualNodes.Syntax;
+using dngrep.core.VirtualNodes.VirtualQueries;
+using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates;
@@ -439,6 +441,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new ThrowStatementState(context, node.Value);
             }
+            else if (node.Value.MixedNode is ExpressionSyntax)
+            {
+                this.Context.State = new ExpressionState(context, node.Value);
+            }
             else
             {
                 this.Context.State = new InactiveState(context);
@@ -461,11 +467,13 @@ namespace RoslyJump.Core.Contexts.Local
         {
             SyntaxNode? firstKnownChild = this.ContextNode?.BaseNode
                 ?.ChildNodes()
-                .FirstOrDefault(LocalContext.IsKnownNodeType);
+                .FirstOrDefault(x => LocalContext.IsKnownNodeType(x)
+                    || (x is ExpressionSyntax && !(x is PredefinedTypeSyntax)));
 
             return firstKnownChild == null
                 ? (CombinedSyntaxNode?)null
-                : new CombinedSyntaxNode(firstKnownChild);
+                : firstKnownChild.QueryVirtualAndCombine(
+                    NestedBlockVirtualQuery.Instance);
         }
 
         public virtual void JumpNext()
@@ -594,8 +602,18 @@ namespace RoslyJump.Core.Contexts.Local
 
         protected void SetJumpTarget(CombinedSyntaxNode target)
         {
-            var (lineStart, lineEnd, charStart, charEnd) = target.BaseNode.GetSourceTextBounds();
+            int lineStart, lineEnd, charStart, charEnd;
 
+            if (target.IsVirtual && target.MixedNode is IVirtualSyntaxNodeWithSpanOverride node)
+            {
+                (lineStart, lineEnd, charStart, charEnd) =
+                    this.Context.SyntaxTree.GetMappedLineSpan(node.SourceSpan)
+                    .GetSourceTextBounds();
+            }
+            else
+            {
+                (lineStart, lineEnd, charStart, charEnd) = target.BaseNode.GetSourceTextBounds();
+            }
 
             this.JumpTargetStartLine = lineStart;
             this.JumpTargetEndLine = lineEnd;

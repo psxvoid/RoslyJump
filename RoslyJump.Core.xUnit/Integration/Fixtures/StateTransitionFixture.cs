@@ -35,6 +35,15 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
 
                     if (y == 11)
                     {
+                        if (x == 12 || y == 11)
+                        {
+                            return 12345;
+                        }
+                        else if (x == y/x + 12 && x != 0)
+                        {
+                            return 123456;
+                        }
+
                         y = y + 4;
                     }
 
