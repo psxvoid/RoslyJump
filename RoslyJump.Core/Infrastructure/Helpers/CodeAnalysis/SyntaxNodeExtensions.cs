@@ -404,9 +404,9 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             {
                 throw new InvalidCastException(
                     "The parent exists on the target node " +
-                    "but it doesn't match the expected type. " +
-                    $"The actual type: {node.Parent.GetType()}. " +
-                    $"The expected type: {typeof(T)}.");
+                    "but it doesn't match the expected type." +
+                    $"\nActual: {node.Parent.GetType()}. " +
+                    $"\nExpected: {typeof(T)}.");
             }
 
             return notNullableParent;
@@ -606,7 +606,7 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             SyntaxNode? match = indexer.ParameterList?.ChildNodes()
                 .FirstOrDefault(
                     x => x.GetType() == typeof(ParameterSyntax) && x.ToString() == param);
-            
+
             return match != null;
         }
     }

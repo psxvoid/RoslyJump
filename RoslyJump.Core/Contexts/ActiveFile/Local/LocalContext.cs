@@ -4,7 +4,6 @@ using System.Linq;
 using dngrep.core.Extensions.SourceTextExtensions;
 using dngrep.core.Queries;
 using dngrep.core.Queries.SyntaxWalkers;
-using dngrep.core.Queries.SyntaxWalkers.MatchStrategies;
 using dngrep.core.VirtualNodes;
 using dngrep.core.VirtualNodes.Routings.ConflictResolution;
 using dngrep.core.VirtualNodes.Syntax;
@@ -19,6 +18,8 @@ namespace RoslyJump.Core
     public class LocalContext
     {
         private readonly SyntaxTree tree;
+
+        internal SyntaxTree SyntaxTree => this.tree;
 
         private readonly static HashSet<Type> SupportedNodeTypes =
             new HashSet<Type>
@@ -86,28 +87,89 @@ namespace RoslyJump.Core
         {
             TextSpan span = this.tree.GetText().GetSingleCharSpan(line, lineChar);
 
-            CombinedSyntaxTreeQuery query = SyntaxTreeQueryBuilder.From(span);
-            var walker = new CombinedSyntaxTreeQueryWalker(
-                query,
-                new VirtualQueryRoutingFactory(),
-                new VirtualQueryOverrideRouting(),
-                new BaseScopedSyntaxNodeMatchStrategy(query.VirtualNodeSubQueries));
+            BasicSyntaxTreeQuery query = SyntaxTreeQueryBuilder.From(span);
+
+            var walker = new BasicSyntaxTreeQueryWalker(query,
+                new BasicVirtualQueryRouting(
+                    new VirtualQueryOverrideRouting(),
+                    query.VirtualQueries));
 
             walker.Visit(this.tree.GetRoot());
 
-            IReadOnlyCollection<CombinedSyntaxNode> results = walker.Results
-                .Where(IsKnownNodeType)
+            CombinedSyntaxNode[] results = walker.Results
+                .Where(x => IsKnownNodeType(x) || x.MixedNode is ExpressionSyntax)
                 .ToArray();
 
-            if (results.Count <= 0)
+            if (results.Length <= 0)
             {
                 this.State.TransitionTo(null, this);
                 return;
             }
 
+            CombinedSyntaxNode last = results[results.Length - 1];
+
+            // Child ExpressionSyntax nodes can have the same start position
+            // as their parents. Therefore, for some of them the last result
+            // will be always the last child, despite the active expression.
+            // This check will set the "last" active ExpressionSyntax as the
+            // last result, allowing navigating between them "up" and "down".
+            if (last.BaseNode is ExpressionSyntax expression
+                && this.State.ActiveNode != null
+                && (this.State.ContextNode != null
+                    && this.State.ContextNode.Value.MixedNode.GetType() == typeof(NestedBlockSyntax))
+                && this.State.ActiveNode.Value.BaseNode is ExpressionSyntax stateExpression
+                && results.SingleOrDefault(
+                    x => x.BaseNode is ExpressionSyntax expr && expr == stateExpression) != null)
+            {
+                int nextIndex = -1;
+
+                for (int i = 0; i < results.Length; i++)
+                {
+                    if (results[i].BaseNode is ExpressionSyntax e && e == stateExpression)
+                    {
+                        nextIndex = i + 1;
+                        break;
+                    }
+                }
+
+                if (nextIndex < 0)
+                {
+                    throw new InvalidOperationException("Unable to find the active expression.");
+                }
+
+                if (nextIndex >= results.Length)
+                {
+                    nextIndex = results.Length - 1;
+                }
+
+                last = results[nextIndex];
+            }
+            // When the active node isn't set we want the active node to be
+            // set to the top-most expression syntax instead of the last.
+            else if (last.BaseNode is ExpressionSyntax && this.State.ActiveNode == null)
+            {
+                int lastIndex = results.Length - 1;
+
+                while (lastIndex > 0 && results[lastIndex].BaseNode is ExpressionSyntax)
+                {
+                    lastIndex--;
+                }
+
+                last = results[++lastIndex];
+
+                int prev = lastIndex - 1;
+
+                if (prev > 0
+                        && (results[prev].BaseNode is ExpressionStatementSyntax
+                            || results[prev].BaseNode is LocalDeclarationStatementSyntax))
+                {
+                    last = results[prev];
+                }
+            }
+
             LocalContextState stateBefore = this.State;
 
-            this.State.TransitionTo(results.Last(), this);
+            this.State.TransitionTo(last, this);
 
             if (stateBefore != this.State || stateBefore.ContextNode != this.State.ContextNode)
             {

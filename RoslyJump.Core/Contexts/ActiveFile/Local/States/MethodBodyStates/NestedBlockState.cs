@@ -43,7 +43,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
             }
 
             return parent.ChildNodes()
-                .Where(x => x.GetType() == typeof(BlockSyntax))
+                .Where(x => x.GetType() == typeof(BlockSyntax) || x is ExpressionSyntax)
                 .QueryVirtualAndCombine(NestedBlockVirtualQuery.Instance)
                 .ToArray();
         }

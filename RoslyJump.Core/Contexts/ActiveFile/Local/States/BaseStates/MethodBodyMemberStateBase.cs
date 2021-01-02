@@ -25,6 +25,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
             return parent.QueryVirtualAndCombine(
                 MethodBodyVirtualQuery.Instance,
                 NestedBlockVirtualQuery.Instance,
+                IfBodyVirtualQuery.Instance,
                 TryBodyVirtualQuery.Instance);
         }
 

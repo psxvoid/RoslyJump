@@ -358,9 +358,9 @@ namespace RoslyJump.Core.xUnit.Integration
         [Fact]
         public void IfCondition_JumpNext_SameCondition()
         {
-            AssertTransition<ExpressionSyntax, IfConditionState>(
+            AssertTransition<IfStatementSyntax, IfConditionState>(
                 ActionKind.JumpNext,
-                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => x.HasCondition("x == 3"),
                 x => x.ActiveNodeAsVirtual<IfConditionSyntax>()
                         .Expression.ToString() == "x == 3"
                     && x.ActiveNodeAsVirtual<IfConditionSyntax>()
@@ -368,15 +368,16 @@ namespace RoslyJump.Core.xUnit.Integration
                         .ParentAs<IfStatementSyntax>()
                         .ParentAs<BlockSyntax>()
                         .ParentAs<MethodDeclarationSyntax>()
-                        .HasName("Method1"));
+                        .HasName("Method1"),
+                x => x.OpenParenToken.GetLocation().GetLineSpan());
         }
 
         [Fact]
         public void IfCondition_JumpPrev_SameCondition()
         {
-            AssertTransition<ExpressionSyntax, IfConditionState>(
+            AssertTransition<IfStatementSyntax, IfConditionState>(
                 ActionKind.JumpPrev,
-                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => x.HasCondition("x == 3"),
                 x => x.ActiveNodeAsVirtual<IfConditionSyntax>()
                         .Expression.ToString() == "x == 3"
                     && x.ActiveNodeAsVirtual<IfConditionSyntax>()
@@ -384,15 +385,16 @@ namespace RoslyJump.Core.xUnit.Integration
                         .ParentAs<IfStatementSyntax>()
                         .ParentAs<BlockSyntax>()
                         .ParentAs<MethodDeclarationSyntax>()
-                        .HasName("Method1"));
+                        .HasName("Method1"),
+                x => x.OpenParenToken.GetLocation().GetLineSpan());
         }
 
         [Fact]
         public void IfCondition_JumpNextSibling_IfBody()
         {
-            AssertTransition<ExpressionSyntax, IfBodyState>(
+            AssertTransition<IfStatementSyntax, IfBodyState>(
                 ActionKind.JumpNextSibling,
-                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => x.HasCondition("x == 3"),
                 x => x.ActiveNodeAsVirtual<IfBodySyntax>()
                         .Statement
                         .GetFirstChildOfTypeRecursively<ReturnStatementSyntax>()
@@ -401,15 +403,16 @@ namespace RoslyJump.Core.xUnit.Integration
                         .ParentAs<IfStatementSyntax>()
                         .ParentAs<BlockSyntax>()
                         .ParentAs<MethodDeclarationSyntax>()
-                        .HasName("Method1"));
+                        .HasName("Method1"),
+                x => x.OpenParenToken.GetLocation().GetLineSpan());
         }
 
         [Fact]
         public void IfCondition_JumpPrevSibling_ElseClause()
         {
-            AssertTransition<ExpressionSyntax, ElseClauseState>(
+            AssertTransition<IfStatementSyntax, ElseClauseState>(
                 ActionKind.JumpPrevSibling,
-                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => x.HasCondition("x == 3"),
                 x => x.ActiveBaseNode.Statement
                         .GetFirstChildOfTypeRecursively<ExpressionSyntax>()
                         .ToString() == "x == 4"
@@ -417,30 +420,144 @@ namespace RoslyJump.Core.xUnit.Integration
                         .ParentAs<IfStatementSyntax>()
                         .ParentAs<BlockSyntax>()
                         .ParentAs<MethodDeclarationSyntax>()
-                        .HasName("Method1"));
+                        .HasName("Method1"),
+                x => x.OpenParenToken.GetLocation().GetLineSpan());
         }
 
         [Fact]
         public void IfCondition_JumpUp_IfStatement()
         {
-            AssertTransition<ExpressionSyntax, IfStatementState>(
+            AssertTransition<IfStatementSyntax, IfStatementState>(
                 ActionKind.JumpContextUp,
-                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
+                x => x.HasCondition("x == 3"),
                 x => x.ActiveBaseNode.HasCondition("x == 3")
                     && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                x => x.OpenParenToken.GetLocation().GetLineSpan());
+        }
+
+        [Fact]
+        public void IfCondition_JumpDown_NestedBlock()
+        {
+            AssertTransition<IfStatementSyntax, ExpressionState>(
+                ActionKind.JumpContextDown,
+                x => x.HasCondition("x == 3"),
+                x => x.ActiveBaseNode.ToString() == "x"
+                    && x.ActiveBaseNode
+                        .ParentAs<BinaryExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                x => x.OpenParenToken.GetLocation().GetLineSpan());
+        }
+
+        [Fact]
+        public void ComplexIfStatement_JumpNext_SameCondition()
+        {
+            AssertTransition<ExpressionSyntax, IfConditionState>(
+                ActionKind.JumpNext,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ToString() == "x == 12 || y == 11"
+                    && x.ActiveBaseNode
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
                         .ParentAs<BlockSyntax>()
                         .ParentAs<MethodDeclarationSyntax>()
                         .HasName("Method1"));
         }
 
         [Fact]
-        public void IfCondition_JumpDown_SameIfCondition()
+        public void ComplexIfStatement_JumpPrev_SameCondition()
         {
             AssertTransition<ExpressionSyntax, IfConditionState>(
-                ActionKind.JumpContextDown,
-                x => x.Parent is IfStatementSyntax @if && @if.HasCondition("x == 3"),
-                x => x.ActiveBaseNode.ParentAs<IfStatementSyntax>().HasCondition("x == 3")
+                ActionKind.JumpPrev,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ToString() == "x == 12 || y == 11"
                     && x.ActiveBaseNode
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ComplexIfStatement_JumpNextSibling_IfBody()
+        {
+            AssertTransition<ExpressionSyntax, IfBodyState>(
+                ActionKind.JumpNextSibling,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ParentAs<IfStatementSyntax>()
+                        .HasCondition("x == 12 || y == 11")
+                    && x.ActiveNodeAsVirtual<IfBodySyntax>().Statement
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ComplexIfStatement_JumpPrevSibling_ElseClause()
+        {
+            AssertTransition<ExpressionSyntax, ElseClauseState>(
+                ActionKind.JumpPrevSibling,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ParentAs<IfStatementSyntax>()
+                        .HasCondition("x == 12 || y == 11")
+                    && x.ActiveBaseNode
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ComplexIfStatement_JumpUp_IfStatement()
+        {
+            AssertTransition<ExpressionSyntax, IfStatementState>(
+                ActionKind.JumpContextUp,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.HasCondition("x == 12 || y == 11")
+                    && x.ActiveBaseNode
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"));
+        }
+
+        [Fact]
+        public void ComplexIfStatement_JumpDown_FirstChildExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpContextDown,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ToString() == "x == 12"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
                         .ParentAs<IfStatementSyntax>()
                         .ParentAs<BlockSyntax>()
                         .ParentAs<MethodDeclarationSyntax>()
@@ -687,9 +804,9 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
-        public void NestedIfStatementDeclaration_JumpUp_ParentIfStatement()
+        public void NestedIfStatementDeclaration_JumpUp_ParentIfBody()
         {
-            AssertTransition<IfStatementSyntax, MethodBodyState>(
+            AssertTransition<IfStatementSyntax, IfBodyState>(
                 ActionKind.JumpContextUp,
                 x => x.HasCondition("y == 3"),
                 x => x.ActiveBaseNode
@@ -997,13 +1114,14 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
-        public void ExpressionStatementNestedInBodyTryTry_JumpDown_SameExpressionStatement()
+        public void ExpressionStatementNestedInBodyTryTry_JumpDown_NestedExpression()
         {
-            AssertTransition<ExpressionStatementSyntax, ExpressionStatementState>(
+            AssertTransition<ExpressionStatementSyntax, NestedBlockState>(
                 ActionKind.JumpContextDown,
                 x => x.HasExpression("x += 17"),
-                x => x.ActiveBaseNode.HasExpression("x += 17")
+                x => x.ActiveBaseNode.ToString() == "x += 17"
                     && x.ActiveBaseNode
+                        .ParentAs<ExpressionStatementSyntax>()
                         .ParentAs<BlockSyntax>()
                         .ParentAs<TryStatementSyntax>()
                         .ParentAs<BlockSyntax>()
@@ -1518,15 +1636,16 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
-        public void ExpressionStatement_JumpDown_SameStatement()
+        public void ExpressionStatement_JumpDown_NestedExpression()
         {
-            AssertTransition<ExpressionStatementSyntax, ExpressionStatementState>(
+            AssertTransition<ExpressionStatementSyntax, NestedBlockState>(
                 ActionKind.JumpContextDown,
                 x => x.HasExpression("var (x, y) = this.Method2(2, 3)")
                     && (x.GetFirstParentOfType<MethodDeclarationSyntax>()?.HasName("Method3")
                         ?? false),
-                x => x.ActiveBaseNode.HasExpression("var (x, y) = this.Method2(2, 3)")
+                x => x.ActiveBaseNode.ToString() == "var (x, y) = this.Method2(2, 3)"
                     && x.ActiveBaseNode
+                    .ParentAs<ExpressionStatementSyntax>()
                     .ParentAs<BlockSyntax>()
                     .ParentAs<MethodDeclarationSyntax>()
                     .HasName("Method3"));
@@ -1733,7 +1852,8 @@ namespace RoslyJump.Core.xUnit.Integration
         private void AssertTransition<TStartPositionNode, TExpectedState>(
             ActionKind action,
             Func<TStartPositionNode, bool>? startNodePredicate = null,
-            Func<TExpectedState, bool>? statePredicate = null)
+            Func<TExpectedState, bool>? statePredicate = null,
+            Func<TStartPositionNode, FileLinePositionSpan>? startPositionFunctor = null)
             where TStartPositionNode : SyntaxNode
             where TExpectedState : LocalContextState
         {
@@ -1744,7 +1864,17 @@ namespace RoslyJump.Core.xUnit.Integration
                 .Where(x => startNodePredicate == null || startNodePredicate(x))
                 .First();
 
-            var (lineStart, lineEnd, charStart, charEnd) = node.GetSourceTextBounds();
+            SyntaxNode startNode = node;
+
+            var (lineStart, lineEnd, charStart, charEnd) = startNode.GetSourceTextBounds();
+
+            if (startPositionFunctor != null)
+            {
+                FileLinePositionSpan line = startPositionFunctor(node);
+
+                lineStart = line.StartLinePosition.Line;
+                charStart = line.StartLinePosition.Character;
+            }
 
             context.TransitionTo(lineStart, charStart);
 
