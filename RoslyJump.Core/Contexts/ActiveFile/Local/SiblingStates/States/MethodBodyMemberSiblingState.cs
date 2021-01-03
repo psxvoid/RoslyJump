@@ -16,8 +16,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
             Type mixedNodeType = baseNode.MixedNode.GetType();
 
             if (mixedNodeType != typeof(MethodBodyDeclarationSyntax)
-                && mixedNodeType != typeof(NestedBlockSyntax))
-
+                && mixedNodeType != typeof(NestedBlockSyntax)
+                && mixedNodeType != typeof(IfConditionSyntax))
             {
                 throw new ArgumentException(
                     "The provided node is not a method body nor a nested block. " +
@@ -35,6 +35,15 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States
 
         protected override CombinedSyntaxNode[] QueryTargetsProtected(CombinedSyntaxNode root)
         {
+            if (root.MixedNode is IfConditionSyntax condition)
+            {
+                return new CombinedSyntaxNode[]
+                {
+                    condition.Expression.QueryVirtualAndCombine(
+                        NestedBlockVirtualQuery.Instance)
+                };
+            }
+
             return root.BaseNode
                 ?.ChildNodes()
                 .QueryVirtualAndCombine(NestedBlockVirtualQuery.Instance)

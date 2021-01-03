@@ -118,31 +118,31 @@ namespace RoslyJump.Core
                 && (this.State.ContextNode != null
                     && this.State.ContextNode.Value.MixedNode.GetType() == typeof(NestedBlockSyntax))
                 && this.State.ActiveNode.Value.BaseNode is ExpressionSyntax stateExpression
-                && results.SingleOrDefault(
-                    x => x.BaseNode is ExpressionSyntax expr && expr == stateExpression) != null)
+                && results.Any(
+                    x => x.BaseNode is ExpressionSyntax expr && expr == stateExpression))
             {
-                int nextIndex = -1;
+                int index = -1;
 
-                for (int i = 0; i < results.Length; i++)
+                for (int i = results.Length - 1; i >= 0; i--)
                 {
                     if (results[i].BaseNode is ExpressionSyntax e && e == stateExpression)
                     {
-                        nextIndex = i + 1;
+                        index = i;
                         break;
                     }
                 }
 
-                if (nextIndex < 0)
+                if (index < 0)
                 {
                     throw new InvalidOperationException("Unable to find the active expression.");
                 }
 
-                if (nextIndex >= results.Length)
+                if (index >= results.Length)
                 {
-                    nextIndex = results.Length - 1;
+                    index = results.Length - 1;
                 }
 
-                last = results[nextIndex];
+                last = results[index];
             }
             // When the active node isn't set we want the active node to be
             // set to the top-most expression syntax instead of the last.
