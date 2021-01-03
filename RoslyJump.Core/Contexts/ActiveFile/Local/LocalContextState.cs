@@ -38,10 +38,14 @@ namespace RoslyJump.Core.Contexts.Local
         protected LocalContextState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
-            if (!(context.State is LocalContextState<TNode, T>))
-            {
-                this.SiblingState = this.InitSiblingState();
-            }
+            // it was introduced as an optimization but caused
+            // an error when TNode was set to the base SyntaxNode
+            // for some states.
+            //if (!(context.State is LocalContextState<TNode, T>))
+            //{
+            //    this.SiblingState = this.InitSiblingState();
+            //}
+            this.SiblingState = this.InitSiblingState();
         }
 
         protected T? SiblingState { get; private set; }
