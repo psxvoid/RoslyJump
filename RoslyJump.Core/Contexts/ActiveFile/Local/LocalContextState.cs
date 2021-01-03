@@ -74,9 +74,11 @@ namespace RoslyJump.Core.Contexts.Local
                     "The sibling state isn't set for the previous state.");
             }
 
-            if (before != null && after != null && before.SiblingState != null && node != null
+            if (before != null && after != null && before.SiblingState != null
+                && after.SiblingState != null && node != null
                 && after.GetType().IsInheritedFromType(typeof(LocalContextState<TNode, T>))
-                && before.SiblingState.HasSibling((CombinedSyntaxNode)node))
+                && before.SiblingState.HasSibling((CombinedSyntaxNode)node)
+                && before.SiblingState.BaseNode == after.SiblingState.BaseNode)
             {
                 // states has the same sibling jump targets
                 // we want to preserve them
@@ -464,7 +466,7 @@ namespace RoslyJump.Core.Contexts.Local
 
             return parent == null
                 ? (CombinedSyntaxNode?)null
-                : new CombinedSyntaxNode(parent);
+                : parent.QueryVirtualAndCombine(NestedBlockVirtualQuery.Instance);
         }
 
         protected virtual CombinedSyntaxNode? QueryChildContextNode()
