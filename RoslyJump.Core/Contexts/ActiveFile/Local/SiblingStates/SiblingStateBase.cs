@@ -12,7 +12,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates
             this.BaseNode = baseNode;
         }
 
-        private CombinedSyntaxNode BaseNode { get; set; }
+        internal CombinedSyntaxNode BaseNode { get; private set; }
 
         public int ActiveIndex { get; private set; } = -1;
 

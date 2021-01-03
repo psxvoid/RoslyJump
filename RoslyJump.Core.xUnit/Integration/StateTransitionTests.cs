@@ -606,6 +606,331 @@ namespace RoslyJump.Core.xUnit.Integration
                 {
                     x.State.JumpContextDown();
                     x.State.JumpContextDown();
+                    Assert.Equal("x == 12", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNested_JumpNext_NextExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpNext,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ToString() == "y == 11"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("x == 12", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNested_JumpPrev_PrevExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpPrev,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ToString() == "y == 11"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("x == 12", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNested_JumpNextSibling_SameExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpNextSibling,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ToString() == "x == 12"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("x == 12", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNested_JumpPrevSibling_SameExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpPrevSibling,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ToString() == "x == 12"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("x == 12", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNested_JumpUp_ParentExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpContextUp,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ToString() == "x == 12 || y == 11"
+                    && x.ActiveBaseNode
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("x == 12", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNested_JumpDown_FirstChildExpression()
+        {
+            AssertTransition<ExpressionSyntax, ExpressionState>(
+                ActionKind.JumpContextDown,
+                x => x.ToString() == "x == 12 || y == 11",
+                x => x.ActiveBaseNode.ToString() == "x"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("x == 12", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNestedNested_JumpNext_NextExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpNext,
+                x => x.ToString() == "fu(5) < 10 && fuu(5) < 11",
+                x => x.ActiveBaseNode.ToString() == "10"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("fu(5)", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNestedNested_JumpPrev_PrevExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpPrev,
+                x => x.ToString() == "fu(5) < 10 && fuu(5) < 11",
+                x => x.ActiveBaseNode.ToString() == "10"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("fu(5)", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNestedNested_JumpNextSibling_SameExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpNextSibling,
+                x => x.ToString() == "fu(5) < 10 && fuu(5) < 11",
+                x => x.ActiveBaseNode.ToString() == "fu(5)"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("fu(5)", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNestedNested_JumpPrevSibling_SameExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpPrevSibling,
+                x => x.ToString() == "fu(5) < 10 && fuu(5) < 11",
+                x => x.ActiveBaseNode.ToString() == "fu(5)"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("fu(5)", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNestedNested_JumpUp_ParentExpression()
+        {
+            AssertTransition<ExpressionSyntax, NestedBlockState>(
+                ActionKind.JumpContextUp,
+                x => x.ToString() == "fu(5) < 10 && fuu(5) < 11",
+                x => x.ActiveBaseNode.ToString() == "fu(5) < 10"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("fu(5)", x.State?.ContextNode?.BaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void IfConditionComplexExpressionNestedNested_JumpDown_FirstChildExpression()
+        {
+            AssertTransition<ExpressionSyntax, ExpressionState>(
+                ActionKind.JumpContextDown,
+                x => x.ToString() == "fu(5) < 10 && fuu(5) < 11",
+                x => x.ActiveBaseNode.ToString() == "fu"
+                    && x.ActiveBaseNode
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<ExpressionSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<IfStatementSyntax>()
+                        .ParentAs<BlockSyntax>()
+                        .ParentAs<MethodDeclarationSyntax>()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    x.State.JumpContextDown();
+                    Assert.Equal("fu(5)", x.State?.ContextNode?.BaseNode.ToString());
                 });
         }
 

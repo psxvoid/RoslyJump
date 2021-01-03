@@ -39,9 +39,21 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                         {
                             return 12345;
                         }
-                        else if (x == y/x + 12 && x != 0)
+                        else if (x == y / x + 12 && x != 0)
                         {
                             return 123456;
+                        }
+
+                        int fu(int x) => x + 5;
+                        int fuu(int x) => x + 6;
+
+                        if (fu(5) < 10 && fuu(5) < 11)
+                        {
+                            return fu(5) + fuu(10);
+                        }
+                        else
+                        {
+                            return fu(14) + fuu(11);
                         }
 
                         y = y + 4;

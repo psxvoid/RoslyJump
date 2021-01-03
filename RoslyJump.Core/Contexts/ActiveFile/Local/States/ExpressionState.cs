@@ -2,11 +2,11 @@
 using System.Linq;
 using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RoslyJump.Core.Contexts.Local;
+using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 {
-    public class ExpressionState : LocalContextState<ExpressionSyntax>
+    public class ExpressionState : MethodBodyMemberStateBase<ExpressionSyntax>
     {
         public ExpressionState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
