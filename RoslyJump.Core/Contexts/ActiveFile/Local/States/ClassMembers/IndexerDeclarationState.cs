@@ -21,5 +21,10 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers
                 .Select(x => new CombinedSyntaxNode(x))
                 .ToArray();
         }
+
+        protected override CombinedSyntaxNode? QueryChildContextNode()
+        {
+            return null;
+        }
     }
 }

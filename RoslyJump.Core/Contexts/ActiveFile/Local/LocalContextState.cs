@@ -474,7 +474,7 @@ namespace RoslyJump.Core.Contexts.Local
             SyntaxNode? firstKnownChild = this.ContextNode?.BaseNode
                 ?.ChildNodes()
                 .FirstOrDefault(x => LocalContext.IsKnownNodeType(x)
-                    || (x is ExpressionSyntax && !(x is PredefinedTypeSyntax)));
+                    || x is ExpressionSyntax);
 
             return firstKnownChild == null
                 ? (CombinedSyntaxNode?)null
