@@ -161,10 +161,15 @@ namespace RoslyJump.Core
 
                 if (prev > 0
                         && (results[prev].BaseNode is ExpressionStatementSyntax
-                            || results[prev].BaseNode is LocalDeclarationStatementSyntax))
+                            || results[prev].BaseNode is LocalDeclarationStatementSyntax)
+                            || results[prev].BaseNode is LocalFunctionStatementSyntax)
                 {
                     last = results[prev];
                 }
+            }
+            else if (last.BaseNode is ExpressionSyntax)
+            {
+                last = results.Last(x => !(x.BaseNode is ExpressionSyntax));
             }
 
             LocalContextState stateBefore = this.State;

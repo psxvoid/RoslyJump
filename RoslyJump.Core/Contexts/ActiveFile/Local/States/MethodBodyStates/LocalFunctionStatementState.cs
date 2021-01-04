@@ -25,5 +25,10 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
                 ?? throw new InvalidOperationException(
                     $"Unable to query target nodes for {nameof(LocalFunctionStatementState)}");
         }
+
+        protected override CombinedSyntaxNode? QueryChildContextNode()
+        {
+            return new CombinedSyntaxNode(this.BaseNode.ParameterList);
+        }
     }
 }

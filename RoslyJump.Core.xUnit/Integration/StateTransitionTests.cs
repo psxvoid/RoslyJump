@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using dngrep.core.Extensions.Nullable;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
 using dngrep.core.VirtualNodes.Syntax;
 using Microsoft.CodeAnalysis;
@@ -141,7 +142,10 @@ namespace RoslyJump.Core.xUnit.Integration
             AssertTransition<MethodDeclarationSyntax, ParameterListState>(
                 ActionKind.JumpContextDown,
                 x => x.HasName("Method1")
-                    && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false));
+                    && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
+                null,
+                null,
+                x => Assert.IsType<MethodDeclarationState>(x.State));
         }
 
         [Fact]
@@ -288,6 +292,133 @@ namespace RoslyJump.Core.xUnit.Integration
                 x => x.ActiveNodeAs<ExpressionStatementSyntax>()
                     .ParentAs<BlockSyntax>()
                     .ParentAs<MethodDeclarationSyntax>().HasName("Method3"));
+        }
+
+        [Fact]
+        public void LocalFunctionReturnType_JumpNext_NextLocalFunction()
+        {
+            AssertTransition<PredefinedTypeSyntax, LocalFunctionStatementState>(
+                ActionKind.JumpNext,
+                x => x.Parent is LocalFunctionStatementSyntax func && func.HasName("fu")
+                    && x.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                x => x.ActiveBaseNode.HasName("fuu")
+                    && x.ActiveBaseNode.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    Assert.IsType<LocalFunctionStatementState>(x.State);
+                    Assert.Equal(
+                        "fu",
+                        x.State.ActiveNodeAs<LocalFunctionStatementSyntax>().Identifier.ValueText);
+                });
+        }
+
+        [Fact]
+        public void LocalFunctionReturnType_JumpPrev_PrevLocalFunction()
+        {
+            AssertTransition<PredefinedTypeSyntax, LocalFunctionStatementState>(
+                ActionKind.JumpPrev,
+                x => x.Parent is LocalFunctionStatementSyntax func && func.HasName("fu")
+                    && x.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                x => x.ActiveBaseNode.HasName("fuu")
+                    && x.ActiveBaseNode.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    Assert.IsType<LocalFunctionStatementState>(x.State);
+                    Assert.Equal(
+                        "fu",
+                        x.State.ActiveNodeAs<LocalFunctionStatementSyntax>().Identifier.ValueText);
+                });
+        }
+
+        [Fact]
+        public void LocalFunctionReturnType_JumpNextSibling_NextSibling()
+        {
+            AssertTransition<PredefinedTypeSyntax, ExpressionStatementState>(
+                ActionKind.JumpNextSibling,
+                x => x.Parent is LocalFunctionStatementSyntax func && func.HasName("fu")
+                    && x.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                x => x.ActiveBaseNode.HasExpression("y = y + 4")
+                    && x.ActiveBaseNode.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    Assert.IsType<LocalFunctionStatementState>(x.State);
+                    Assert.Equal(
+                        "fu",
+                        x.State.ActiveNodeAs<LocalFunctionStatementSyntax>().Identifier.ValueText);
+                });
+        }
+
+        [Fact]
+        public void LocalFunctionReturnType_JumpPrevSibling_PrevSibling()
+        {
+            AssertTransition<PredefinedTypeSyntax, IfStatementState>(
+                ActionKind.JumpPrevSibling,
+                x => x.Parent is LocalFunctionStatementSyntax func && func.HasName("fu")
+                    && x.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                x => x.ActiveBaseNode.HasCondition("x == 12 || y == 11")
+                    && x.ActiveBaseNode.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    Assert.IsType<LocalFunctionStatementState>(x.State);
+                    Assert.Equal(
+                        "fu",
+                        x.State.ActiveNodeAs<LocalFunctionStatementSyntax>().Identifier.ValueText);
+                });
+        }
+
+        [Fact]
+        public void LocalFunctionReturnType_JumpUp_FirstParent()
+        {
+            AssertTransition<PredefinedTypeSyntax, IfBodyState>(
+                ActionKind.JumpContextUp,
+                x => x.Parent is LocalFunctionStatementSyntax func && func.HasName("fu")
+                    && x.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                x => x.ActiveBaseNode.ParentAs<IfStatementSyntax>().HasCondition("y == 11")
+                    && x.ActiveBaseNode.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    Assert.IsType<LocalFunctionStatementState>(x.State);
+                    Assert.Equal(
+                        "fu",
+                        x.State.ActiveNodeAs<LocalFunctionStatementSyntax>().Identifier.ValueText);
+                });
+        }
+
+        [Fact]
+        public void LocalFunctionReturnType_JumpDown_LocalFunctionParameterList()
+        {
+            AssertTransition<PredefinedTypeSyntax, ParameterListState>(
+                ActionKind.JumpContextDown,
+                x => x.Parent is LocalFunctionStatementSyntax func && func.HasName("fu")
+                    && x.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                x => x.ActiveBaseNode.ParentAs<LocalFunctionStatementSyntax>()
+                        .HasName("fu")
+                    && x.ActiveBaseNode.GetFirstParentOfType<MethodDeclarationSyntax>().NotNull()
+                        .HasName("Method1"),
+                null,
+                x =>
+                {
+                    Assert.IsType<LocalFunctionStatementState>(x.State);
+                    Assert.Equal(
+                        "fu",
+                        x.State.ActiveNodeAs<LocalFunctionStatementSyntax>().Identifier.ValueText);
+                });
         }
 
         [Fact]

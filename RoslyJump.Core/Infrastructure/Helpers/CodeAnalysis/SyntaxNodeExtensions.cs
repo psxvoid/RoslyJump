@@ -313,6 +313,33 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             return method.Identifier.ValueText == name;
         }
+        
+        /// <summary>
+        /// Verifies that the target <see cref="LocalFunctionStatementSyntax"/>
+        /// has a specified name.
+        /// </summary>
+        /// <param name="method">
+        /// The <see cref="SyntaxNode"/> the for which the name should be verified.
+        /// </param>
+        /// <param name="name">
+        /// The name that the target method should have.
+        /// </param>
+        /// <returns>
+        /// <see cref="true"/> when the target has the specified name,
+        /// else <see cref="false"/>.
+        /// </returns>
+        public static bool HasName(this LocalFunctionStatementSyntax method, string name)
+        {
+            _ = method ?? throw new ArgumentNullException(nameof(method));
+            _ = name ?? throw new ArgumentNullException(nameof(name));
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("The name cannot be empty.", nameof(name));
+            }
+
+            return method.Identifier.ValueText == name;
+        }
 
         /// <summary>
         /// Verifies that the target field has a specified name.

@@ -138,12 +138,24 @@ namespace RoslyJump
                     IWpfTextViewLine textViewLine = view.GetTextViewLineContainingBufferPosition(caret);
                     int line = caret.GetContainingLine().LineNumber;
                     int startChar = textViewLine.Start.Difference(caret);
+                    
+                    Debug.WriteLine(
+                        "The state before cursor update:\t" +
+                        $"{this.LocalContext.State.GetType().Name}");
 
                     this.LocalContext.TransitionTo(line, startChar);
+
+                    Debug.WriteLine(
+                        "The state after cursor update:\t" +
+                        $"{this.LocalContext.State.GetType().Name}");
 
                     jumpAction(this.LocalContext.State);
 
                     LocalContextState state = this.LocalContext.State;
+                    
+                    Debug.WriteLine(
+                        "The state after jump:\t\t\t" +
+                        $"{this.LocalContext.State.GetType().Name}");
 
                     if (state.IsJumpTargetSet)
                     {
