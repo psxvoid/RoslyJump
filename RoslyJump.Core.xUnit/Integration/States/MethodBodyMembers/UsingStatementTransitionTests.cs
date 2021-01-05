@@ -89,6 +89,48 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
                         .Identifier.ValueText));
         }
 
+        [Fact]
+        public void JumpNextSibling_MethodBodyUsingStatement_NextSibling()
+        {
+            AssertTransition<LocalDeclarationState>(
+                ActionKind.JumpNextSibling,
+                x => Assert.Equal(
+                    "Stream stream2 = new MemoryStream()",
+                    x.ActiveBaseNode.Declaration?.ToString()));
+        }
+
+        [Fact]
+        public void JumpNextSibling_MethodBodyUsingStatement_SameParent()
+        {
+            AssertTransition<LocalDeclarationState>(
+                ActionKind.JumpNextSibling,
+                x => Assert.Equal(
+                    "Method7",
+                    x.ActiveBaseNode.ParentAs<BlockSyntax>().ParentAs<MethodDeclarationSyntax>()
+                        .Identifier.ValueText));
+        }
+
+        [Fact]
+        public void JumpPrevSibling_MethodBodyUsingStatement_PrevSibling()
+        {
+            AssertTransition<ExpressionStatementState>(
+                ActionKind.JumpPrevSibling,
+                x => Assert.Equal(
+                    "stream2.Write(buffer)",
+                    x.ActiveBaseNode.Expression.ToString()));
+        }
+
+        [Fact]
+        public void JumpPrevSibling_MethodBodyUsingStatement_SameParent()
+        {
+            AssertTransition<ExpressionStatementState>(
+                ActionKind.JumpPrevSibling,
+                x => Assert.Equal(
+                    "Method7",
+                    x.ActiveBaseNode.ParentAs<BlockSyntax>().ParentAs<MethodDeclarationSyntax>()
+                        .Identifier.ValueText));
+        }
+
         private void AssertTransition<TExpectedState>(
             ActionKind action,
             Action<TExpectedState> assert)
