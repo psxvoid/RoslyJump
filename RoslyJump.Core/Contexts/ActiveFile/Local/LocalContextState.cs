@@ -451,6 +451,10 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new ExpressionState(context, node.Value);
             }
+            else if (node.Value.MixedNode is UsingStatementSyntax)
+            {
+                this.Context.State = new UsingStatementState(context, node.Value);
+            }
             else
             {
                 this.Context.State = new InactiveState(context);

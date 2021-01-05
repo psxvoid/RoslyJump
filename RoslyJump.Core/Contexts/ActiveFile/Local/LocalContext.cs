@@ -55,24 +55,31 @@ namespace RoslyJump.Core
             typeof(AccessorDeclarationSyntax),
 
             // method body types
-            typeof(IfStatementSyntax),
-            typeof(IfConditionSyntax),                  // virtual
-            typeof(IfBodySyntax),                       // virtual
-            typeof(ElseBodySyntax),                     // virtual
-            typeof(ElseClauseSyntax),
+
+            typeof(NestedBlockSyntax),                  // virtual
+
+            // statements
             typeof(LocalDeclarationStatementSyntax),
             typeof(LocalFunctionStatementSyntax),
             typeof(ReturnStatementSyntax),
             typeof(ForStatementSyntax),
             typeof(ForEachStatementSyntax),
             typeof(WhileStatementSyntax),
-            typeof(NestedBlockSyntax),                  // virtual
             typeof(ExpressionStatementSyntax),
+            typeof(ThrowStatementSyntax),
+
             typeof(TryStatementSyntax),
             typeof(TryBodySyntax),                      // virtual
-            typeof(FinallyClauseSyntax),
             typeof(CatchClauseSyntax),
-            typeof(ThrowStatementSyntax),
+            typeof(FinallyClauseSyntax),
+            
+            typeof(IfStatementSyntax),
+            typeof(IfConditionSyntax),                  // virtual
+            typeof(IfBodySyntax),                       // virtual
+            typeof(ElseBodySyntax),                     // virtual
+            typeof(ElseClauseSyntax),
+
+            typeof(UsingStatementSyntax),
         };
 
         public LocalContext(SyntaxTree tree)

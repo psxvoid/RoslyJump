@@ -102,7 +102,7 @@ namespace RoslyJump.Core.xUnit.Integration
                 ActionKind.JumpPrev,
                 x => x.HasName("Method1")
                     && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
-                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method6"));
+                x => x.ActiveNodeAs<MethodDeclarationSyntax>().HasName("Method7"));
         }
 
         [Fact]

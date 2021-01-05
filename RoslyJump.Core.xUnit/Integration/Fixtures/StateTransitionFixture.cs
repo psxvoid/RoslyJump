@@ -229,6 +229,57 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 y--;
             }
 
+            public void Method7(byte[] buffer)
+            {
+                using (Stream stream1 = new MemoryStream())
+                {
+                    stream1.Write(buffer);
+                    stream1.Flush();
+                }
+
+                using Stream stream2 = new MemoryStream();
+
+                stream2.Write(buffer);
+                stream2.Flush();
+
+
+                using (Stream stream3 = new MemoryStream())
+                {
+                    using (Stream stream31 = new MemoryStream())
+                    {
+                        stream31.Write(buffer);
+                        stream31.Flush();
+                    }
+
+                    stream3.Write(buffer);
+                    stream3.Flush();
+                }
+
+                var reader = new StringReader(string.Empty);
+
+                using (reader)
+                {
+                    string? item;
+                    do
+                    {
+                        item = reader.ReadLine();
+                        Console.WriteLine(item);
+                    } while (item != null);
+                }
+
+                using Stream stream4 = new MemoryStream();
+
+                stream4.Write(buffer);
+                stream4.Flush();
+
+                using (Stream stream5 = new MemoryStream())
+                using (var stream51 = new StreamWriter(stream5))
+                {
+                    stream51.Write(buffer);
+                    stream51.Flush();
+                }
+            }
+
             public string this[int i]
             {
                 get
