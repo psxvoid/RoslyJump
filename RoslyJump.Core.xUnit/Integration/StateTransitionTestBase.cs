@@ -84,5 +84,66 @@ namespace RoslyJump.Core.xUnit.Integration
                 Assert.True(statePredicate((TExpectedState)context.State));
             }
         }
+
+        protected void AssertTransition<TStartPositionNode, TExpectedState>(
+            ActionKind action,
+            Func<TStartPositionNode, bool>? startNodePredicate = null,
+            Action<TExpectedState>? stateAssert = null,
+            Func<TStartPositionNode, FileLinePositionSpan>? startPositionFunctor = null,
+            Action<LocalContext>? preJumpAction = null)
+            where TStartPositionNode : SyntaxNode
+            where TExpectedState : LocalContextState
+        {
+            LocalContext context = new LocalContext(this.SyntaxTree);
+
+            TStartPositionNode? node = this.SyntaxTree.GetRoot().ChildNodes()
+                .GetNodesOfTypeRecursively<TStartPositionNode>()
+                .Where(x => startNodePredicate == null || startNodePredicate(x))
+                .First();
+
+            SyntaxNode startNode = node;
+
+            var (lineStart, lineEnd, charStart, charEnd) = startNode.GetSourceTextBounds();
+
+            if (startPositionFunctor != null)
+            {
+                FileLinePositionSpan line = startPositionFunctor(node);
+
+                lineStart = line.StartLinePosition.Line;
+                charStart = line.StartLinePosition.Character;
+            }
+
+            context.TransitionTo(lineStart, charStart);
+
+            preJumpAction?.Invoke(context);
+
+            switch (action)
+            {
+                case ActionKind.JumpNext:
+                    context.State.JumpNext();
+                    break;
+                case ActionKind.JumpPrev:
+                    context.State.JumpPrev();
+                    break;
+                case ActionKind.JumpNextSibling:
+                    context.State.JumpToNextSiblingContext();
+                    break;
+                case ActionKind.JumpPrevSibling:
+                    context.State.JumpToPrevSiblingContext();
+                    break;
+                case ActionKind.JumpContextUp:
+                    context.State.JumpContextUp();
+                    break;
+                case ActionKind.JumpContextDown:
+                    context.State.JumpContextDown();
+                    break;
+                default:
+                    throw new ArgumentException("Unknown action kind.", nameof(action));
+            }
+
+            Assert.IsType<TExpectedState>(context.State);
+
+            stateAssert?.Invoke((TExpectedState)context.State);
+        }
     }
 }
