@@ -3,9 +3,15 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Xunit;
 
 namespace RoslyJump.Core.xUnit.Integration.Fixtures
 {
+    [CollectionDefinition(nameof(StateTransitionFixture))]
+    public class StateTransitionXUnitCollection : ICollectionFixture<StateTransitionFixture>
+    {
+    }
+
     public class StateTransitionFixture
     {
         public SyntaxTree SyntaxTree { get; }
