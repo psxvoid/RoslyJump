@@ -2,6 +2,7 @@
 using dngrep.core.Extensions.Nullable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoslyJump.Core.Contexts.ActiveFile.Local.States;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates;
 using RoslyJump.Core.Contexts.Local;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
@@ -125,6 +126,48 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
         {
             AssertTransition<ExpressionStatementState>(
                 ActionKind.JumpPrevSibling,
+                x => Assert.Equal(
+                    "Method7",
+                    x.ActiveBaseNode.ParentAs<BlockSyntax>().ParentAs<MethodDeclarationSyntax>()
+                        .Identifier.ValueText));
+        }
+
+        [Fact]
+        public void JumpContextUp_MethodBodyUsingStatement_UpperContext()
+        {
+            AssertTransition<MethodBodyState>(
+                ActionKind.JumpContextUp,
+                x => Assert.Equal(
+                    "Method7",
+                    x.ActiveBaseNode.ParentAs<MethodDeclarationSyntax>().Identifier.ValueText));
+        }
+
+        [Fact]
+        public void JumpContextUp_MethodBodyUsingStatement_UppderContextCorrectParent()
+        {
+            AssertTransition<MethodBodyState>(
+                ActionKind.JumpContextUp,
+                x => Assert.Equal(
+                    "Method7",
+                    x.ActiveBaseNode.ParentAs<MethodDeclarationSyntax>().Identifier.ValueText));
+        }
+        
+        [Fact]
+        public void JumpContextDown_MethodBodyUsingStatement_LowerContext()
+        {
+            AssertTransition<UsingStatementState>(
+                ActionKind.JumpContextDown,
+                x => Assert.Equal(
+                    "Method7",
+                    x.ActiveBaseNode.ParentAs<BlockSyntax>().ParentAs<MethodDeclarationSyntax>()
+                        .Identifier.ValueText));
+        }
+
+        [Fact]
+        public void JumpContextDown_MethodBodyUsingStatement_LowerContextCorrectParent()
+        {
+            AssertTransition<UsingStatementState>(
+                ActionKind.JumpContextDown,
                 x => Assert.Equal(
                     "Method7",
                     x.ActiveBaseNode.ParentAs<BlockSyntax>().ParentAs<MethodDeclarationSyntax>()
