@@ -131,7 +131,8 @@ namespace RoslyJump.Core.xUnit.Integration
             AssertTransition<MethodDeclarationSyntax, ClassDeclarationState>(
                 ActionKind.JumpContextUp,
                 x => x.HasName("Method1")
-                    && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false));
+                    && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
+                (System.Func<ClassDeclarationState, bool>?)null);
         }
 
         [Fact]
