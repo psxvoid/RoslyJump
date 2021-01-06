@@ -5,7 +5,7 @@ using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class FinallyClauseState : TryMemberStateBase<FinallyClauseSyntax>
     {
@@ -15,7 +15,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         public FinallyClauseState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
-        
+
         {
             if (contextNode.MixedNode.GetType() != typeof(FinallyClauseSyntax))
             {
@@ -23,17 +23,17 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
                     $"Unsupported context node for {nameof(FinallyClauseState)}.");
             }
 
-            this.targetNodes = new[] { contextNode };
+            targetNodes = new[] { contextNode };
         }
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            return this.targetNodes;
+            return targetNodes;
         }
 
         protected override CombinedSyntaxNode? QueryChildContextNode()
         {
-            return this.ActiveBaseNode.Block.QueryVirtualAndCombine(
+            return ActiveBaseNode.Block.QueryVirtualAndCombine(
                 NestedBlockVirtualQuery.Instance);
         }
     }

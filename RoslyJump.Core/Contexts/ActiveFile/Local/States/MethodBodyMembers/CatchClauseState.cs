@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class CatchClauseState : TryMemberStateBase<CatchClauseSyntax>
     {
@@ -15,7 +15,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         public CatchClauseState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
-        
+
         {
             if (contextNode.MixedNode.GetType() != typeof(CatchClauseSyntax))
             {
@@ -26,14 +26,14 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            return this.ActiveBaseNode.ParentAs<TryStatementSyntax>().Catches
+            return ActiveBaseNode.ParentAs<TryStatementSyntax>().Catches
                 .Select(x => new CombinedSyntaxNode(x))
                 .ToArray();
         }
 
         protected override CombinedSyntaxNode? QueryChildContextNode()
         {
-            return this.ActiveBaseNode.Block.QueryVirtualAndCombine(
+            return ActiveBaseNode.Block.QueryVirtualAndCombine(
                 NestedBlockVirtualQuery.Instance);
         }
     }

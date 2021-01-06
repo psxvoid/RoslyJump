@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class LocalFunctionStatementState
         : MethodBodyMemberStateBase<LocalFunctionStatementSyntax>
@@ -17,7 +17,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            return this.BaseNode.GetContainerNode()
+            return BaseNode.GetContainerNode()
                 ?.ChildNodes()
                 .Where(x => x.GetType() == typeof(LocalFunctionStatementSyntax))
                 .Select(x => new CombinedSyntaxNode(x))
@@ -28,7 +28,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode? QueryChildContextNode()
         {
-            return new CombinedSyntaxNode(this.BaseNode.ParameterList);
+            return new CombinedSyntaxNode(BaseNode.ParameterList);
         }
     }
 }

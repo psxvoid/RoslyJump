@@ -6,7 +6,7 @@ using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class TryStatementState : MethodBodyMemberStateBase<TryStatementSyntax>
     {
@@ -17,7 +17,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            return this.BaseNode.Parent?.ChildNodes()
+            return BaseNode.Parent?.ChildNodes()
                 .Where(x => x.GetType() == typeof(TryStatementSyntax))
                 .Select(x => new CombinedSyntaxNode(x))
                 .ToArray()
@@ -27,7 +27,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode? QueryChildContextNode()
         {
-            return this.ActiveBaseNode.Block.QueryVirtualAndCombine(
+            return ActiveBaseNode.Block.QueryVirtualAndCombine(
                 TryBodyVirtualQuery.Instance);
         }
     }

@@ -6,7 +6,7 @@ using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class IfConditionState : IfMemberStateBase<ExpressionSyntax>
     {
@@ -22,17 +22,17 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
                     $"Actual node type: {contextNode.MixedNode.GetType()}.");
             }
 
-            this.targets = new[] { contextNode };
+            targets = new[] { contextNode };
         }
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            return this.targets;
+            return targets;
         }
 
         protected override CombinedSyntaxNode? QueryChildContextNode()
         {
-            return this.ActiveBaseNode.QueryVirtualAndCombine(
+            return ActiveBaseNode.QueryVirtualAndCombine(
                 NestedBlockVirtualQuery.Instance);
         }
     }

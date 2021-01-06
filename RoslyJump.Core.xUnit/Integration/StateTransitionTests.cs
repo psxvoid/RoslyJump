@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers.Properties;
-using RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates;
+using RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers;
 using RoslyJump.Core.Contexts.Local.States;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis.VirtualNodes;

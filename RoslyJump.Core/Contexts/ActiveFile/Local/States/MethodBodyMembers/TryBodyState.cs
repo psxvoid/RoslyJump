@@ -6,7 +6,7 @@ using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class TryBodyState : TryMemberStateBase<BlockSyntax>
     {
@@ -25,17 +25,17 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
             }
 
             // try statement can only have a single try block
-            this.targets = new[] { contextNode };
+            targets = new[] { contextNode };
         }
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            return this.targets;
+            return targets;
         }
 
         protected override CombinedSyntaxNode? QueryChildContextNode()
         {
-            return this.ActiveBaseNode.QueryVirtualAndCombine(
+            return ActiveBaseNode.QueryVirtualAndCombine(
                 NestedBlockVirtualQuery.Instance);
         }
     }

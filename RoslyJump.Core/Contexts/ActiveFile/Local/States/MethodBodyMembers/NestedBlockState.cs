@@ -12,7 +12,7 @@ using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class NestedBlockState : MethodBodyMemberStateBase<SyntaxNode>
     {
@@ -36,7 +36,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            SyntaxNode? parent = this.BaseNode.GetContainerNode();
+            SyntaxNode? parent = BaseNode.GetContainerNode();
 
             if (parent == null)
             {
@@ -52,9 +52,9 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode? QueryParentContextNode()
         {
-            SyntaxNode? parent = this.ActiveBaseNode.Parent;
+            SyntaxNode? parent = ActiveBaseNode.Parent;
 
-            if (parent is IfStatementSyntax @if && @if.Condition == this.ActiveBaseNode)
+            if (parent is IfStatementSyntax @if && @if.Condition == ActiveBaseNode)
             {
                 return @if.Condition.QueryVirtualAndCombine(IfConditionVirtualQuery.Instance);
             }
@@ -64,9 +64,9 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override MethodBodyMemberSiblingState InitSiblingState()
         {
-            SyntaxNode? parent = this.ActiveBaseNode.Parent;
+            SyntaxNode? parent = ActiveBaseNode.Parent;
 
-            if (parent is IfStatementSyntax @if && @if.Condition == this.ActiveBaseNode)
+            if (parent is IfStatementSyntax @if && @if.Condition == ActiveBaseNode)
             {
                 return new MethodBodyMemberSiblingState(
                     @if.Condition.QueryVirtualAndCombine(IfConditionVirtualQuery.Instance));
