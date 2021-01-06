@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
-using dngrep.core.Queries.SyntaxNodeMatchers.Targets;
 using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers
 {
     public class MethodDeclarationState : ClassMemberStateBase<MethodDeclarationSyntax>
     {

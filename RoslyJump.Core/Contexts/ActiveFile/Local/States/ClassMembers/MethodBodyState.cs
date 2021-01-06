@@ -4,7 +4,7 @@ using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers
 {
     // TODO: Also support properties lambdas and expressions.
     public class MethodBodyState : MethodMemberStateBase<SyntaxNode>
