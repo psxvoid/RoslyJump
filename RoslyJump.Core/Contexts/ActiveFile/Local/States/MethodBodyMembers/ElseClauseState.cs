@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class ElseClauseState : IfMemberStateBase<ElseClauseSyntax>
     {
@@ -25,7 +25,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
                     nameof(contextNode));
             }
 
-            this.targets = new[] { contextNode };
+            targets = new[] { contextNode };
         }
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
@@ -34,7 +34,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
             // get parent else clauses (including active)
 
-            IfStatementSyntax? current = this.BaseNode.ParentAs<IfStatementSyntax>();
+            IfStatementSyntax? current = BaseNode.ParentAs<IfStatementSyntax>();
 
             while (
                 current != null
@@ -54,7 +54,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
             // get child else clauses
 
-            current = this.BaseNode.Statement as IfStatementSyntax;
+            current = BaseNode.Statement as IfStatementSyntax;
 
             while (
                 current != null
@@ -72,7 +72,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode? QueryParentContextNode()
         {
-            IfStatementSyntax? ifRoot = this.BaseNode.ParentAs<IfStatementSyntax>();
+            IfStatementSyntax? ifRoot = BaseNode.ParentAs<IfStatementSyntax>();
 
             while (ifRoot?.Parent is ElseClauseSyntax @else && @else != null)
             {
@@ -85,7 +85,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode? QueryChildContextNode()
         {
-            return this.BaseNode.Statement.QueryVirtualAndCombine(
+            return BaseNode.Statement.QueryVirtualAndCombine(
                 ElseBodyVirtualQuery.Instance);
         }
     }

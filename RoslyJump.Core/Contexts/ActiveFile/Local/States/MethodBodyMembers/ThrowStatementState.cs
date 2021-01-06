@@ -4,7 +4,7 @@ using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class ThrowStatementState : MethodBodyMemberStateBase<ThrowStatementSyntax>
     {
@@ -15,7 +15,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyStates
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            return this.ActiveBaseNode.Parent?.ChildNodes()
+            return ActiveBaseNode.Parent?.ChildNodes()
                 ?.Where(x => x.GetType() == typeof(ThrowStatementSyntax))
                 .Select(x => new CombinedSyntaxNode(x))
                 .ToArray()
