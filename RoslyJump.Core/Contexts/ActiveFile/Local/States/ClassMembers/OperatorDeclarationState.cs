@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers
 {
     public class OperatorDeclarationState : ClassMemberStateBase<OperatorDeclarationSyntax>
     {
@@ -21,7 +21,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
                 $"The context node is not set for {nameof(OperatorDeclarationState)}.");
 
             SyntaxNode? containingClasOrStruct = this.BaseNode.Parent;
-            
+
             _ = containingClasOrStruct ?? throw new InvalidOperationException(
                 $"Unable to query the parent for {nameof(OperatorDeclarationState)}.");
 

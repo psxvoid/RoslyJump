@@ -3,7 +3,7 @@ using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
-namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
+namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers
 {
     public class DestructorSyntaxState : ClassMemberStateBase<DestructorDeclarationSyntax>
     {
