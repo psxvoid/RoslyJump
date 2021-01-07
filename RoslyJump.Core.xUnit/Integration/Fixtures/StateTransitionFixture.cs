@@ -280,6 +280,32 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 }
             }
 
+            int Method8()
+            {
+                int x = 5;
+
+                start:
+                goto lockStart;
+
+                ucheckedStart:
+                unchecked
+                {
+                    x += int.MaxValue;
+                }
+
+                lockStart:
+                lock(this)
+                {
+                    return this.Method1(1, 2);
+                }
+                ; ; ;
+                {
+                    goto start;
+                }
+
+                goto ucheckedStart;
+            }
+
             public string this[int i]
             {
                 get

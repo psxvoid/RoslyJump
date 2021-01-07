@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using dngrep.core.VirtualNodes;
 using Microsoft.CodeAnalysis.CSharp;
@@ -7,6 +8,22 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates
 {
     public abstract class SiblingStateBase
     {
+        private class DefaultComparer : IEqualityComparer<CombinedSyntaxNode?>
+        {
+            public bool Equals(CombinedSyntaxNode? x, CombinedSyntaxNode? y)
+            {
+                return x?.MixedNode.GetType() == y?.MixedNode.GetType();
+            }
+
+            public int GetHashCode(CombinedSyntaxNode? obj)
+            {
+                return obj.GetHashCode();
+            }
+        }
+
+        protected static readonly IEqualityComparer<CombinedSyntaxNode?> ComparerInstance =
+            new DefaultComparer();
+
         public SiblingStateBase(CombinedSyntaxNode baseNode)
         {
             this.BaseNode = baseNode;
@@ -18,6 +35,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates
 
         protected CombinedSyntaxNode[] Targets { get; private set; }
             = Array.Empty<CombinedSyntaxNode>();
+
+        protected virtual IEqualityComparer<CombinedSyntaxNode?> Comparer => ComparerInstance;
 
         protected abstract CombinedSyntaxNode[] QueryTargetsProtected(CombinedSyntaxNode root);
 
@@ -69,7 +88,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates
 
                 for (int i = 0; i < this.Targets.Length; i++)
                 {
-                    if (this.Targets[i].MixedNode.GetType() == node?.MixedNode.GetType())
+                    if (this.Comparer.Equals(this.Targets[i], node))
                     {
                         activeIndex = i;
                         break;

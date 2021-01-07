@@ -447,13 +447,17 @@ namespace RoslyJump.Core.Contexts.Local
             {
                 this.Context.State = new ThrowStatementState(context, node.Value);
             }
+            else if (nodeType == typeof(UsingStatementSyntax))
+            {
+                this.Context.State = new UsingStatementState(context, node.Value);
+            }
             else if (node.Value.MixedNode is ExpressionSyntax)
             {
                 this.Context.State = new ExpressionState(context, node.Value);
             }
-            else if (node.Value.MixedNode is UsingStatementSyntax)
+            else if (node.Value.MixedNode is StatementSyntax)
             {
-                this.Context.State = new UsingStatementState(context, node.Value);
+                this.Context.State = new StatementState(context, node.Value);
             }
             else
             {
