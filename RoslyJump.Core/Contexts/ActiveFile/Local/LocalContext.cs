@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using dngrep.core.Extensions.SourceTextExtensions;
 using dngrep.core.Queries;
+using dngrep.core.Queries.SyntaxNodeMatchers.Targets;
 using dngrep.core.Queries.SyntaxWalkers;
 using dngrep.core.VirtualNodes;
 using dngrep.core.VirtualNodes.Routings.ConflictResolution;
@@ -104,7 +105,10 @@ namespace RoslyJump.Core
             walker.Visit(this.tree.GetRoot());
 
             CombinedSyntaxNode[] results = walker.Results
-                .Where(x => IsKnownNodeType(x) || x.MixedNode is ExpressionSyntax)
+                .Where(x => IsKnownNodeType(x)
+                    || x.MixedNode is ExpressionSyntax
+                    || (x.MixedNode is StatementSyntax
+                        && MethodBodyMemberSyntaxNodeMatcher.Instance.Match(x)))
                 .ToArray();
 
             if (results.Length <= 0)
@@ -174,7 +178,7 @@ namespace RoslyJump.Core
                     last = results[prev];
                 }
             }
-            else if (last.BaseNode is ExpressionSyntax)
+            else if (last.MixedNode is ExpressionSyntax)
             {
                 last = results.Last(x => !(x.BaseNode is ExpressionSyntax));
             }
