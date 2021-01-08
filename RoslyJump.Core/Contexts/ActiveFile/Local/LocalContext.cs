@@ -174,7 +174,8 @@ namespace RoslyJump.Core
                         && (results[prev].BaseNode is ExpressionStatementSyntax
                             || results[prev].BaseNode is LocalDeclarationStatementSyntax)
                             || results[prev].BaseNode is LocalFunctionStatementSyntax
-                            || results[prev].BaseNode is UsingDirectiveSyntax)
+                            || results[prev].BaseNode is UsingDirectiveSyntax
+                            || results[prev].BaseNode is NamespaceDeclarationSyntax)
                 {
                     last = results[prev];
                 }
