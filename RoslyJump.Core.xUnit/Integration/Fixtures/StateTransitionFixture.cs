@@ -5,6 +5,14 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
 
+namespace DummyNamespace1
+{
+}
+
+namespace DummyNamespace2
+{
+}
+
 namespace RoslyJump.Core.xUnit.Integration.Fixtures
 {
     [CollectionDefinition(nameof(StateTransitionFixture))]

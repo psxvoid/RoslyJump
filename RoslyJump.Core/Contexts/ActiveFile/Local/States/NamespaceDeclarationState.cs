@@ -2,6 +2,9 @@
 using System.Linq;
 using dngrep.core.Extensions.EnumerableExtensions;
 using dngrep.core.VirtualNodes;
+using dngrep.core.VirtualNodes.VirtualQueries;
+using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates;
 
@@ -29,6 +32,18 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
             }
 
             return nodes;
+        }
+
+        protected override CombinedSyntaxNode? QueryChildContextNode()
+        {
+            SyntaxNode? firstKnownChild = this.BaseNode.Members
+                .Cast<SyntaxNode>()
+                .FirstOrDefault(x => LocalContext.IsKnownNodeType(x)
+                    || x is ExpressionSyntax);
+
+            return firstKnownChild == null
+                ? (CombinedSyntaxNode?)null
+                : firstKnownChild.QueryVirtualAndCombine(NestedBlockVirtualQuery.Instance);
         }
     }
 }
