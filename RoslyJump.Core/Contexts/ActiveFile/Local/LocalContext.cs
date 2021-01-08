@@ -173,7 +173,8 @@ namespace RoslyJump.Core
                 if (prev > 0
                         && (results[prev].BaseNode is ExpressionStatementSyntax
                             || results[prev].BaseNode is LocalDeclarationStatementSyntax)
-                            || results[prev].BaseNode is LocalFunctionStatementSyntax)
+                            || results[prev].BaseNode is LocalFunctionStatementSyntax
+                            || results[prev].BaseNode is UsingDirectiveSyntax)
                 {
                     last = results[prev];
                 }

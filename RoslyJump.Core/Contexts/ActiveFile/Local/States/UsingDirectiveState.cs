@@ -33,5 +33,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States
 
             return results;
         }
+
+        protected override int JumpDownCount => 0;
     }
 }
