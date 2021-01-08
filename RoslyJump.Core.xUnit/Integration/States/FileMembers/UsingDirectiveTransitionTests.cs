@@ -1,10 +1,7 @@
 ﻿using System;
-using dngrep.core.Extensions.Nullable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
-using RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers;
-using RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers;
 using RoslyJump.Core.Contexts.Local;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
 using RoslyJump.Core.xUnit.Integration.Fixtures;
@@ -116,111 +113,6 @@ namespace RoslyJump.Core.xUnit.Integration.States.FileMembers
                     "System",
                     x.ActiveBaseNode.Name.ToString()));
         }
-
-        //[Fact]
-        //public void JumpPrev_MethodBodyUsingDirective_PrevUsingDirective()
-        //{
-        //    this.AssertTransition<UsingDirectiveState>(
-        //        ActionKind.JumpPrev,
-        //        x => Assert.Equal(
-        //            "Stream stream5 = new MemoryStream()",
-        //            x.ActiveBaseNode.Declaration?.ToString()));
-        //}
-
-        //[Fact]
-        //public void JumpPrev_MethodBodyUsingDirective_ChildOfSameMethod()
-        //{
-        //    AssertTransition<UsingDirectiveState>(
-        //        ActionKind.JumpPrev,
-        //        x => Assert.Equal(
-        //            "Method7",
-        //            x.ActiveBaseNode.ParentAs<BlockSyntax>().ParentAs<MethodDeclarationSyntax>()
-        //                .Identifier.ValueText));
-        //}
-
-        //[Fact]
-        //public void JumpNextSibling_MethodBodyUsingDirective_NextSibling()
-        //{
-        //    AssertTransition<LocalDeclarationState>(
-        //        ActionKind.JumpNextSibling,
-        //        x => Assert.Equal(
-        //            "Stream stream2 = new MemoryStream()",
-        //            x.ActiveBaseNode.Declaration?.ToString()));
-        //}
-
-        //[Fact]
-        //public void JumpNextSibling_MethodBodyUsingDirective_SameParent()
-        //{
-        //    AssertTransition<LocalDeclarationState>(
-        //        ActionKind.JumpNextSibling,
-        //        x => Assert.Equal(
-        //            "Method7",
-        //            x.ActiveBaseNode.ParentAs<BlockSyntax>().ParentAs<MethodDeclarationSyntax>()
-        //                .Identifier.ValueText));
-        //}
-
-        //[Fact]
-        //public void JumpPrevSibling_MethodBodyUsingDirective_PrevSibling()
-        //{
-        //    AssertTransition<ExpressionStatementState>(
-        //        ActionKind.JumpPrevSibling,
-        //        x => Assert.Equal(
-        //            "stream2.Write(buffer)",
-        //            x.ActiveBaseNode.Expression.ToString()));
-        //}
-
-        //[Fact]
-        //public void JumpPrevSibling_MethodBodyUsingDirective_SameParent()
-        //{
-        //    AssertTransition<ExpressionStatementState>(
-        //        ActionKind.JumpPrevSibling,
-        //        x => Assert.Equal(
-        //            "Method7",
-        //            x.ActiveBaseNode.ParentAs<BlockSyntax>().ParentAs<MethodDeclarationSyntax>()
-        //                .Identifier.ValueText));
-        //}
-
-        //[Fact]
-        //public void JumpContextUp_MethodBodyUsingDirective_UpperContext()
-        //{
-        //    AssertTransition<MethodBodyState>(
-        //        ActionKind.JumpContextUp,
-        //        x => Assert.Equal(
-        //            "Method7",
-        //            x.ActiveBaseNode.ParentAs<MethodDeclarationSyntax>().Identifier.ValueText));
-        //}
-
-        //[Fact]
-        //public void JumpContextUp_MethodBodyUsingDirective_UppderContextCorrectParent()
-        //{
-        //    AssertTransition<MethodBodyState>(
-        //        ActionKind.JumpContextUp,
-        //        x => Assert.Equal(
-        //            "Method7",
-        //            x.ActiveBaseNode.ParentAs<MethodDeclarationSyntax>().Identifier.ValueText));
-        //}
-
-        //[Fact]
-        //public void JumpContextDown_MethodBodyUsingDirective_LowerContext()
-        //{
-        //    AssertTransition<UsingDirectiveState>(
-        //        ActionKind.JumpContextDown,
-        //        x => Assert.Equal(
-        //            "Method7",
-        //            x.ActiveBaseNode.ParentAs<BlockSyntax>().ParentAs<MethodDeclarationSyntax>()
-        //                .Identifier.ValueText));
-        //}
-
-        //[Fact]
-        //public void JumpContextDown_MethodBodyUsingDirective_LowerContextCorrectParent()
-        //{
-        //    AssertTransition<UsingDirectiveState>(
-        //        ActionKind.JumpContextDown,
-        //        x => Assert.Equal(
-        //            "Method7",
-        //            x.ActiveBaseNode.ParentAs<BlockSyntax>().ParentAs<MethodDeclarationSyntax>()
-        //                .Identifier.ValueText));
-        //}
 
         private void AssertTransition<TExpectedState>(
             ActionKind action,
