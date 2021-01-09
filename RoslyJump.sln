@@ -7,11 +7,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslyJump", "RoslyJump\Rosl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dngrep.core", "dngrep\dngrep.core\dngrep.core.csproj", "{B72AD0EF-37A8-435E-B9CC-84B746979625}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslyJump.Core", "RoslyJump.Core\RoslyJump.Core.csproj", "{7B9360A0-5CF6-4001-A589-24DAE1A374DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslyJump.Core", "RoslyJump.Core\RoslyJump.Core.csproj", "{7B9360A0-5CF6-4001-A589-24DAE1A374DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslyJump.Core.xUnit", "RoslyJump.Core.xUnit\RoslyJump.Core.xUnit.csproj", "{0B451A95-3D87-47EB-905F-3AB9ADDA3EBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslyJump.Core.xUnit", "RoslyJump.Core.xUnit\RoslyJump.Core.xUnit.csproj", "{0B451A95-3D87-47EB-905F-3AB9ADDA3EBD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dngrep.core.xunit", "dngrep\dngrep.core.xunit\dngrep.core.xunit.csproj", "{2ED75920-B042-4240-AD94-0F7296C9B1DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BFB7674D-6B82-4606-835C-D58A68B3C233}"
+	ProjectSection(SolutionItems) = preProject
+		License.txt = License.txt
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
