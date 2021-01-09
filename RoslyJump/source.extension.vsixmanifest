@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="RoslyJump.28aebdf9-b513-4e67-a20e-9c1030fc1002" Version="1.0" Language="en-US" Publisher="Company" />
+        <Identity Publisher="Pavel Sapehin" Id="RoslyJump.28aebdf9-b513-4e67-a20e-9c1030fc1002" Version="1.0" Language="en-US" />
         <DisplayName>RoslyJump</DisplayName>
-        <Description>Empty VSIX Project.</Description>
+        <Description>Mouseless Code Navigation for C#.</Description>
+        <MoreInfo>https://github.com/psxvoid/RoslyJump</MoreInfo>
+        <License>License.txt</License>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />
