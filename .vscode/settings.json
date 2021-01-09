@@ -4,6 +4,7 @@
         "UICONTEXT",
         "ctmenu",
         "dngrep",
+        "mouseless",
         "vsixmanifest",
         "xunit"
     ]
