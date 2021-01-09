@@ -36,10 +36,12 @@ steps:
     configuration: '$(buildConfiguration)'
     testSelector: 'testAssemblies'
     testAssemblyVer2: |
-      **\*test*.dll
-      **\*xUnit*.dll
+      **\RoslyJump*xUnit.dll
+      **\dngrep*xunit.dll
       !**\*TestAdapter.dll
       !**\obj\**
+      !**\bin\**\ref\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
     runInParallel: true
     codeCoverageEnabled: true
+    otherConsoleOptions: '/Framework:.NETCoreApp,Version=3.1'
