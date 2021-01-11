@@ -23,6 +23,29 @@ echo $previousReleaseTag
 echo $latestReleaseMainTag
 echo $releaseTagOnLatestCommit
 
+currentMajor=`echo $latestReleaseTag | cut -d. -f1`
+currentMinor=`echo $latestReleaseTag | cut -d. -f2`
+currentPatch=`echo $latestReleaseTag | cut -d. -f3`
+
+previousMajor=`echo $previousReleaseTag | cut -d. -f1`
+previousMinor=`echo $previousReleaseTag | cut -d. -f2`
+previousPatch=`echo $previousReleaseTag | cut -d. -f3`
+
+if (( currentMajor == previousMajor )); then
+    if (( currentMinor == previousMinor )); then
+        if (( currentPatch <= previousPatch )); then
+            exit 1
+        fi
+    else
+        if (( currentMinor <= previousMinor )); then
+            exit 1
+        fi
+    fi
+else
+    if (( currentMajor < previouseMajor )); then
+        exit 1;
+    fi
+fi
 
 if [[ "$activeBranch" == "main" ]]; then
     echo main
