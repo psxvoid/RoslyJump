@@ -20,8 +20,8 @@ releaseTagOnLatestCommit=$(git tag --contains HEAD --list $releaseGlob | grep $r
 
 echo $latestReleaseTag
 echo $previousReleaseTag
-echo $latestReleaseMainTag
-echo $releaseTagOnLatestCommit
+# echo $latestReleaseMainTag
+# echo $releaseTagOnLatestCommit
 
 currentMajor=`echo $latestReleaseTag | cut -d. -f1`
 currentMinor=`echo $latestReleaseTag | cut -d. -f2`
@@ -33,17 +33,29 @@ previousPatch=`echo $previousReleaseTag | cut -d. -f3`
 
 if (( currentMajor == previousMajor )); then
     if (( currentMinor == previousMinor )); then
-        if (( currentPatch <= previousPatch )); then
+        if (( currentPatch < previousPatch )); then
+            >&2 echo "Versioning Error: Patch version is less than the previous one."
+            exit 1
+        elif (( currentPatch != previousPatch + 1 )); then
+            >&2 echo "Versioning Error: Patch version is increased but not incremented."
             exit 1
         fi
     else
         if (( currentMinor <= previousMinor )); then
+            >&2 echo "Versioning Error: Minor version is less than the previous one."
+            exit 1
+        elif (( currentMinor != previousMinor + 1 )); then
+            >&2 echo "Versioning Error: Minor version is increased but not incremented."
             exit 1
         fi
     fi
 else
     if (( currentMajor < previouseMajor )); then
+        >&2 echo "Versioning Error: Major version is increased but not incremented."
         exit 1;
+    elif (( currentMajor != previousMajor + 1 )); then
+        >&2 echo "Versioning Error: Major version is increased but not incremented."
+        exit 1
     fi
 fi
 
