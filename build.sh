@@ -59,11 +59,11 @@ else
     fi
 fi
 
-if [[ "$activeBranch" == "main" ]]; then
+if [[ "$activeBranch" == "main" || true ]]; then
     echo main
-    if [[ "$releaseTagOnLatestCommit" == "$latestReleaseMainTag" ]]; then
-        # Do something here
-        echo true
+    if [[ "$releaseTagOnLatestCommit" == "$latestReleaseMainTag" || true ]]; then
+        # update vsixmanifest version
+        sed -r -i.bak "s/(Identity..*Version=\")([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*)(\")/\1$currentMajor.$currentMinor.$currentPatch\3/g" ./RoslyJump/source.extension.vsixmanifest
     else
         # Do Something here
         echo false
