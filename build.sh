@@ -18,6 +18,8 @@ latestReleaseMainTag=$(git tag --list $releaseGlob --merged main --sort=-creator
 
 releaseTagOnLatestCommit=$(git tag --contains HEAD --list $releaseGlob | grep $releaseGrepRegex | head -n 1)
 
+isMarketplaceRelease=false
+
 echo $latestReleaseTag
 echo $previousReleaseTag
 echo $latestReleaseMainTag
@@ -64,10 +66,11 @@ if [[ "$activeBranch" == "main" || true ]]; then
     if [[ "$releaseTagOnLatestCommit" == "$latestReleaseMainTag" ]]; then
         # update vsixmanifest version
         sed -r -i.bak "s/(Identity..*Version=\")([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*)(\")/\1$currentMajor.$currentMinor.$currentPatch\3/g" ./RoslyJump/source.extension.vsixmanifest
+        isMarketplaceRelease=true
     else
         # the "revision" environment variable should be set here
         revVal="${revision:-default_value}"
-        
+
         if [[ -z revVal ]]; then
             >&2 echo "ENV Error: The revision counter environment variable is not set."
             exit 1
@@ -84,3 +87,5 @@ else
     # Do Something here
     echo not main
 fi
+
+echo "##vso[task.setvariable variable=isMarketplaceRelease]$isMarketplaceRelease"
