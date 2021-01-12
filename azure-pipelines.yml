@@ -18,6 +18,10 @@ steps:
 - checkout: self
   submodules: true
 
+- task: Bash@3
+  inputs:
+    filePath: '$(System.DefaultWorkingDirectory)/build.sh'
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -45,3 +49,13 @@ steps:
     runInParallel: true
     codeCoverageEnabled: true
     otherConsoleOptions: '/Framework:.NETCoreApp,Version=3.1'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    contents: |
+      pre-release.sh
+      publishManifest.json
+      readme.md
+      **\*.vsix
+    targetFolder: $(Build.ArtifactStagingDirectory)
