@@ -4,7 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
 
 trigger:
-- main
+  tags:
+    include:
+    - "*.*.*"
+    - "*.*.*-rc*"
 
 pool:
   vmImage: 'windows-latest'
@@ -13,6 +16,7 @@ variables:
   solution: '*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  isPullRequest: $[eq(variables['Build.Reason'], 'PullRequest')]
 
 steps:
 - checkout: self

@@ -25,6 +25,20 @@ echo $previousReleaseTag
 echo $latestReleaseMainTag
 # echo $releaseTagOnLatestCommit
 
+if [[ -z $ISPULLREQUEST ]]; then
+    >&2 echo 'ENV Error: The environment variable ISPULLREQUEST is not set.'
+    exit 1
+fi
+
+isPullRequest="${ISPULLREQUEST,,}"
+
+echo $isPullRequest
+
+if ! [[ $isPullRequest =~ (true|false) ]]; then
+    >&2 echo 'ENV Error: The environment variable ISPULLREQUEST is not a boolean.'
+    exit 1
+fi
+
 currentMajor=`echo $latestReleaseTag | cut -d. -f1`
 currentMinor=`echo $latestReleaseTag | cut -d. -f2`
 currentPatch=`echo $latestReleaseTag | cut -d. -f3`
@@ -61,27 +75,25 @@ else
     fi
 fi
 
-if [[ "$activeBranch" == "main" || true ]]; then
+if [[ $activeBranch == "main" || true ]]; then
     echo main
-    if [[ "$releaseTagOnLatestCommit" == "$latestReleaseMainTag" ]]; then
+    if [[ $releaseTagOnLatestCommit == $latestReleaseMainTag ]]; then
         # update vsixmanifest version
         sed -r -i.bak "s/(Identity..*Version=\")([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*)(\")/\1$currentMajor.$currentMinor.$currentPatch\3/g" ./RoslyJump/source.extension.vsixmanifest
         isMarketplaceRelease=true
     else
-        # the "revision" environment variable should be set here
-        revVal="${revision:-default_value}"
-
-        if [[ -z revVal ]]; then
-            >&2 echo "ENV Error: The revision counter environment variable is not set."
+        # the "REVISION" environment variable should be set here
+        if [[ -z $REVISION ]]; then
+            >&2 echo 'ENV Error: The REVISION counter environment variable is not set..'
             exit 1
         fi
 
-        if ! [[ $revVal =~ ^[0-9]+$ ]] ; then
-            >&2 echo "ENV Error: The revision counter environment variable should be an integer number."
+        if ! [[ $REVISION =~ ^[0-9]+$ ]] ; then
+            >&2 echo "ENV Error: The REVISION counter environment variable is not an integer number."
             exit 1
         fi
 
-        sed -r -i.bak "s/(Identity..*Version=\")([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*)(\")/\1$currentMajor.$currentMinor.$currentPatch.$revVal\3/g" ./RoslyJump/source.extension.vsixmanifest
+        sed -r -i.bak "s/(Identity..*Version=\")([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*)(\")/\1$currentMajor.$currentMinor.$currentPatch.$REVISION\3/g" ./RoslyJump/source.extension.vsixmanifest
     fi
 else
     # Do Something here
