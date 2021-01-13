@@ -62,4 +62,8 @@ if [[ $success = false ]]; then
     exit 1
 fi
 
-echo "##vso[task.setvariable variable=releaseVersion]$releaseVersion"
+echo "Release Version:      $releaseVersion"
+echo "Is Marketplace-Ready: $isMarketplaceRelease"
+echo "Is Release Candidate: $isReleaseCandidate"
+
+echo "##vso[task.setvariable variable=releaseVersion;isOutput=true]$releaseVersion"
