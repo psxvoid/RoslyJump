@@ -13,6 +13,7 @@ All code in this project is covered under the Apache 2 license. You can find a c
 ### How to remember all specific jump cases in RoslyJump?
 
 You don't have to remember them all. There are only two jump verticals - up/down and left/right. The up/down vertical has a single corresponding hotkey for each action:
+
     1. Jump Up/Down along a Syntax Tree
 
 The left\right vertical has two corresponding hotkeys per each direction:
@@ -52,6 +53,7 @@ Yes. Go to `Tools > Options > Environment > Keyboard`. In the "Show commands con
 #### Alternative hotkey configuration ideas
 
 vim-like:
+
 ```xml
 <Shortcut Command="RoslyJump.ContextJumpNext" Scope="C# Editor">Alt+L</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpPrev" Scope="C# Editor">Alt+H</Shortcut>
@@ -64,6 +66,7 @@ vim-like:
 ```
 
 wasd-like:
+
 ```xml
 <Shortcut Command="RoslyJump.ContextJumpNext" Scope="C# Editor">Alt+D</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpPrev" Scope="C# Editor">Alt+A</Shortcut>
