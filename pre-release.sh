@@ -1,8 +1,8 @@
-varsJson=$(cat build-results.json)
+varsJson=$(cat $SYSTEM_DEFAULTWORKINGDIRECTORY/RoslyJump.Vsix/RoslyJump.Vsix/build-results.json)
 
-isMarketplaceRelease=$(echo $varsJson | grep -Po "isMarketplaceRelease:\s+(.*?)[,}]" | grep -Po "(false|true)")
-isReleaseCandidate=$(echo $varsJson | grep -Po "isReleaseCandidate:\s+(.*?)[,}]" | grep -Po "(false|true)")
-releaseVersion=$(echo $varsJson | grep -Po "releaseVersion:\s+(.*?)[,}]" | grep -Po "(\d+\.\d+.\d+(\.\d+)?)")
+isMarketplaceRelease=$(echo $varsJson | grep -Eo "isMarketplaceRelease:[[:space:]]+(.*)[,}]" | grep -Eo "(false|true)" | head -n 1)
+isReleaseCandidate=$(echo $varsJson | grep -Eo "isReleaseCandidate:[[:space:]]+(.*)[,}]" | grep -Eo "(false|true)" | head -n 1)
+releaseVersion=$(echo $varsJson | grep -Eo "releaseVersion:[[:space:]]+(.*)[,}]" | grep -Eo "([[:digit:]]+\.[[:digit:]]+.[[:digit:]]+(\.[[:digit:]]+)?)" | head -n 1)
 
 
 echo "Release Version:      $releaseVersion"
