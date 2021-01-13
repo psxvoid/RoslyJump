@@ -18,48 +18,70 @@ variables:
   buildConfiguration: 'Release'
   isPullRequest: $[eq(variables['Build.Reason'], 'PullRequest')]
 
-steps:
-- checkout: self
-  submodules: true
+jobs:
+- job: VersionUpdateAndValidation
+  steps:
+  - checkout: self
+    submodules: true
 
-- task: Bash@3
-  inputs:
-    filePath: '$(System.DefaultWorkingDirectory)/build.sh'
+  - task: Bash@3
+    inputs:
+      filePath: '$(System.DefaultWorkingDirectory)/pre-build-phase-1.sh'
+    name: versioning
+    
+- job: VsixVersionUpdateAndBuild
+  dependsOn: VersionUpdateAndValidation
+  condition: succeeded('VersionUpdateAndValidation')
+  variables:
+    activeBranch: $[dependencies.VersionUpdateAndValidation.outputs['versioning.activeBranch']]
+    latestMajor: $[dependencies.VersionUpdateAndValidation.outputs['versioning.latestMajor']]
+    latestMinor: $[dependencies.VersionUpdateAndValidation.outputs['versioning.latestMinor']]
+    latestPatch: $[dependencies.VersionUpdateAndValidation.outputs['versioning.latestPatch']]
+    isMarketplaceRelease: $[dependencies.VersionUpdateAndValidation.outputs['versioning.isMarketplaceRelease']]
+    isReleaseCandidate: $[dependencies.VersionUpdateAndValidation.outputs['versioning.isReleaseCandidate']]
+    revisionCounter: $[counter(format('{0}.{1}.{2}-{3}', variables['latestMajor'], variables['latestMinor'], variables['latestPatch'], variables['isMarketplaceRelease']), 0)]
+  steps:
+  - checkout: self
+    submodules: true
 
-- task: NuGetToolInstaller@1
+  - task: Bash@3
+    inputs:
+      filePath: '$(System.DefaultWorkingDirectory)/pre-build-phase-2.sh'
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+  - task: NuGetToolInstaller@1
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: '$(solution)'
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: |
-      **\RoslyJump*xUnit.dll
-      **\dngrep*xunit.dll
-      !**\*TestAdapter.dll
-      !**\obj\**
-      !**\bin\**\ref\**
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    runInParallel: true
-    codeCoverageEnabled: true
-    otherConsoleOptions: '/Framework:.NETCoreApp,Version=3.1'
+  - task: VSBuild@1
+    inputs:
+      solution: '$(solution)'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
-  inputs:
-    contents: |
-      pre-release.sh
-      publishManifest.json
-      readme.md
-      **\*.vsix
-    targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: VSTest@2
+    inputs:
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: |
+        **\RoslyJump*xUnit.dll
+        **\dngrep*xunit.dll
+        !**\*TestAdapter.dll
+        !**\obj\**
+        !**\bin\**\ref\**
+      searchFolder: '$(System.DefaultWorkingDirectory)'
+      runInParallel: true
+      codeCoverageEnabled: true
+      otherConsoleOptions: '/Framework:.NETCoreApp,Version=3.1'
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+    inputs:
+      contents: |
+        pre-release.sh
+        publishManifest.json
+        readme.md
+        **\*.vsix
+      targetFolder: $(Build.ArtifactStagingDirectory)
