@@ -85,3 +85,9 @@ jobs:
         readme.md
         **\*.vsix
       targetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'RoslyJump.Vsix'
+      publishLocation: 'Container'
