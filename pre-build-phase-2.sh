@@ -67,3 +67,9 @@ echo "Is Marketplace-Ready: $isMarketplaceRelease"
 echo "Is Release Candidate: $isReleaseCandidate"
 
 echo "##vso[task.setvariable variable=releaseVersion;isOutput=true]$releaseVersion"
+
+echo "{ \
+    releaseVersion: $releaseVersion, \
+    isMarketplaceRelease: $isMarketplaceRelease, \
+    isReleaseCandidate: $isReleaseCandidate \
+}" > build-results.json
