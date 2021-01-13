@@ -166,11 +166,11 @@ else
     fi
 fi
 
-echo "##vso[task.setvariable variable=activeBranch]$activeBranch"
+echo "##vso[task.setvariable variable=activeBranch;isOutput=true]$activeBranch"
 
-echo "##vso[task.setvariable variable=isMarketplaceRelease]$isMarketplaceRelease"
-echo "##vso[task.setvariable variable=isReleaseCandidate]$isReleaseCandidate"
+echo "##vso[task.setvariable variable=isMarketplaceRelease;isOutput=true]$isMarketplaceRelease"
+echo "##vso[task.setvariable variable=isReleaseCandidate;isOutput=true]$isReleaseCandidate"
 
-echo "##vso[task.setvariable variable=latestMajor]$currentMajor"
-echo "##vso[task.setvariable variable=latestMinor]$currentMinor"
-echo "##vso[task.setvariable variable=latestPatch]$currentPatch"
+echo "##vso[task.setvariable variable=latestMajor;isOutput=true]$currentMajor"
+echo "##vso[task.setvariable variable=latestMinor;isOutput=true]$currentMinor"
+echo "##vso[task.setvariable variable=latestPatch;isOutput=true]$currentPatch"
