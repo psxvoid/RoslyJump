@@ -82,6 +82,7 @@ jobs:
       contents: |
         pre-release.sh
         publishManifest.json
+        build-results.json
         readme.md
         **\*.vsix
       targetFolder: $(Build.ArtifactStagingDirectory)
