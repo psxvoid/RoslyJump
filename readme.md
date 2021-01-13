@@ -10,10 +10,6 @@ All code in this project is covered under the Apache 2 license. You can find a c
 
 ## QA
 
-### Can I set the default hotkeys to a different one?
-
-Yes. Go to `Tools > Options > Environment > Keyboard`. In the "Show commands containing" type "RoslyJump" you'll see all commands supported by the extension and be able to configure them..
-
 ### How to remember all specific jump cases in RoslyJump?
 
 You don't have to remember them all. There are only two jump verticals - up/down and left/right. The up/down vertical has a single corresponding hotkey for each action:
@@ -48,3 +44,33 @@ Jumps to a context node that has the same parent but a different type. For examp
 #### Jump To Up/Down Hotkeys
 
 Jumps to a parent/child context node. For example, if the cursor is set on a method name (part of the MethodDeclarationSyntax), then jump up will jump to a containing class because it is the parent of the method. In contrast, jumping down will set a cursor on the first child node (parameter list) of the method. To jump to a method body from a method declaration you have to jump to a parameter list and then use "jump-to-next-sibling" hotkey to jump to a method body block, and then use "jump-down" hotkey one more time to navigate to the first statement in the method body.
+
+### Can I set the default hotkeys to a different one?
+
+Yes. Go to `Tools > Options > Environment > Keyboard`. In the "Show commands containing" type "RoslyJump" you'll see all commands supported by the extension and be able to configure them..
+
+#### Alternative hotkey configuration ideas
+
+vim-like:
+```xml
+<Shortcut Command="RoslyJump.ContextJumpNext" Scope="C# Editor">Alt+L</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpPrev" Scope="C# Editor">Alt+H</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpDown" Scope="C# Editor">Alt+J</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpUp" Scope="C# Editor">Alt+K</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpPrevSibling" Scope="C# Editor">Shift+Alt+H</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpNextSibling" Scope="C# Editor">Shift+Alt+L</Shortcut>
+<RemoveShortcut Command="Edit.JoinLines" Scope="Text Editor">Shift+Alt+L, Shift+Alt+J</RemoveShortcut>
+<RemoveShortcut Command="Edit.SortLines" Scope="Text Editor">Shift+Alt+L, Shift+Alt+S</RemoveShortcut>
+```
+
+wasd-like:
+```xml
+<Shortcut Command="RoslyJump.ContextJumpNext" Scope="C# Editor">Alt+D</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpPrev" Scope="C# Editor">Alt+A</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpUp" Scope="C# Editor">Alt+W</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpDown" Scope="C# Editor">Alt+S</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpNextSibling" Scope="C# Editor">Shift+Alt+D</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpPrevSibling" Scope="C# Editor">Shift+Alt+A</Shortcut>
+<Shortcut Command="Project.AddExistingItem" Scope="Solution Explorer">Shift+Alt+A</Shortcut>
+<RemoveShortcut Command="Project.AddExistingItem" Scope="Global">Shift+Alt+A</RemoveShortcut>
+```
