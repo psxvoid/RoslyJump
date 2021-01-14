@@ -294,6 +294,33 @@ namespace RoslyJump.Core.xUnit.Integration
         }
 
         [Fact]
+        public void MethodBody_JumpDownThisExpressionJumpUp_SameMethodBody()
+        {
+            AssertTransition<BlockSyntax, MethodBodyState>(
+                ActionKind.JumpContextUp,
+                x => x.ParentAsOrNull<MethodDeclarationSyntax>()?.HasName("Method31") ?? false,
+                x => x.ActiveNodeAs<BlockSyntax>()
+                    .ParentAs<MethodDeclarationSyntax>().HasName("Method31"),
+                null,
+                x =>
+                {
+                    Assert.IsType<MethodBodyState>(x.State);
+                    x.State.JumpContextDown();
+                    Assert.IsType<ExpressionStatementState>(x.State);
+
+                    ExpressionStatementSyntax statement = x.State
+                        .ActiveNodeAs<ExpressionStatementSyntax>();
+
+                    FileLinePositionSpan line = statement.GetLocation().GetLineSpan();
+                    int lineStart = line.StartLinePosition.Line;
+                    int charStart = line.StartLinePosition.Character;
+
+                    x.TransitionTo(lineStart, charStart);
+                    Assert.IsType<ExpressionStatementState>(x.State);
+                });
+        }
+
+        [Fact]
         public void IfStatementCondition_JumpNext_NextConditionStatement()
         {
             AssertTransition<IfStatementSyntax, IfStatementState>(

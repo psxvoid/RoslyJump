@@ -111,6 +111,11 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 return y + v2 + z;
             }
 
+            private void Method31()
+            {
+                this.field1 = 0;
+            }
+
             public void Method4()
             {
                 var x = this.isTrue;                        // LocalDeclarationStatementSyntax
