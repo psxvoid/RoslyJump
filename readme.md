@@ -27,7 +27,7 @@ All code in this project is covered under the Apache 2 license. You can find a c
 
 ## QA
 
-### Where I can find usage examples?
+### Where can I find usage examples?
 
 Usage examples can be found [here](https://github.com/psxvoid/RoslyJump/readme-examples.md).
 
