@@ -18,9 +18,9 @@ All code in this project is covered under the Apache 2 license. You can find a c
 
 <kbd>Alt</kbd>+<kbd>D</kbd> - jump down
 
-<kbd>Shift</kbd>+<kbd>.</kbd> - jump next sibling
+<kbd>Alt</kbd>+<kbd>K</kbd> - jump next sibling
 
-<kbd>Shift</kbd>+<kbd>,</kbd> - jump previous sibling
+<kbd>Alt</kbd>+<kbd>J</kbd> - jump previous sibling
 
 ## QA
 
@@ -70,6 +70,18 @@ Yes. Go to `Tools > Options > Environment > Keyboard`. In the "Show commands con
 
 #### Alternative hotkey configuration ideas
 
+If you are not using `Reattach to process` hotkey, then this may be the most convenient (only four main keys two remember):
+
+```xml
+<Shortcut Command="RoslyJump.ContextJumpNext" Scope="C# Editor">Alt+N</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpPrev" Scope="C# Editor">Alt+P</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpDown" Scope="C# Editor">Alt+U</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpUp" Scope="C# Editor">Alt+D</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpNextSibling" Scope="C# Editor">Shift+Alt+N</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpPrevSibling" Scope="C# Editor">Shift+Alt+P</Shortcut>
+<RemoveShortcut Command="Debug.ReattachtoProcess" Scope="Global">Shift+Alt+P</RemoveShortcut>
+```
+
 vim-like:
 
 ```xml
@@ -77,8 +89,8 @@ vim-like:
 <Shortcut Command="RoslyJump.ContextJumpPrev" Scope="C# Editor">Alt+H</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpDown" Scope="C# Editor">Alt+J</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpUp" Scope="C# Editor">Alt+K</Shortcut>
-<Shortcut Command="RoslyJump.ContextJumpPrevSibling" Scope="C# Editor">Shift+Alt+H</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpNextSibling" Scope="C# Editor">Shift+Alt+L</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpPrevSibling" Scope="C# Editor">Shift+Alt+H</Shortcut>
 <RemoveShortcut Command="Edit.JoinLines" Scope="Text Editor">Shift+Alt+L, Shift+Alt+J</RemoveShortcut>
 <RemoveShortcut Command="Edit.SortLines" Scope="Text Editor">Shift+Alt+L, Shift+Alt+S</RemoveShortcut>
 ```
