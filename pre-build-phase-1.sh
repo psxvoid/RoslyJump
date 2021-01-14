@@ -174,3 +174,7 @@ echo "##vso[task.setvariable variable=isReleaseCandidate;isOutput=true]$isReleas
 echo "##vso[task.setvariable variable=latestMajor;isOutput=true]$currentMajor"
 echo "##vso[task.setvariable variable=latestMinor;isOutput=true]$currentMinor"
 echo "##vso[task.setvariable variable=latestPatch;isOutput=true]$currentPatch"
+
+if [[ $isMarketplaceRelease = true ]]; then
+    echo "##vso[build.addbuildtag]marketplace-release"
+fi
