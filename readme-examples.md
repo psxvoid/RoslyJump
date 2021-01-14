@@ -29,6 +29,8 @@
 
 ## Jump Between Method Declarations, Method Parameters, Method Bodies, Method Body Statements
 
-## Jump Method Parameters
+## Jump Between Method Parameters
+
+![Jump Between Method Parameters](./docs/images/usage-examples/example-jump-between-method-params.gif)
 
 ## Jump Between Method Statements
