@@ -180,7 +180,7 @@ namespace RoslyJump.Core
                     last = results[prev];
                 }
             }
-            else if (last.MixedNode is ExpressionSyntax)
+            else if (last.BaseNode is ExpressionSyntax)
             {
                 last = results.Last(x => !(x.BaseNode is ExpressionSyntax));
             }
