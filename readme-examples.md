@@ -27,10 +27,10 @@
 
 ![Jump Between Fields and Constructors](./docs/images/usage-examples/example-jump-between-field-and-ctor.gif)
 
-## Jump Between Method Declarations, Method Parameters, Method Bodies, Method Body Statements
-
 ## Jump Between Method Parameters
 
 ![Jump Between Method Parameters](./docs/images/usage-examples/example-jump-between-method-params.gif)
 
-## Jump Between Method Statements
+## Jump Between Method Declarations, Parameters, Body, Statements
+
+![Jump Between Method Declaration, Parameters, Body, Statements](./docs/images/usage-examples/example-jump-between-method-members.gif)
