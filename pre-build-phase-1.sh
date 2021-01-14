@@ -182,3 +182,7 @@ fi
 if [[ $isReleaseCandidate = true ]]; then
     echo "##vso[build.addbuildtag]release-candidate"
 fi
+
+if [[ $isReleaseCandidate = false && $isMarketplaceRelease = false ]]; then
+    echo "##vso[build.addbuildtag]continious-integration"
+fi
