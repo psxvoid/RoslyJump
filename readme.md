@@ -8,6 +8,20 @@ RoslyJump is a free extension for Visual Studio 2019 for mouseless code navigati
 
 All code in this project is covered under the Apache 2 license. You can find a copy of it inside the same folder inside License.txt.
 
+## Default Hotkeys
+
+<kbd>Alt</kbd>+<kbd>N</kbd> - jump next
+
+<kbd>Alt</kbd>+<kbd>P</kbd> - jump previous
+
+<kbd>Alt</kbd>+<kbd>U</kbd> - jump up
+
+<kbd>Alt</kbd>+<kbd>D</kbd> - jump down
+
+<kbd>Shift</kbd>+<kbd>.</kbd> - jump next sibling
+
+<kbd>Shift</kbd>+<kbd>,</kbd> - jump previous sibling
+
 ## QA
 
 ### How to remember all specific jump cases in RoslyJump?
