@@ -24,6 +24,10 @@ All code in this project is covered under the Apache 2 license. You can find a c
 
 ## QA
 
+### Where I can find usage examples?
+
+Usage examples can be found [here](https://github.com/psxvoid/RoslyJump/readme-examples.md).
+
 ### How to remember all specific jump cases in RoslyJump?
 
 You don't have to remember them all. There are only two jump verticals - up/down and left/right. The up/down vertical has a single corresponding hotkey for each action:
