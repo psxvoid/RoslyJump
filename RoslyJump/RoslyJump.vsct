@@ -75,27 +75,27 @@
   <KeyBindings>
     <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpNext"
      editor="guidCSharpEditor"
-     key1="J" mod1="Alt Shift" key2="N">
+     key1="N" mod1="Alt">
     </KeyBinding>
     <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpPrev"
      editor="guidCSharpEditor"
-     key1="J" mod1="Alt Shift" key2="P">
+     key1="P" mod1="Alt">
     </KeyBinding>
     <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpUp"
      editor="guidCSharpEditor"
-     key1="J" mod1="Alt Shift" key2="U">
+     key1="U" mod1="Alt">
     </KeyBinding>
     <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpDown"
      editor="guidCSharpEditor"
-     key1="J" mod1="Alt Shift" key2="D">
+     key1="D" mod1="Alt">
     </KeyBinding>
     <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpNextSibling"
      editor="guidCSharpEditor"
-     key1="J" mod1="Alt Shift" key2="N" mod2="Shift">
+     key1="K" mod1="Alt">
     </KeyBinding>
     <KeyBinding guid="guidCommandGroup" id="cmdidRoslyJumpContextJumpPrevSibling"
      editor="guidCSharpEditor"
-     key1="J" mod1="Alt Shift" key2="P" mod2="Shift">
+     key1="J" mod1="Alt">
     </KeyBinding>
   </KeyBindings>
   <Symbols>
