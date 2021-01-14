@@ -5,6 +5,7 @@
         "ctmenu",
         "dngrep",
         "mouseless",
+        "vsix",
         "vsixmanifest",
         "xunit"
     ]

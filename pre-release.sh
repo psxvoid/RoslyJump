@@ -1,4 +1,39 @@
-varsJson=$(cat $SYSTEM_DEFAULTWORKINGDIRECTORY/RoslyJump.Vsix/RoslyJump.Vsix/build-results.json)
+prodPath="$SYSTEM_DEFAULTWORKINGDIRECTORY/vsix/prod/build-results.json"
+rcPath="$SYSTEM_DEFAULTWORKINGDIRECTORY/vsix/rc/build-results.json"
+ciPath="$SYSTEM_DEFAULTWORKINGDIRECTORY/vsix/ci/build-results.json"
+
+targetStage="Unknown"
+matches=0
+
+if [[ -f "$ciPath" ]]; then
+    targetStage="Development"
+    matches=$((matches+1))
+fi
+
+if [[ -f "$rcPath" ]]; then
+    targetStage="Release Candidate"
+    matches=$((matches+1))
+fi
+
+if [[ -f "$prodPath" ]]; then
+    targetStage="Production"
+    matches=$((matches+1))
+fi
+
+echo "Target stage: $targetStage"
+echo "Stages count: $matches"
+
+if (( $matches > 1 )); then
+    >&2 echo "Pre-Release Error: Only a single-stage artifacts are supported."
+    exit 1
+fi
+
+if [[ $targetStage != "Production" ]]; then
+    >&2 echo "Pre-Release Error: The production artifact is missing. Actual: $targetStage."
+    exit 1
+fi
+
+varsJson=$(cat $prodPath)
 
 isMarketplaceRelease=$(echo $varsJson | grep -Eo "isMarketplaceRelease:[[:space:]]+(.*)[,}]" | grep -Eo "(false|true)" | head -n 1)
 isReleaseCandidate=$(echo $varsJson | grep -Eo "isReleaseCandidate:[[:space:]]+(.*)[,}]" | grep -Eo "(false|true)" | head -n 1)
