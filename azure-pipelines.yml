@@ -40,6 +40,7 @@ jobs:
     isMarketplaceRelease: $[dependencies.VersionUpdateAndValidation.outputs['versioning.isMarketplaceRelease']]
     isReleaseCandidate: $[dependencies.VersionUpdateAndValidation.outputs['versioning.isReleaseCandidate']]
     revisionCounter: $[counter(format('{0}.{1}.{2}-{3}', variables['latestMajor'], variables['latestMinor'], variables['latestPatch'], variables['isMarketplaceRelease']), 0)]
+
   steps:
   - checkout: self
     submodules: true
@@ -77,10 +78,26 @@ jobs:
       otherConsoleOptions: '/Framework:.NETCoreApp,Version=3.1'
 
   - task: CopyFiles@2
+    displayName: 'Copy pre-release.sh'
+    inputs:
+      contents: pre-release.sh
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'release'
+      publishLocation: 'Container'
+
+  - task: DeleteFiles@1
+    inputs:
+      SourceFolder: '$(Build.ArtifactStagingDirectory)'
+      Contents: 'pre-release.sh'
+
+  - task: CopyFiles@2
     displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
     inputs:
       contents: |
-        pre-release.sh
         publishManifest.json
         build-results.json
         readme.md
@@ -90,5 +107,10 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'RoslyJump.Vsix'
+      ${{ if eq(variables['isMarketplaceRelease'], 'true') }}:
+        ArtifactName: 'prod'
+      ${{ if eq(variables['isReleaseCandidate'], 'true') }}:
+        ArtifactName: 'rc'
+      ${{ if and(ne(variables['isReleaseCandidate'], 'true'), ne(variables['isMarketplaceRelease'], 'true')) }}:
+        ArtifactName: 'ci'
       publishLocation: 'Container'
