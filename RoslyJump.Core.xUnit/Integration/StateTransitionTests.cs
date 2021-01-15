@@ -48,11 +48,11 @@ namespace RoslyJump.Core.xUnit.Integration
         [Fact]
         public void Indexer_JumpNextSibling_NextClassMember()
         {
-            AssertTransition<IndexerDeclarationSyntax, ReadOnlyPropertyDeclarationState>(
+            AssertTransition<IndexerDeclarationSyntax, FieldDeclarationState>(
                 ActionKind.JumpNextSibling,
                 x => x.ParentAs<ClassDeclarationSyntax>().HasName("C1")
                     && x.HasIndexerParam("int i"),
-                x => x.ActiveBaseNode.HasName("Prop1"));
+                x => x.ActiveBaseNode.HasName("field1"));
         }
 
         [Fact]
@@ -118,11 +118,11 @@ namespace RoslyJump.Core.xUnit.Integration
         [Fact]
         public void MethodDeclaration_JumpPrevSibling_PrevSibling()
         {
-            AssertTransition<MethodDeclarationSyntax, FieldDeclarationState>(
+            AssertTransition<MethodDeclarationSyntax, ReadOnlyPropertyDeclarationState>(
                 ActionKind.JumpPrevSibling,
                 x => x.HasName("Method1")
                     && (x.GetFirstParentOfType<ClassDeclarationSyntax>()?.HasName("C1") ?? false),
-                x => x.ActiveNodeAs<FieldDeclarationSyntax>().HasName("field1"));
+                x => x.ActiveNodeAs<PropertyDeclarationSyntax>().HasName("Prop1ReadonlyInt"));
         }
 
         [Fact]
@@ -214,7 +214,7 @@ namespace RoslyJump.Core.xUnit.Integration
         {
             AssertTransition<BlockSyntax, MethodBodyState>(
                 ActionKind.JumpNext,
-                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.Parent is MethodDeclarationSyntax method && method.HasName("Method1"),
                 x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>()
                     .BaseNodeAs<BlockSyntax>()
                     .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
@@ -225,7 +225,7 @@ namespace RoslyJump.Core.xUnit.Integration
         {
             AssertTransition<BlockSyntax, MethodBodyState>(
                 ActionKind.JumpPrev,
-                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.Parent is MethodDeclarationSyntax method && method.HasName("Method1"),
                 x => x.ActiveNodeAsVirtual<MethodBodyDeclarationSyntax>()
                     .BaseNodeAs<BlockSyntax>()
                     .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
@@ -236,7 +236,7 @@ namespace RoslyJump.Core.xUnit.Integration
         {
             AssertTransition<BlockSyntax, ParameterListState>(
                 ActionKind.JumpNextSibling,
-                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.Parent is MethodDeclarationSyntax method && method.HasName("Method1"),
                 x => x.ActiveNodeAs<ParameterListSyntax>()
                     .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
         }
@@ -246,7 +246,7 @@ namespace RoslyJump.Core.xUnit.Integration
         {
             AssertTransition<BlockSyntax, ParameterListState>(
                 ActionKind.JumpPrevSibling,
-                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.Parent is MethodDeclarationSyntax method && method.HasName("Method1"),
                 x => x.ActiveNodeAs<ParameterListSyntax>()
                     .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));
         }
@@ -256,7 +256,7 @@ namespace RoslyJump.Core.xUnit.Integration
         {
             AssertTransition<BlockSyntax, MethodDeclarationState>(
                 ActionKind.JumpContextUp,
-                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.Parent is MethodDeclarationSyntax method && method.HasName("Method1"),
                 x => x.BaseNode.HasName("Method1"));
         }
 
@@ -265,7 +265,7 @@ namespace RoslyJump.Core.xUnit.Integration
         {
             AssertTransition<BlockSyntax, IfStatementState>(
                 ActionKind.JumpContextDown,
-                x => x.ParentAs<MethodDeclarationSyntax>().HasName("Method1"),
+                x => x.Parent is MethodDeclarationSyntax method && method.HasName("Method1"),
                 x => x.ActiveNodeAs<IfStatementSyntax>()
                     .ParentAs<BlockSyntax>()
                     .ParentAs<MethodDeclarationSyntax>().HasName("Method1"));

@@ -33,6 +33,41 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
 
             private bool isTrue = false;
 
+            private readonly int field3int;
+            private string field4string;
+
+
+            private int field5int = 0;
+
+            public int Prop1ReadonlyInt => this.field3int;
+
+            public string Prop2GetSetBlockBodyString
+            {
+                get
+                {
+                    return this.field4string;
+                }
+                set
+                {
+                    this.field5int++;
+
+
+                    if (this.field5int > 5)
+                    {
+                        throw new Exception();
+                    }
+
+
+                    this.field4string = value;
+                }
+            }
+
+            public string Prop3GetSetExpressionBodyString
+            {
+                get => this.field4string;
+                set => this.field4string = value;
+            }
+
             public int Method1(int x, int y)
             {
                 if (x == 3)                                 // IfDeclarationStatementSyntax
@@ -307,7 +342,7 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
                 }
 
                 lockStart:
-                lock(this)
+                lock (this)
                 {
                     return this.Method1(1, 2);
                 }
