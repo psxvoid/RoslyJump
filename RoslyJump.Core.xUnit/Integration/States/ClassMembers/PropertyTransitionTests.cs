@@ -35,6 +35,13 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
                     && prop.ParentAs<ClassDeclarationSyntax>().HasName("C1")
                     && x.Keyword.ValueText == "get";
 
+        private static readonly Func<AccessorDeclarationSyntax, bool> ExpressionGetAccessorPredicate
+            = x => x.Parent is AccessorListSyntax accessors
+                    && accessors.Parent is PropertyDeclarationSyntax prop
+                    && prop.HasName("Prop3GetSetExpressionBodyString")
+                    && prop.ParentAs<ClassDeclarationSyntax>().HasName("C1")
+                    && x.Keyword.ValueText == "get";
+
         [Fact]
         public void ContextSelection_PropertyDeclaration_PropertyDeclarationState()
         {
@@ -197,6 +204,75 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
                             .ParentAs<AccessorListSyntax>()
                             .ParentAs<PropertyDeclarationSyntax>().Identifier.ValueText);
                     Assert.Equal("get", x.ActiveBaseNode.Keyword.ValueText);
+                });
+        }
+
+        [Fact]
+        public void JumpNext_PropertyWithGetSetExpressionGet_NextAccessor()
+        {
+            AssertTransition<AccessorDeclarationSyntax, AccessorDeclarationState>(
+                ActionKind.JumpNext,
+                ExpressionGetAccessorPredicate,
+                x => Assert.Equal(
+                    "set",
+                    x.ActiveBaseNode.Keyword.ValueText));
+        }
+
+        [Fact]
+        public void JumpPrev_PropertyWithGetSetExpressionGet_PrevAccessor()
+        {
+            AssertTransition<AccessorDeclarationSyntax, AccessorDeclarationState>(
+                ActionKind.JumpPrev,
+                ExpressionGetAccessorPredicate,
+                x => Assert.Equal(
+                    "set",
+                    x.ActiveBaseNode.Keyword.ValueText));
+        }
+
+        [Fact]
+        public void JumpNextSibling_PropertyWithGetSetExpressionGet_SameAccessor()
+        {
+            AssertTransition<AccessorDeclarationSyntax, AccessorDeclarationState>(
+                ActionKind.JumpNextSibling,
+                ExpressionGetAccessorPredicate,
+                x => Assert.Equal(
+                    "get",
+                    x.ActiveBaseNode.Keyword.ValueText));
+        }
+
+        [Fact]
+        public void JumpPrevSibling_PropertyWithGetSetExpressionGet_SameAccessor()
+        {
+            AssertTransition<AccessorDeclarationSyntax, AccessorDeclarationState>(
+                ActionKind.JumpPrevSibling,
+                ExpressionGetAccessorPredicate,
+                x => Assert.Equal(
+                    "get",
+                    x.ActiveBaseNode.Keyword.ValueText));
+        }
+
+        [Fact]
+        public void JumpUp_PropertyWithGetSetExpressionGet_PropertyDeclaration()
+        {
+            AssertTransition<AccessorDeclarationSyntax, PropertyDeclarationState>(
+                ActionKind.JumpContextUp,
+                ExpressionGetAccessorPredicate,
+                x => Assert.Equal(
+                    "Prop3GetSetExpressionBodyString",
+                    x.ActiveBaseNode.Identifier.ValueText));
+        }
+
+        [Fact]
+        public void JumpDown_PropertyWithGetSetExpressionGet_FirstExpression()
+        {
+            AssertTransition<AccessorDeclarationSyntax, ExpressionState>(
+                ActionKind.JumpContextDown,
+                ExpressionGetAccessorPredicate,
+                x => {
+                    Assert.IsType<MemberAccessExpressionSyntax>(x.ActiveBaseNode);
+                    Assert.Equal(
+                        "this.field4string",
+                        x.ActiveBaseNode.ToString());
                 });
         }
 
