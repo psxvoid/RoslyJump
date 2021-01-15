@@ -34,7 +34,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers.Propertie
                     $"{nameof(ReadOnlyPropertyDeclarationState)}");
             }
 
-            return expressionBody.QueryVirtualAndCombine(MethodBodyVirtualQuery.Instance);
+            return expressionBody.QueryVirtualAndCombine(NestedBlockVirtualQuery.Instance);
         }
     }
 }
