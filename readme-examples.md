@@ -31,6 +31,10 @@
 
 ![Jump Between Class Members](./docs/images/usage-examples/jump-between-class-members.gif)
 
+## Jump Between Property Members
+
+![Jump Between Property Members](./docs/images/usage-examples/example-jump-between-property-members.gif)
+
 ## Jump Between Method Parameters
 
 ![Jump Between Method Parameters](./docs/images/usage-examples/example-jump-between-method-params.gif)
