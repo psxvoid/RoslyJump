@@ -29,7 +29,7 @@ All code in this project is covered under the Apache 2 license. You can find a c
 
 ### Where can I find usage examples?
 
-Usage examples can be found [here](https://github.com/psxvoid/RoslyJump/readme-examples.md).
+Usage examples can be found [here](https://github.com/psxvoid/RoslyJump/blob/main/readme-examples.md).
 
 ### How to remember all specific jump cases in RoslyJump?
 
