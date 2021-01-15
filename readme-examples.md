@@ -27,6 +27,10 @@
 
 ![Jump Between Fields and Constructors](./docs/images/usage-examples/example-jump-between-field-and-ctor.gif)
 
+## Jump Between Class Members
+
+![Jump Between Class Members](./docs/images/usage-examples/jump-between-class-members.gif)
+
 ## Jump Between Method Parameters
 
 ![Jump Between Method Parameters](./docs/images/usage-examples/example-jump-between-method-params.gif)
