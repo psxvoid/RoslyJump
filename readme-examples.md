@@ -34,3 +34,7 @@
 ## Jump Between Method Declarations, Parameters, Body, Statements
 
 ![Jump Between Method Declaration, Parameters, Body, Statements](./docs/images/usage-examples/example-jump-between-method-members.gif)
+
+## Jump Between Methods
+
+![Jump Between Methods](./docs/images/usage-examples/jump-between-methods.gif)
