@@ -227,6 +227,7 @@ namespace RoslyJump.Core.Contexts.Local
         protected bool IsJumpTargetNodesSet => !nodes.IsNullOrEmpty();
         protected int JumpTargetIndex = -1;
         protected virtual int JumpDownCount => 1;
+        protected virtual int JumpUpCount => 1;
 
         public CombinedSyntaxNode? ActiveNode
         {
@@ -562,23 +563,30 @@ namespace RoslyJump.Core.Contexts.Local
 
         public virtual void JumpContextUp()
         {
-            CombinedSyntaxNode? parentContextNode = this.QueryParentContextNode();
+            int jumpCount = this.JumpUpCount;
 
-            if (parentContextNode == null)
+            for (int i = 0; i < jumpCount; i++)
             {
-                return;
-            }
+                CombinedSyntaxNode? parentContextNode = this.QueryParentContextNode();
 
-            this.TransitionTo(parentContextNode, this.Context);
-            this.Context.State.QueryTargetNodes();
-            this.Context.State.SetJumpTarget(
-                this.Context.State.ContextNode ?? throw new InvalidOperationException(
-                    "Jump target for the upper context is missing."));
+                if (parentContextNode == null)
+                {
+                    return;
+                }
+
+                this.TransitionTo(parentContextNode, this.Context);
+                this.Context.State.QueryTargetNodes();
+                this.Context.State.SetJumpTarget(
+                    this.Context.State.ContextNode ?? throw new InvalidOperationException(
+                        "Jump target for the upper context is missing."));
+            }
         }
 
         public virtual void JumpContextDown()
         {
-            for (int i = 0; i < this.JumpDownCount; i++)
+            int jumpCount = this.JumpDownCount;
+
+            for (int i = 0; i < jumpCount; i++)
             {
                 CombinedSyntaxNode? firstChildContextNode =
                     this.Context.State.QueryChildContextNode();

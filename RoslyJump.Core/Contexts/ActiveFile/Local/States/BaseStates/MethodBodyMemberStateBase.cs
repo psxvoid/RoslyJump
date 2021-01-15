@@ -3,6 +3,7 @@ using dngrep.core.VirtualNodes;
 using dngrep.core.VirtualNodes.VirtualQueries;
 using dngrep.core.VirtualNodes.VirtualQueries.Extensions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.SiblingStates.States;
 using RoslyJump.Core.Contexts.Local;
 using RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis;
@@ -13,6 +14,12 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
         : LocalContextState<TNode, MethodBodyMemberSiblingState>
         where TNode : SyntaxNode
     {
+        protected override int JumpUpCount =>
+            this.ContextNode?.BaseNode.Parent is BlockSyntax block
+            && block.Parent is AccessorDeclarationSyntax
+            ? 2
+            : base.JumpDownCount;
+
         protected MethodBodyMemberStateBase(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
@@ -20,13 +27,15 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
 
         protected override CombinedSyntaxNode? QueryParentContextNode()
         {
-            SyntaxNode parent = this.BaseNode.GetContainerNode();
+            SyntaxNode? parent = this.ContextNode?.BaseNode.GetContainerNode();
 
-            return parent.QueryVirtualAndCombine(
+            return parent?.QueryVirtualAndCombine(
                 MethodBodyVirtualQuery.Instance,
                 NestedBlockVirtualQuery.Instance,
                 IfBodyVirtualQuery.Instance,
-                TryBodyVirtualQuery.Instance);
+                TryBodyVirtualQuery.Instance)
+                ?? throw new InvalidOperationException(
+                    $"Unable to query the parent context for {this.GetType()}");
         }
 
         protected override MethodBodyMemberSiblingState InitSiblingState()
