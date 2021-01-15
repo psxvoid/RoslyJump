@@ -268,12 +268,26 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
             AssertTransition<AccessorDeclarationSyntax, ExpressionState>(
                 ActionKind.JumpContextDown,
                 ExpressionGetAccessorPredicate,
-                x => {
+                x =>
+                {
                     Assert.IsType<MemberAccessExpressionSyntax>(x.ActiveBaseNode);
                     Assert.Equal(
                         "this.field4string",
                         x.ActiveBaseNode.ToString());
                 });
+        }
+
+        [Fact]
+        public void JumpDown_ReadOnlyProperty_FirstExpression()
+        {
+            AssertTransition<ArrowExpressionClauseSyntax, ExpressionState>(
+                ActionKind.JumpContextDown,
+                x => x.Parent is PropertyDeclarationSyntax prop
+                    && prop.HasName("Prop1ReadonlyInt")
+                    && prop.ParentAs<ClassDeclarationSyntax>().HasName("C1"),
+                x => Assert.Equal(
+                    "this.field3int",
+                    x.ActiveBaseNode.ToString()));
         }
 
         private void AssertTransition<TExpectedState>(

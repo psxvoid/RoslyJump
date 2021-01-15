@@ -119,7 +119,8 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             while (current != null
                 && !current.IsContainer()
-                && !(current is AccessorDeclarationSyntax))
+                && !(current is AccessorDeclarationSyntax)
+                && !(current is PropertyDeclarationSyntax prop && prop.ExpressionBody != null))
             {
                 current = current.Parent;
             }

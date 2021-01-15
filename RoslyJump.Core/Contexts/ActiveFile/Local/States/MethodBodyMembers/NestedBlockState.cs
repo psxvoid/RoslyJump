@@ -71,8 +71,14 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
                 return new MethodBodyMemberSiblingState(
                     @if.Condition.QueryVirtualAndCombine(IfConditionVirtualQuery.Instance));
             }
-            
+
             if (parent is AccessorDeclarationSyntax)
+            {
+                return new MethodBodyMemberSiblingState(
+                    this.ActiveBaseNode.QueryVirtualAndCombine(NestedBlockVirtualQuery.Instance));
+            }
+
+            if (parent is PropertyDeclarationSyntax prop && prop.ExpressionBody != null)
             {
                 return new MethodBodyMemberSiblingState(
                     this.ActiveBaseNode.QueryVirtualAndCombine(NestedBlockVirtualQuery.Instance));
