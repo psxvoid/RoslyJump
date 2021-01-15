@@ -178,6 +178,28 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
                     x.ActiveBaseNode.ToString()));
         }
 
+        [Fact]
+        public void JumpUp_PropertyWithGetSetNestedStatement_ParentAccessor()
+        {
+            AssertTransition<ReturnStatementSyntax, AccessorDeclarationState>(
+                ActionKind.JumpContextUp,
+                x => x.Parent is BlockSyntax block
+                    && block.Parent is AccessorDeclarationSyntax accessor
+                    && accessor.Keyword.ValueText == "get"
+                    && accessor.Parent is AccessorListSyntax accessors
+                    && accessors.Parent is PropertyDeclarationSyntax prop
+                    && prop.HasName("Prop2GetSetBlockBodyString"),
+                x =>
+                {
+                    Assert.Equal(
+                        "Prop2GetSetBlockBodyString",
+                        x.ActiveBaseNode
+                            .ParentAs<AccessorListSyntax>()
+                            .ParentAs<PropertyDeclarationSyntax>().Identifier.ValueText);
+                    Assert.Equal("get", x.ActiveBaseNode.Keyword.ValueText);
+                });
+        }
+
         private void AssertTransition<TExpectedState>(
             ActionKind action,
             Action<TExpectedState> assert)
