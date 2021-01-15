@@ -117,7 +117,9 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             SyntaxNode? current = target.Parent;
 
-            while (current != null && !current.IsContainer())
+            while (current != null
+                && !current.IsContainer()
+                && !(current is AccessorDeclarationSyntax))
             {
                 current = current.Parent;
             }
@@ -313,7 +315,7 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
 
             return method.Identifier.ValueText == name;
         }
-        
+
         /// <summary>
         /// Verifies that the target <see cref="LocalFunctionStatementSyntax"/>
         /// has a specified name.

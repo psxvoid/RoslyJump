@@ -36,7 +36,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 
         protected override CombinedSyntaxNode[] QueryTargetNodesFunc()
         {
-            SyntaxNode? parent = BaseNode.GetContainerNode();
+            SyntaxNode? parent = this.BaseNode.GetContainerNode();
 
             if (parent == null)
             {
@@ -52,7 +52,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 
         protected override CombinedSyntaxNode? QueryParentContextNode()
         {
-            SyntaxNode? parent = ActiveBaseNode.Parent;
+            SyntaxNode? parent = this.ActiveBaseNode.Parent;
 
             if (parent is IfStatementSyntax @if && @if.Condition == ActiveBaseNode)
             {
@@ -64,12 +64,18 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 
         protected override MethodBodyMemberSiblingState InitSiblingState()
         {
-            SyntaxNode? parent = ActiveBaseNode.Parent;
+            SyntaxNode? parent = this.ActiveBaseNode.Parent;
 
-            if (parent is IfStatementSyntax @if && @if.Condition == ActiveBaseNode)
+            if (parent is IfStatementSyntax @if && @if.Condition == this.ActiveBaseNode)
             {
                 return new MethodBodyMemberSiblingState(
                     @if.Condition.QueryVirtualAndCombine(IfConditionVirtualQuery.Instance));
+            }
+            
+            if (parent is AccessorDeclarationSyntax)
+            {
+                return new MethodBodyMemberSiblingState(
+                    this.ActiveBaseNode.QueryVirtualAndCombine(NestedBlockVirtualQuery.Instance));
             }
 
             return base.InitSiblingState();
