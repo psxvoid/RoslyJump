@@ -12,6 +12,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers.Propertie
 {
     public class AccessorDeclarationState : LocalContextState<AccessorDeclarationSyntax>
     {
+        protected override int JumpDownCount => 2;
+
         public AccessorDeclarationState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
@@ -40,7 +42,9 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers.Propertie
                 return null;
             }
 
-            return body.QueryVirtualAndCombine(MethodBodyVirtualQuery.Instance);
+            return body.QueryVirtualAndCombine(
+                MethodBodyVirtualQuery.Instance,
+                NestedBlockVirtualQuery.Instance);
         }
 
         protected override CombinedSyntaxNode? QueryParentContextNode()
