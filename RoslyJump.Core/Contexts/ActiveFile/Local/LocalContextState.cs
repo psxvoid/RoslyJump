@@ -582,11 +582,7 @@ namespace RoslyJump.Core.Contexts.Local
                     return;
                 }
 
-                this.TransitionTo(parentContextNode, this.Context);
-                this.Context.State.QueryTargetNodes();
-                this.Context.State.SetJumpTarget(
-                    this.Context.State.ContextNode ?? throw new InvalidOperationException(
-                        "Jump target for the upper context is missing."));
+                this.JumpToTarget(parentContextNode.Value, true);
             }
         }
 
@@ -604,11 +600,7 @@ namespace RoslyJump.Core.Contexts.Local
                     return;
                 }
 
-                this.TransitionTo(firstChildContextNode, this.Context);
-                this.Context.State.QueryTargetNodes();
-                this.Context.State.SetJumpTarget(
-                    this.Context.State.ContextNode ?? throw new InvalidOperationException(
-                        "Jump target for the lower context is missing."));
+                this.JumpToTarget(firstChildContextNode.Value, true);
             }
         }
 
@@ -652,16 +644,18 @@ namespace RoslyJump.Core.Contexts.Local
             this.IsJumpTargetSet = true;
         }
 
-        private void JumpToTarget(CombinedSyntaxNode target)
+        private void JumpToTarget(CombinedSyntaxNode target, bool forceTransition = false)
         {
-            if (this.UseTransitionForJumpTarget(target))
+            if (this.UseTransitionForJumpTarget(target) || forceTransition)
             {
                 this.SkipNextChangeDetection = true;
                 this.TransitionTo(target, this.Context);
                 this.Context.State.QueryTargetNodes();
                 this.Context.State.SetJumpTarget(
                     this.Context.State.ContextNode ?? throw new InvalidOperationException(
-                        "Jump target for the lower context is missing."));
+                        "The jump target is missing after the transition.\n" +
+                        $"State before: {this.GetType().Name}.\n" +
+                        $"State after : {this.Context.State.GetType().Name}"));
             }
             else
             {
