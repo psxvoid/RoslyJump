@@ -62,3 +62,7 @@
 ## Jump Between If-Statement Members
 
 ![Jump Between If-Statement Members](./docs/images/usage-examples/example-jump-nested-if-members.gif)
+
+## Jump Between If-Else Clause
+
+![Jump Between If-Else Clause](./docs/images/usage-examples/example-jump-if-else-if.gif)
