@@ -78,8 +78,8 @@ If you are not using `Reattach to process` hotkey, then this may be the most con
 ```xml
 <Shortcut Command="RoslyJump.ContextJumpNext" Scope="C# Editor">Alt+N</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpPrev" Scope="C# Editor">Alt+P</Shortcut>
-<Shortcut Command="RoslyJump.ContextJumpDown" Scope="C# Editor">Alt+U</Shortcut>
-<Shortcut Command="RoslyJump.ContextJumpUp" Scope="C# Editor">Alt+D</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpUp" Scope="C# Editor">Alt+U</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpDown" Scope="C# Editor">Alt+D</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpNextSibling" Scope="C# Editor">Shift+Alt+N</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpPrevSibling" Scope="C# Editor">Shift+Alt+P</Shortcut>
 <RemoveShortcut Command="Debug.ReattachtoProcess" Scope="Global">Shift+Alt+P</RemoveShortcut>
@@ -90,8 +90,8 @@ vim-like:
 ```xml
 <Shortcut Command="RoslyJump.ContextJumpNext" Scope="C# Editor">Alt+L</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpPrev" Scope="C# Editor">Alt+H</Shortcut>
-<Shortcut Command="RoslyJump.ContextJumpDown" Scope="C# Editor">Alt+J</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpUp" Scope="C# Editor">Alt+K</Shortcut>
+<Shortcut Command="RoslyJump.ContextJumpDown" Scope="C# Editor">Alt+J</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpNextSibling" Scope="C# Editor">Shift+Alt+L</Shortcut>
 <Shortcut Command="RoslyJump.ContextJumpPrevSibling" Scope="C# Editor">Shift+Alt+H</Shortcut>
 <RemoveShortcut Command="Edit.JoinLines" Scope="Text Editor">Shift+Alt+L, Shift+Alt+J</RemoveShortcut>
