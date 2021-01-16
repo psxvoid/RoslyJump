@@ -35,9 +35,13 @@
 
 ![Jump Between Properties](./docs/images/usage-examples/example-jump-between-properties.gif)
 
-## Jump Between Property Members
+## Jump Between Full Property Members
 
 ![Jump Between Property Members](./docs/images/usage-examples/example-jump-between-property-members.gif)
+
+## Jump Between ReadOnly Property Nested Expressions
+
+![Jump Between ReadOnly Property Nested Expressions](./docs/images/usage-examples/example-jump-between-readonly-prop-nested-expression.gif)
 
 ## Jump Between Method Parameters
 
