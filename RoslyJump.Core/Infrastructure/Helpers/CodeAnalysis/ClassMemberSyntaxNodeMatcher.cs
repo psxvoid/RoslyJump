@@ -9,10 +9,10 @@ namespace RoslyJump.Core.Infrastructure
     // TODO: move to dngrep
     public class ClassMemberSyntaxNodeMatcher : ISyntaxNodeMatcher
     {
-        private static readonly ClassMemberSyntaxNodeMatcher instance =
+        private static readonly ClassMemberSyntaxNodeMatcher LocalInstance =
             new ClassMemberSyntaxNodeMatcher();
 
-        private readonly static Type[] ClassMemberSiblings = new[]
+        private static readonly Type[] ClassMemberSiblings = new[]
         {
             typeof(ConstructorDeclarationSyntax),
             typeof(InterfaceDeclarationSyntax),
@@ -39,6 +39,6 @@ namespace RoslyJump.Core.Infrastructure
             return ClassMemberSiblings.Contains(node.GetType());
         }
 
-        public static ClassMemberSyntaxNodeMatcher Instance => instance;
+        public static ClassMemberSyntaxNodeMatcher Instance => LocalInstance;
     }
 }

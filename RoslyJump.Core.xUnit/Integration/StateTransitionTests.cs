@@ -84,7 +84,7 @@ namespace RoslyJump.Core.xUnit.Integration
                     && x.HasIndexerParam("int i"),
                 x => x.ActiveBaseNode.HasIndexerParam("int i"));
         }
-        
+
         [Fact]
         public void MethodDeclaration_ReturnValueTypeContextSelection_MethodDeclaration()
         {

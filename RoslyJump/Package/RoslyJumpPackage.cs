@@ -54,13 +54,13 @@ namespace RoslyJump
         #endregion
 
 
-        private TextHighlightAdornment? Adornment = null;
+        private TextHighlightAdornment? adornment = null;
 
-        private ITextView? LastView;
-        private ITextSnapshot? LastSnapshot;
+        private ITextView? lastView;
+        private ITextSnapshot? lastSnapshot;
         private readonly SemaphoreSlim delaySemaphorSlim = new SemaphoreSlim(1, 1);
 
-        private LocalContext? LocalContext;
+        private LocalContext? localContext;
         private IWpfTextView? lastActiveView;
         private readonly SemaphoreSlim operationSemaphorSlim = new SemaphoreSlim(1, 1);
 
@@ -100,66 +100,66 @@ namespace RoslyJump
 
             try
             {
-                var view = this.viewAccessor?.ActiveView;
+                IWpfTextView? view = this.viewAccessor?.ActiveView;
 
-                if (view == null && this.LastView != null)
+                if (view == null && this.lastView != null)
                 {
-                    this.LastView.LayoutChanged -= this.View_LayoutChanged;
-                    this.LastView = null;
-                    this.LastSnapshot = null;
+                    this.lastView.LayoutChanged -= this.View_LayoutChanged;
+                    this.lastView = null;
+                    this.lastSnapshot = null;
                 }
 
                 if (view != null && this.lastActiveView != view)
                 {
-                    if (this.Adornment != null)
+                    if (this.adornment != null)
                     {
-                        this.Adornment.Remove();
+                        this.adornment.Remove();
                     }
 
-                    this.Adornment = new TextHighlightAdornment(view);
+                    this.adornment = new TextHighlightAdornment(view);
                     this.lastActiveView = view;
 
                     string text = view.TextSnapshot.GetText();
                     SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
-                    this.LocalContext = new LocalContext(tree);
+                    this.localContext = new LocalContext(tree);
 
                     view.LayoutChanged += View_LayoutChanged;
-                    this.LastView = view;
+                    this.lastView = view;
                 }
 
-                if (this.Adornment != null && view != null)
+                if (this.adornment != null && view != null)
                 {
-                    _ = this.LocalContext ?? throw new NullReferenceException(
+                    _ = this.localContext ?? throw new NullReferenceException(
                         "The local context should be initialized first.");
 
-                    this.Adornment.Remove();
+                    this.adornment.Remove();
 
                     SnapshotPoint caret = view.Caret.Position.BufferPosition;
                     IWpfTextViewLine textViewLine = view.GetTextViewLineContainingBufferPosition(caret);
                     int line = caret.GetContainingLine().LineNumber;
                     int startChar = textViewLine.Start.Difference(caret);
-                    
+
                     Debug.WriteLine(
                         "The state before cursor update:\t" +
-                        $"{this.LocalContext.State.GetType().Name}");
+                        $"{this.localContext.State.GetType().Name}");
 
-                    this.LocalContext.TransitionTo(line, startChar);
+                    this.localContext.TransitionTo(line, startChar);
 
                     Debug.WriteLine(
                         "The state after cursor update:\t" +
-                        $"{this.LocalContext.State.GetType().Name}");
+                        $"{this.localContext.State.GetType().Name}");
 
-                    jumpAction(this.LocalContext.State);
+                    jumpAction(this.localContext.State);
 
-                    LocalContextState state = this.LocalContext.State;
-                    
+                    LocalContextState state = this.localContext.State;
+
                     Debug.WriteLine(
                         "The state after jump:\t\t\t" +
-                        $"{this.LocalContext.State.GetType().Name}");
+                        $"{this.localContext.State.GetType().Name}");
 
                     if (state.IsJumpTargetSet)
                     {
-                        this.Adornment.EndorseTextBounds(
+                        this.adornment.EndorseTextBounds(
                             state.JumpTargetStartLine,
                             state.JumpTargetEndLine,
                             state.JumpTargetStartChar,
@@ -173,7 +173,7 @@ namespace RoslyJump
 
                         if (!view.TextViewLines.ContainsBufferPosition(jumpPoint))
                         {
-                            SnapshotSpan span = new SnapshotSpan(
+                            var span = new SnapshotSpan(
                                 view.TextSnapshot,
                                 Span.FromBounds(jumpTargetLine.Start, jumpTargetLine.End));
 
@@ -197,7 +197,7 @@ namespace RoslyJump
             await delaySemaphorSlim.WaitAsync();
 
             ITextSnapshot snapshot = e.NewSnapshot;
-            this.LastSnapshot = snapshot;
+            this.lastSnapshot = snapshot;
 
             delaySemaphorSlim.Release();
 
@@ -207,9 +207,9 @@ namespace RoslyJump
 
             try
             {
-                if (this.LastSnapshot != snapshot ||
+                if (this.lastSnapshot != snapshot ||
                     this.viewAccessor?.ActiveView == null ||
-                    this.viewAccessor.ActiveView != this.LastView)
+                    this.viewAccessor.ActiveView != this.lastView)
                 {
                     return;
                 }
@@ -221,7 +221,7 @@ namespace RoslyJump
 
                 try
                 {
-                    this.LocalContext = new LocalContext(tree);
+                    this.localContext = new LocalContext(tree);
                 }
                 finally
                 {
@@ -232,7 +232,7 @@ namespace RoslyJump
             {
                 if (delaySemaphorSlim.CurrentCount == 0)
                 {
-                    this.LastSnapshot = null;
+                    this.lastSnapshot = null;
                 }
 
                 delaySemaphorSlim.Release();
@@ -253,8 +253,9 @@ namespace RoslyJump
             await base.InitializeAsync(cancellationToken, progress);
             object componentModel = await GetServiceAsync(typeof(SComponentModel));
 
-            OleMenuCommandService? mcs = await this.GetServiceAsync(typeof(IMenuCommandService))
+            var mcs = await this.GetServiceAsync(typeof(IMenuCommandService))
                 as OleMenuCommandService;
+
             Debug.Assert(mcs != null);
 
             if (null != mcs)

@@ -151,7 +151,7 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
                     "Method7",
                     x.ActiveBaseNode.ParentAs<MethodDeclarationSyntax>().Identifier.ValueText));
         }
-        
+
         [Fact]
         public void JumpContextDown_MethodBodyUsingStatement_LowerContext()
         {

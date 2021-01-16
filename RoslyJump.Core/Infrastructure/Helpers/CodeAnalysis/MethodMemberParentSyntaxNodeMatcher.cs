@@ -12,10 +12,10 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
     public class MethodMemberParentSyntaxNodeMatcher
         : ISyntaxNodeMatcher, ICombinedSyntaxNodeMatcher
     {
-        private static readonly MethodMemberParentSyntaxNodeMatcher instance =
+        private static readonly MethodMemberParentSyntaxNodeMatcher LocalInstance =
             new MethodMemberParentSyntaxNodeMatcher();
 
-        private readonly static Type[] MethodMembers = new[]
+        private static readonly Type[] MethodMembers = new[]
         {
             typeof(MethodDeclarationSyntax),
             typeof(ConstructorDeclarationSyntax),
@@ -23,13 +23,13 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             typeof(LocalFunctionStatementSyntax),
         };
 
-        private readonly static Type[] MaybeMethodMembers = new[]
+        private static readonly Type[] MaybeMethodMembers = new[]
         {
             typeof(PropertyDeclarationSyntax),
             typeof(EventDeclarationSyntax),
         };
 
-        private readonly static Type[] VirtualMethodMembers = new[]
+        private static readonly Type[] VirtualMethodMembers = new[]
         {
             typeof(ReadOnlyPropertyDeclarationSyntax)
         };
@@ -66,7 +66,7 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             {
                 return true;
             }
-            
+
             if (node is EventDeclarationSyntax @event
                     && @event.AccessorList != null && @event.AccessorList.Accessors.Count > 0
                         && @event.AccessorList.Accessors.Any(
@@ -88,6 +88,6 @@ namespace RoslyJump.Core.Infrastructure.Helpers.CodeAnalysis
             return this.Match(node.BaseNode);
         }
 
-        public static MethodMemberParentSyntaxNodeMatcher Instance => instance;
+        public static MethodMemberParentSyntaxNodeMatcher Instance => LocalInstance;
     }
 }

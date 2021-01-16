@@ -65,8 +65,8 @@ namespace RoslyJump.Core.Contexts.Local
 
             LocalContextState stateAfter = context.State;
 
-            LocalContextState<TNode, T>? before = stateBefore as LocalContextState<TNode, T>;
-            LocalContextState<TNode, T>? after = stateAfter as LocalContextState<TNode, T>;
+            var before = stateBefore as LocalContextState<TNode, T>;
+            var after = stateAfter as LocalContextState<TNode, T>;
 
             if (before != null && before.SiblingState == null)
             {
@@ -222,7 +222,7 @@ namespace RoslyJump.Core.Contexts.Local
 
         protected CombinedSyntaxNode[] nodes = Array.Empty<CombinedSyntaxNode>();
         protected bool IsJumpTargetNodesSet => !nodes.IsNullOrEmpty();
-        protected int JumpTargetIndex = -1;
+        private int jumpTargetIndex = -1;
         protected bool SkipNextChangeDetection { get; set; } = false;
         protected virtual int JumpDownCount => 1;
         protected virtual int JumpUpCount => 1;
@@ -233,9 +233,9 @@ namespace RoslyJump.Core.Contexts.Local
         {
             get
             {
-                if (this.IsJumpTargetNodesSet && this.JumpTargetIndex > -1)
+                if (this.IsJumpTargetNodesSet && this.jumpTargetIndex > -1)
                 {
-                    return this.nodes[this.JumpTargetIndex];
+                    return this.nodes[this.jumpTargetIndex];
                 }
                 else if (this.ContextNode != null)
                 {
@@ -508,7 +508,7 @@ namespace RoslyJump.Core.Contexts.Local
                     {
                         if (this.nodes[i] == this.ActiveNode)
                         {
-                            this.JumpTargetIndex = i + 1;
+                            this.jumpTargetIndex = i + 1;
                             isCurrentFound = true;
                             break;
                         }
@@ -517,15 +517,15 @@ namespace RoslyJump.Core.Contexts.Local
 
                 if (this.ContextNode == null || !isCurrentFound)
                 {
-                    this.JumpTargetIndex++;
+                    this.jumpTargetIndex++;
                 }
 
-                if (this.JumpTargetIndex >= nodes.Length)
+                if (this.jumpTargetIndex >= nodes.Length)
                 {
-                    this.JumpTargetIndex = 0;
+                    this.jumpTargetIndex = 0;
                 }
 
-                CombinedSyntaxNode target = nodes[this.JumpTargetIndex];
+                CombinedSyntaxNode target = nodes[this.jumpTargetIndex];
 
                 this.JumpToTarget(target);
             }
@@ -543,7 +543,7 @@ namespace RoslyJump.Core.Contexts.Local
                     {
                         if (this.nodes[i] == this.ActiveNode)
                         {
-                            this.JumpTargetIndex = i - 1;
+                            this.jumpTargetIndex = i - 1;
                             isCurrentFound = true;
                             break;
                         }
@@ -552,15 +552,15 @@ namespace RoslyJump.Core.Contexts.Local
 
                 if (this.ActiveNode == null || !isCurrentFound)
                 {
-                    this.JumpTargetIndex--;
+                    this.jumpTargetIndex--;
                 }
 
-                if (this.JumpTargetIndex < 0)
+                if (this.jumpTargetIndex < 0)
                 {
-                    this.JumpTargetIndex = this.nodes.Length - 1;
+                    this.jumpTargetIndex = this.nodes.Length - 1;
                 }
 
-                CombinedSyntaxNode target = nodes[this.JumpTargetIndex];
+                CombinedSyntaxNode target = nodes[this.jumpTargetIndex];
 
                 this.JumpToTarget(target);
             }

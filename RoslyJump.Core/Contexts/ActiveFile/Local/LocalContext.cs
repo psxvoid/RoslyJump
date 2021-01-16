@@ -22,7 +22,7 @@ namespace RoslyJump.Core
 
         internal SyntaxTree SyntaxTree => this.tree;
 
-        private readonly static HashSet<Type> SupportedNodeTypes =
+        private static readonly HashSet<Type> SupportedNodeTypes =
             new HashSet<Type>
         {
             typeof(CompilationUnitSyntax),
@@ -73,7 +73,7 @@ namespace RoslyJump.Core
             typeof(TryBodySyntax),                      // virtual
             typeof(CatchClauseSyntax),
             typeof(FinallyClauseSyntax),
-            
+
             typeof(IfStatementSyntax),
             typeof(IfConditionSyntax),                  // virtual
             typeof(IfBodySyntax),                       // virtual

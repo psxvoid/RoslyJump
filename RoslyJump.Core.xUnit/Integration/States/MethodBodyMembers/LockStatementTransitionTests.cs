@@ -103,7 +103,7 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
                     "int x = 5",
                     x.ActiveBaseNode.Declaration.ToString()));
         }
-        
+
         [Fact]
         public void JumpPrevSibling_MethodBodyBaseStatement_PrevSibling()
         {

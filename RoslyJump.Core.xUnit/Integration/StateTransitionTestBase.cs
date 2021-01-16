@@ -30,7 +30,7 @@ namespace RoslyJump.Core.xUnit.Integration
             where TStartPositionNode : SyntaxNode
             where TExpectedState : LocalContextState
         {
-            LocalContext context = new LocalContext(this.SyntaxTree);
+            var context = new LocalContext(this.SyntaxTree);
 
             TStartPositionNode? node = this.SyntaxTree.GetRoot().ChildNodes()
                 .GetNodesOfTypeRecursively<TStartPositionNode>()
@@ -39,7 +39,8 @@ namespace RoslyJump.Core.xUnit.Integration
 
             SyntaxNode startNode = node;
 
-            var (lineStart, lineEnd, charStart, charEnd) = startNode.GetSourceTextBounds();
+            (int lineStart, int lineEnd, int charStart, int charEnd) =
+                startNode.GetSourceTextBounds();
 
             if (startPositionFunctor != null)
             {
@@ -94,7 +95,7 @@ namespace RoslyJump.Core.xUnit.Integration
             where TStartPositionNode : SyntaxNode
             where TExpectedState : LocalContextState
         {
-            LocalContext context = new LocalContext(this.SyntaxTree);
+            var context = new LocalContext(this.SyntaxTree);
 
             TStartPositionNode? node = this.SyntaxTree.GetRoot().ChildNodes()
                 .GetNodesOfTypeRecursively<TStartPositionNode>()
@@ -103,7 +104,8 @@ namespace RoslyJump.Core.xUnit.Integration
 
             SyntaxNode startNode = node;
 
-            var (lineStart, lineEnd, charStart, charEnd) = startNode.GetSourceTextBounds();
+            (int lineStart, int lineEnd, int charStart, int charEnd) =
+                startNode.GetSourceTextBounds();
 
             if (startPositionFunctor != null)
             {

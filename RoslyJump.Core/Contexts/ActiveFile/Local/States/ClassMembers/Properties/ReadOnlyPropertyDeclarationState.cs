@@ -32,7 +32,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers.Propertie
             if (expressionBody == null)
             {
                 throw new ArgumentException(
-                    "Unable to query a child node for " + 
+                    "Unable to query a child node for " +
                     $"{nameof(ReadOnlyPropertyDeclarationState)}");
             }
 
