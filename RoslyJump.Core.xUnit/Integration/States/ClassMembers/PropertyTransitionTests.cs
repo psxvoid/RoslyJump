@@ -276,18 +276,123 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
                         x.ActiveBaseNode.ToString());
                 });
         }
-
+        
         [Fact]
         public void JumpDown_ReadOnlyProperty_FirstExpression()
+        {
+            AssertTransition<PropertyDeclarationSyntax, ExpressionState>(
+                ActionKind.JumpContextDown,
+                x => x.HasName("Prop1ReadonlyInt")
+                    && x.ParentAs<ClassDeclarationSyntax>().HasName("C1"),
+                x =>
+                {
+                    Assert.IsType<MemberAccessExpressionSyntax>(x.ActiveBaseNode);
+                    Assert.Equal(
+                        "this.field3int",
+                        x.ActiveBaseNode.ToFullString());
+                });
+        }
+
+        [Fact]
+        public void JumpDown_ReadOnlyPropertyArrowExpression_FirstExpression()
         {
             AssertTransition<ArrowExpressionClauseSyntax, ExpressionState>(
                 ActionKind.JumpContextDown,
                 x => x.Parent is PropertyDeclarationSyntax prop
                     && prop.HasName("Prop1ReadonlyInt")
                     && prop.ParentAs<ClassDeclarationSyntax>().HasName("C1"),
-                x => Assert.Equal(
-                    "this.field3int",
-                    x.ActiveBaseNode.ToString()));
+                x =>
+                {
+                    Assert.IsType<MemberAccessExpressionSyntax>(x.ActiveBaseNode);
+                    Assert.Equal(
+                        "this.field3int",
+                        x.ActiveBaseNode.ToFullString());
+                });
+        }
+
+        /// <summary>
+        /// This test covers a bug - a property-state isn't changed on a sub-state.
+        /// The sub-state is a concrete implementation of
+        /// <see cref="PropertyClassMemberStateBase{PropertyDeclarationSyntax}"/>.
+        /// <list type="number">
+        ///     <listheader>
+        ///         <description>Reproduction steps:</description>
+        ///     </listheader>
+        ///     <item>
+        ///         <description>
+        ///             Ensure a file contains both a read-only property and a property with
+        ///             get/set block body.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>Set the cursor on a read-only property.</description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Perform the jump-down action.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Perform the jump-up action
+        ///             (the read-only property should became active).
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Perform the jump-next action
+        ///             (the property with a block getter/setter should became active).
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Perform the jump-down action (the error should occur).
+        ///         </description>
+        ///     </item>
+        /// </list>
+        /// </summary>
+        [Fact]
+        public void JumpDown_PropertyWithGetSetBlockAfterReadOnly_FirstAccessorAndNoErrors()
+        {
+            AssertTransition<PropertyDeclarationSyntax, AccessorDeclarationState>(
+                ActionKind.JumpContextDown,
+                x => x.HasName("Prop1ReadonlyInt")
+                    && x.ParentAs<ClassDeclarationSyntax>().HasName("C1"),
+                x =>
+                {
+                    Assert.IsType<AccessorDeclarationSyntax>(x.ActiveBaseNode);
+                    Assert.Equal(
+                        "get",
+                        x.ActiveBaseNode.Keyword.ValueText);
+                },
+                null,
+                x =>
+                {
+                    Assert.IsType<ReadOnlyPropertyDeclarationState>(x.State);
+                    Assert.Equal(
+                        "Prop1ReadonlyInt",
+                        x.State.ActiveNodeAs<PropertyDeclarationSyntax>().Identifier.ValueText);
+
+                    x.State.JumpContextDown();
+
+                    Assert.IsType<ExpressionState>(x.State);
+                    Assert.Equal(
+                        "this.field3int",
+                        x.State.ActiveNodeAs<ExpressionSyntax>().ToString());
+
+                    x.State.JumpContextUp();
+
+                    Assert.IsType<ReadOnlyPropertyDeclarationState>(x.State);
+
+                    x.State.JumpNext();
+
+                    // the error occur here - actual type ReadOnlyPropertyDeclarationState
+                    Assert.IsType<PropertyDeclarationState>(x.State);
+
+                    Assert.Equal(
+                        "Prop2GetSetBlockBodyString",
+                        x.State.ActiveNodeAs<PropertyDeclarationSyntax>().Identifier.ValueText);
+                });
         }
 
         private void AssertTransition<TExpectedState>(

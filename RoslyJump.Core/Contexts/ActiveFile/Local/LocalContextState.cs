@@ -226,8 +226,11 @@ namespace RoslyJump.Core.Contexts.Local
         protected CombinedSyntaxNode[] nodes = Array.Empty<CombinedSyntaxNode>();
         protected bool IsJumpTargetNodesSet => !nodes.IsNullOrEmpty();
         protected int JumpTargetIndex = -1;
+        protected bool SkipNextChangeDetection { get; set; } = false;
         protected virtual int JumpDownCount => 1;
         protected virtual int JumpUpCount => 1;
+
+        protected virtual bool UseTransitionForJumpTarget(CombinedSyntaxNode node) => false;
 
         public CombinedSyntaxNode? ActiveNode
         {
@@ -274,12 +277,17 @@ namespace RoslyJump.Core.Contexts.Local
                 return;
             }
 
-            if (this.nodes.Contains(node.Value))
+            if (this.nodes.Contains(node.Value) && !this.SkipNextChangeDetection)
             {
                 // No need to transition to the same context.
                 // Also prevents "resetting" the context
                 // when focus is shifted to another node.
                 return;
+            }
+
+            if (this.SkipNextChangeDetection)
+            {
+                this.SkipNextChangeDetection = false;
             }
 
             Type nodeType = node.Value.MixedNode.GetType();
@@ -522,7 +530,7 @@ namespace RoslyJump.Core.Contexts.Local
 
                 CombinedSyntaxNode target = nodes[this.JumpTargetIndex];
 
-                this.SetJumpTarget(target);
+                this.JumpToTarget(target);
             }
         }
 
@@ -557,7 +565,7 @@ namespace RoslyJump.Core.Contexts.Local
 
                 CombinedSyntaxNode target = nodes[this.JumpTargetIndex];
 
-                this.SetJumpTarget(target);
+                this.JumpToTarget(target);
             }
         }
 
@@ -642,6 +650,23 @@ namespace RoslyJump.Core.Contexts.Local
             this.JumpTargetStartChar = charStart;
             this.JumpTargetEndChar = charEnd;
             this.IsJumpTargetSet = true;
+        }
+
+        private void JumpToTarget(CombinedSyntaxNode target)
+        {
+            if (this.UseTransitionForJumpTarget(target))
+            {
+                this.SkipNextChangeDetection = true;
+                this.TransitionTo(target, this.Context);
+                this.Context.State.QueryTargetNodes();
+                this.Context.State.SetJumpTarget(
+                    this.Context.State.ContextNode ?? throw new InvalidOperationException(
+                        "Jump target for the lower context is missing."));
+            }
+            else
+            {
+                this.SetJumpTarget(target);
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
 {
-    public class PropertyClassMemberStateBase<T>
+    public abstract class PropertyClassMemberStateBase<T>
         : PropOrEventClassMemberStateBase<PropertyDeclarationSyntax>
         where T : SyntaxNode
     {
@@ -27,6 +27,11 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
                 .ToArray()
                 ?? throw new InvalidOperationException(
                     $"Unable to query target nodes for {nameof(PropertyClassMemberStateBase<T>)}");
+        }
+
+        protected override bool UseTransitionForJumpTarget(CombinedSyntaxNode node)
+        {
+            return this.ContextNode?.MixedNode.GetType() != node.MixedNode.GetType();
         }
     }
 }

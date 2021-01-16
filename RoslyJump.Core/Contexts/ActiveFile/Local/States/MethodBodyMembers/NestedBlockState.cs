@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
+using dngrep.core.Queries;
 using dngrep.core.Queries.SyntaxNodeMatchers.Targets;
 using dngrep.core.VirtualNodes;
 using dngrep.core.VirtualNodes.Syntax;
@@ -16,6 +17,11 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class NestedBlockState : MethodBodyMemberStateBase<SyntaxNode>
     {
+        private static IVirtualNodeQuery[] AllSupportedExceptIfCondition =
+            VirtualQueryExtensions.GetAllSupportedQueries()
+                .Except(new IVirtualNodeQuery[] { IfConditionVirtualQuery.Instance })
+                .ToArray();
+
         public NestedBlockState(LocalContext context, CombinedSyntaxNode contextNode)
             : base(context, contextNode)
         {
@@ -57,6 +63,10 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
             if (parent is IfStatementSyntax @if && @if.Condition == ActiveBaseNode)
             {
                 return @if.Condition.QueryVirtualAndCombine(IfConditionVirtualQuery.Instance);
+            }
+            else if (parent is ExpressionSyntax e && e.Parent is IfStatementSyntax)
+            {
+                return e.QueryVirtualAndCombine(AllSupportedExceptIfCondition);
             }
 
             return base.QueryParentContextNode();
