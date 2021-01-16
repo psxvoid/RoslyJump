@@ -39,9 +39,13 @@
 
 ![Jump Between Property Members](./docs/images/usage-examples/example-jump-between-property-members.gif)
 
-## Jump Between ReadOnly Property Nested Expressions
+## Jump Between Read-Only Property Nested Expressions
 
 ![Jump Between ReadOnly Property Nested Expressions](./docs/images/usage-examples/example-jump-between-readonly-prop-nested-expression.gif)
+
+## Jump Between Expression-Bodied Getter and Setter Members
+
+![Jump Between Expression-Bodied Getter and Setter Members](./docs/images/usage-examples/example-jump-between-expression-bodied-prop-members.gif)
 
 ## Jump Between Method Parameters
 
