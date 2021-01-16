@@ -1,6 +1,6 @@
 # RoslyJump
 
-RoslyJump is a free extension for Visual Studio 2019 for mouseless code navigation. For now, it only has limited support of C# 8.0.
+RoslyJump is a free and open source extension for Visual Studio 2019 for mouseless code navigation. For now, it only has limited support of C# 8.0.
 
 > Important: It only works in C# Editor (no F#, C++, VB support yet).
 
