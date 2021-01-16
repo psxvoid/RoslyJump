@@ -750,16 +750,21 @@ namespace RoslyJump.Core.xUnit.Integration
             AssertTransition<ExpressionSyntax, NestedBlockState>(
                 ActionKind.JumpContextUp,
                 x => x.ToString() == "x == 12 || y == 11",
-                x => x.ActiveBaseNode.ToString() == "x == 12 || y == 11"
-                    && x.ActiveBaseNode
-                        .ParentAs<IfStatementSyntax>()
-                        .ParentAs<BlockSyntax>()
-                        .ParentAs<IfStatementSyntax>()
-                        .ParentAs<BlockSyntax>()
-                        .ParentAs<IfStatementSyntax>()
-                        .ParentAs<BlockSyntax>()
-                        .ParentAs<MethodDeclarationSyntax>()
-                        .HasName("Method1"),
+                x =>
+                {
+                    Assert.Equal("x == 12 || y == 11", x.ActiveBaseNode.ToString());
+                    Assert.Equal(
+                        "Method1",
+                        x.ActiveBaseNode
+                            .ParentAs<IfStatementSyntax>()
+                            .ParentAs<BlockSyntax>()
+                            .ParentAs<IfStatementSyntax>()
+                            .ParentAs<BlockSyntax>()
+                            .ParentAs<IfStatementSyntax>()
+                            .ParentAs<BlockSyntax>()
+                            .ParentAs<MethodDeclarationSyntax>()
+                            .Identifier.ValueText);
+                },
                 null,
                 x =>
                 {

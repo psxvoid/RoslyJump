@@ -15,8 +15,10 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
         where TNode : SyntaxNode
     {
         protected override int JumpUpCount =>
-            this.ContextNode?.BaseNode.Parent is BlockSyntax block
-            && block.Parent is AccessorDeclarationSyntax
+            (this.ContextNode?.BaseNode.Parent is BlockSyntax block
+                && block.Parent is AccessorDeclarationSyntax)
+            || (this.ContextNode?.BaseNode.Parent is ArrowExpressionClauseSyntax arrowExpression
+                && arrowExpression.Parent is PropertyDeclarationSyntax)
             ? 2
             : base.JumpDownCount;
 
@@ -30,10 +32,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.BaseStates
             SyntaxNode? parent = this.ContextNode?.BaseNode.GetContainerNode();
 
             return parent?.QueryVirtualAndCombine(
-                MethodBodyVirtualQuery.Instance,
-                NestedBlockVirtualQuery.Instance,
-                IfBodyVirtualQuery.Instance,
-                TryBodyVirtualQuery.Instance)
+                VirtualQueryExtensions.GetAllSupportedQueries())
                 ?? throw new InvalidOperationException(
                     $"Unable to query the parent context for {this.GetType()}");
         }

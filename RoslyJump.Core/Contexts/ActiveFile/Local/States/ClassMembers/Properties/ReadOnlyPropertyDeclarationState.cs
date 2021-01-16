@@ -11,6 +11,8 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.ClassMembers.Propertie
     public class ReadOnlyPropertyDeclarationState :
         PropertyClassMemberStateBase<PropertyDeclarationSyntax>
     {
+        protected override int JumpDownCount => 2;
+
         public ReadOnlyPropertyDeclarationState(
             LocalContext context,
             CombinedSyntaxNode contextNode)
