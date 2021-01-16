@@ -58,3 +58,7 @@
 ## Jump Between Methods
 
 ![Jump Between Methods](./docs/images/usage-examples/jump-between-methods.gif)
+
+## Jump Between If-Statement Members
+
+![Jump Between If-Statement Members](./docs/images/usage-examples/example-jump-nested-if-members.gif)
