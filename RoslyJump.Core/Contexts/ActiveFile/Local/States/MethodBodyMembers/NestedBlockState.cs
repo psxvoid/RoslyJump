@@ -17,7 +17,7 @@ namespace RoslyJump.Core.Contexts.ActiveFile.Local.States.MethodBodyMembers
 {
     public class NestedBlockState : MethodBodyMemberStateBase<SyntaxNode>
     {
-        private static IVirtualNodeQuery[] AllSupportedExceptIfCondition =
+        private static readonly IVirtualNodeQuery[] AllSupportedExceptIfCondition =
             VirtualQueryExtensions.GetAllSupportedQueries()
                 .Except(new IVirtualNodeQuery[] { IfConditionVirtualQuery.Instance })
                 .ToArray();
