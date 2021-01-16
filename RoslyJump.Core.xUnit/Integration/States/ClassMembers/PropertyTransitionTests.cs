@@ -1,5 +1,6 @@
 ﻿using System;
 using dngrep.core.Extensions.SyntaxTreeExtensions;
+using dngrep.core.VirtualNodes.Syntax;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslyJump.Core.Contexts.ActiveFile.Local.States;
@@ -265,7 +266,7 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
         [Fact]
         public void JumpDown_PropertyWithGetSetExpressionGet_FirstExpression()
         {
-            AssertTransition<AccessorDeclarationSyntax, ExpressionState>(
+            AssertTransition<AccessorDeclarationSyntax, NestedBlockState>(
                 ActionKind.JumpContextDown,
                 ExpressionGetAccessorPredicate,
                 x =>
@@ -276,11 +277,44 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
                         x.ActiveBaseNode.ToString());
                 });
         }
-        
+
         [Fact]
         public void JumpDown_ReadOnlyProperty_FirstExpression()
         {
-            AssertTransition<PropertyDeclarationSyntax, ExpressionState>(
+            AssertTransition<PropertyDeclarationSyntax, NestedBlockState>(
+                ActionKind.JumpContextDown,
+                x => x.HasName("Prop1ReadonlyInt")
+                    && x.ParentAs<ClassDeclarationSyntax>().HasName("C1"),
+                x =>
+                {
+                    Assert.IsType<BinaryExpressionSyntax>(x.ActiveBaseNode);
+                    Assert.Equal(
+                        "this.field3int + this.Method1(1, 1)",
+                        x.ActiveBaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void JumpDown_ReadOnlyPropertyArrowExpression_FirstExpression()
+        {
+            AssertTransition<ArrowExpressionClauseSyntax, NestedBlockState>(
+                ActionKind.JumpContextDown,
+                x => x.Parent is PropertyDeclarationSyntax prop
+                    && prop.HasName("Prop1ReadonlyInt")
+                    && prop.ParentAs<ClassDeclarationSyntax>().HasName("C1"),
+                x =>
+                {
+                    Assert.IsType<BinaryExpressionSyntax>(x.ActiveBaseNode);
+                    Assert.Equal(
+                        "this.field3int + this.Method1(1, 1)",
+                        x.ActiveBaseNode.ToString());
+                });
+        }
+
+        [Fact]
+        public void JumpDownTwice_ReadOnlyProperty_NestedExpression()
+        {
+            AssertTransition<PropertyDeclarationSyntax, NestedBlockState>(
                 ActionKind.JumpContextDown,
                 x => x.HasName("Prop1ReadonlyInt")
                     && x.ParentAs<ClassDeclarationSyntax>().HasName("C1"),
@@ -289,24 +323,18 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
                     Assert.IsType<MemberAccessExpressionSyntax>(x.ActiveBaseNode);
                     Assert.Equal(
                         "this.field3int",
-                        x.ActiveBaseNode.ToFullString());
-                });
-        }
-
-        [Fact]
-        public void JumpDown_ReadOnlyPropertyArrowExpression_FirstExpression()
-        {
-            AssertTransition<ArrowExpressionClauseSyntax, ExpressionState>(
-                ActionKind.JumpContextDown,
-                x => x.Parent is PropertyDeclarationSyntax prop
-                    && prop.HasName("Prop1ReadonlyInt")
-                    && prop.ParentAs<ClassDeclarationSyntax>().HasName("C1"),
+                        x.ActiveNode?.BaseNode.ToString());
+                },
+                null,
                 x =>
                 {
-                    Assert.IsType<MemberAccessExpressionSyntax>(x.ActiveBaseNode);
+                    x.State.JumpContextDown();
+
+                    Assert.IsType<NestedBlockSyntax>(x.State.ActiveNode?.MixedNode);
+                    Assert.IsType<BinaryExpressionSyntax>(x.State.ActiveNode?.BaseNode);
                     Assert.Equal(
-                        "this.field3int",
-                        x.ActiveBaseNode.ToFullString());
+                        "this.field3int + this.Method1(1, 1)",
+                        x.State.ActiveNode?.BaseNode.ToString());
                 });
         }
 
@@ -375,9 +403,9 @@ namespace RoslyJump.Core.xUnit.Integration.States.MethodBodyMembers
 
                     x.State.JumpContextDown();
 
-                    Assert.IsType<ExpressionState>(x.State);
+                    Assert.IsType<NestedBlockState>(x.State);
                     Assert.Equal(
-                        "this.field3int",
+                        "this.field3int + this.Method1(1, 1)",
                         x.State.ActiveNodeAs<ExpressionSyntax>().ToString());
 
                     x.State.JumpContextUp();
