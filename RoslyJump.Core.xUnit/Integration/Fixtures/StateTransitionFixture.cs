@@ -39,7 +39,7 @@ namespace RoslyJump.Core.xUnit.Integration.Fixtures
 
             private int field5int = 0;
 
-            public int Prop1ReadonlyInt => this.field3int;
+            public int Prop1ReadonlyInt => this.field3int + this.Method1(1, 1);
 
             public string Prop2GetSetBlockBodyString
             {
