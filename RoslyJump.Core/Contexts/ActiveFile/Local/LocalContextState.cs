@@ -130,10 +130,7 @@ namespace RoslyJump.Core.Contexts.Local
 
             CombinedSyntaxNode target = this.SiblingState.Target;
 
-            this.TransitionTo(target, this.Context);
-
-            this.Context.State.QueryTargetNodes();
-            this.Context.State.SetJumpTargetToActiveNode();
+            this.JumpToTarget(target, true);
         }
     }
 
@@ -614,15 +611,7 @@ namespace RoslyJump.Core.Contexts.Local
             // do nothing
         }
 
-        protected internal void SetJumpTargetToActiveNode()
-        {
-            if (this.ActiveNode != null)
-            {
-                this.SetJumpTarget(this.ActiveNode.Value);
-            }
-        }
-
-        protected void SetJumpTarget(CombinedSyntaxNode target)
+        private void SetJumpTarget(CombinedSyntaxNode target)
         {
             int lineStart, lineEnd, charStart, charEnd;
 
@@ -644,7 +633,7 @@ namespace RoslyJump.Core.Contexts.Local
             this.IsJumpTargetSet = true;
         }
 
-        private void JumpToTarget(CombinedSyntaxNode target, bool forceTransition = false)
+        protected void JumpToTarget(CombinedSyntaxNode target, bool forceTransition = false)
         {
             if (this.UseTransitionForJumpTarget(target) || forceTransition)
             {
