@@ -47,7 +47,7 @@ fi
 releaseVersion="$latestMajor.$latestMinor.$latestPatch.$revisionCounter"
 
 # update vsixmanifest version
-if [[ $activeBranch == "main" && $isMarketplaceRelease = true ]]; then
+if [[ $activeBranch = "refs/heads/main" || $activeBranch = "refs/tags/$latestMajor.$latestMinor.$latestPatch" ]] && [[ $isMarketplaceRelease = true ]]; then
     releaseVersion="$latestMajor.$latestMinor.$latestPatch"
 fi
 
