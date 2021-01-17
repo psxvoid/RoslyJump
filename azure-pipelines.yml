@@ -94,6 +94,7 @@ jobs:
       targetFolder: $(Build.ArtifactStagingDirectory)
 
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish Release Scripts'
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       ArtifactName: 'release'
@@ -113,14 +114,28 @@ jobs:
         readme.md
         **\*.vsix
       targetFolder: $(Build.ArtifactStagingDirectory)
-
+  
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish Prod Artifact'
+    condition: eq(variables['isMarketplaceRelease'], 'true')
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ${{ if eq(variables['isMarketplaceRelease'], 'true') }}:
-        ArtifactName: 'prod'
-      ${{ if eq(variables['isReleaseCandidate'], 'true') }}:
-        ArtifactName: 'rc'
-      ${{ if and(ne(variables['isReleaseCandidate'], 'true'), ne(variables['isMarketplaceRelease'], 'true')) }}:
-        ArtifactName: 'ci'
+      ArtifactName: 'prod'
+      publishLocation: 'Container'
+  
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish RC Artifact'
+    condition: eq(variables['isReleaseCandidate'], 'true')
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'rc'
+      publishLocation: 'Container'
+  
+  
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Dev Artifact'
+    condition: and(ne(variables['isReleaseCandidate'], 'true'), ne(variables['isMarketplaceRelease'], 'true'))
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'ci'
       publishLocation: 'Container'
