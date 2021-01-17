@@ -29,6 +29,13 @@ jobs:
 
   - task: Bash@3
     inputs:
+      targetType: 'inline'
+      script: |
+        git checkout main
+        git checkout -
+
+  - task: Bash@3
+    inputs:
       filePath: '$(System.DefaultWorkingDirectory)/pre-build-phase-1.sh'
     name: versioning
     
