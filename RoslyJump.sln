@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30711.63
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34018.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslyJump", "RoslyJump\RoslyJump.csproj", "{35C27797-B985-43C3-939F-634F32F7CC84}"
 EndProject
@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		License.txt = License.txt
 		readme.md = readme.md
 	EndProjectSection
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RoslyJump.Shared", "RoslyJump.Shared\RoslyJump.Shared.shproj", "{235831B2-F9EF-490F-B33D-ECFD1A137132}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,5 +54,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0CD523F5-FD3B-47EF-9105-DD4D7C298A06}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		RoslyJump.Shared\RoslyJump.Shared.projitems*{235831b2-f9ef-490f-b33d-ecfd1a137132}*SharedItemsImports = 13
+		RoslyJump.Shared\RoslyJump.Shared.projitems*{35c27797-b985-43c3-939f-634f32f7cc84}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
