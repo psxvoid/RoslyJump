@@ -33,6 +33,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VSIX Shared Files", "VSIX Shared Files", "{E7B5721B-1F39-4367-A5D8-F4BAE914A197}"
 	ProjectSection(SolutionItems) = preProject
 		Shared\License.txt = Shared\License.txt
+		publishManifest.json = publishManifest.json
+		Shared\publishManifest2022.json = Shared\publishManifest2022.json
 		Shared\RoslyJump.vsct = Shared\RoslyJump.vsct
 	EndProjectSection
 EndProject
