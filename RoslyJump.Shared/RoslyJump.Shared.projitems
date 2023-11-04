@@ -9,5 +9,12 @@
     <Import_RootNamespace>RoslyJump.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Infrastructure\VisualStudio\TextEditor\ActiveViewAccessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Package\CommandIds.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Package\PackageIds.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Package\RoslyJumpPackage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VisualComponents\TextEditor\Adornments\TextHighlightAdornment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VisualComponents\TextEditor\Adornments\TextHighlightAdornmentTextViewCreationListener.cs" />
   </ItemGroup>
 </Project>
