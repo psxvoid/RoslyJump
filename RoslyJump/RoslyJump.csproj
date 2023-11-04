@@ -97,10 +97,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="License.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="..\Shared\License.txt">
+      <Link>License.txt</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="..\Shared\RoslyJump.vsct">
+      <Link>RoslyJump.vsct</Link>
+    </Content>
+    <VSCTCompile Include="..\Shared\RoslyJump.vsct">
+      <Link>RoslyJump.vsct</Link>
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
   </ItemGroup>
   <Import Project="..\RoslyJump.Shared\RoslyJump.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
