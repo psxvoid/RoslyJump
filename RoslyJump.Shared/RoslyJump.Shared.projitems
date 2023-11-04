@@ -17,4 +17,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)VisualComponents\TextEditor\Adornments\TextHighlightAdornment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)VisualComponents\TextEditor\Adornments\TextHighlightAdornmentTextViewCreationListener.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)License.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)RoslyJump.vsct" />
+  </ItemGroup>
 </Project>
