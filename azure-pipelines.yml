@@ -110,6 +110,7 @@ jobs:
     inputs:
       contents: |
         publishManifest.json
+        Shared\publishManifest2022.json
         build-results.json
         readme.md
         **\*.vsix
