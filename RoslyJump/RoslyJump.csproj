@@ -78,12 +78,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="RoslyJump.vsct">
-      <ResourceName>Menus.ctmenu</ResourceName>
-      <SubType>Designer</SubType>
-    </VSCTCompile>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Common">
       <Version>3.7.0</Version>
     </PackageReference>
