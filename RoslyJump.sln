@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34018.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslyJump", "RoslyJump\RoslyJump.csproj", "{35C27797-B985-43C3-939F-634F32F7CC84}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslyJump.VSIX.2019", "RoslyJump\RoslyJump.VSIX.2019.csproj", "{35C27797-B985-43C3-939F-634F32F7CC84}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dngrep.core", "dngrep\dngrep.core\dngrep.core.csproj", "{B72AD0EF-37A8-435E-B9CC-84B746979625}"
 EndProject
