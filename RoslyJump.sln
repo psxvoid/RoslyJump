@@ -33,14 +33,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VSIX Shared Files", "VSIX Shared Files", "{E7B5721B-1F39-4367-A5D8-F4BAE914A197}"
 	ProjectSection(SolutionItems) = preProject
 		Shared\License.txt = Shared\License.txt
-		publishManifest.json = publishManifest.json
-		Shared\publishManifest2022.json = Shared\publishManifest2022.json
 		Shared\RoslyJump.vsct = Shared\RoslyJump.vsct
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure Pipelines", "Azure Pipelines", "{EDC499FE-CE49-4370-9D29-86CC1866DC64}"
 	ProjectSection(SolutionItems) = preProject
 		azure-pipelines.yml = azure-pipelines.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishManifests", "PublishManifests", "{7E5120C9-E9AD-498A-8557-AF53B3DD024F}"
+	ProjectSection(SolutionItems) = preProject
+		publishManifest.json = publishManifest.json
+		Shared\publishManifest2022.json = Shared\publishManifest2022.json
 	EndProjectSection
 EndProject
 Global
@@ -133,6 +137,7 @@ Global
 		{287DC108-F0EB-497E-8D63-D603DCE2F070} = {EDC499FE-CE49-4370-9D29-86CC1866DC64}
 		{E7B5721B-1F39-4367-A5D8-F4BAE914A197} = {BFB7674D-6B82-4606-835C-D58A68B3C233}
 		{EDC499FE-CE49-4370-9D29-86CC1866DC64} = {BFB7674D-6B82-4606-835C-D58A68B3C233}
+		{7E5120C9-E9AD-498A-8557-AF53B3DD024F} = {BFB7674D-6B82-4606-835C-D58A68B3C233}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0CD523F5-FD3B-47EF-9105-DD4D7C298A06}
