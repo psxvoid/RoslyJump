@@ -52,13 +52,23 @@ if [[ $activeBranch = "refs/heads/main" || $activeBranch = "refs/tags/$latestMaj
 fi
 
 sed -r -i.bak "s/(Identity..*Version=\")([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*)(\")/\1$releaseVersion\3/g" ./RoslyJump/source.extension.vsixmanifest
+sed -r -i.bak "s/(Identity..*Version=\")([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*)(\")/\1$releaseVersion\3/g" ./RoslyJump.VSIX.2022/source.extension.vsixmanifest
 
-# verify the version number is correctly updated in the vsixmanifest
+# verify the version number is correctly updated in the vsixmanifest 2019
 grep -Eq "Identity.*Version=\"$releaseVersion\"" ./RoslyJump/source.extension.vsixmanifest \
     && success=true || success=false
 
 if [[ $success = false ]]; then
-    >&2 echo 'Pre-build Error: Unable to update VSIX version number.'
+    >&2 echo 'Pre-build Error: Unable to update VSIX 2019 version number.'
+    exit 1
+fi
+
+# verify the version number is correctly updated in the vsixmanifest 2022
+grep -Eq "Identity.*Version=\"$releaseVersion\"" ./RoslyJump.VSIX.2022/source.extension.vsixmanifest \
+    && success=true || success=false
+
+if [[ $success = false ]]; then
+    >&2 echo 'Pre-build Error: Unable to update VSIX 2022 version number.'
     exit 1
 fi
 
