@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="RoslyJump.VSIX_2022.2b14b1a1-ba95-4ff2-8924-f961fd750512" Version="1.0" Language="en-US" Publisher="Pavel Sapehin" />
+    <Identity Id="RoslyJump.VSIX_2022.2b14b1a1-ba95-4ff2-8924-f961fd750512" Version="1.0.0" Language="en-US" Publisher="Pavel Sapehin" />
     <DisplayName>RoslyJump 2022</DisplayName>
     <Description xml:space="preserve">Mouseless Code Navigation for C# and Visual Studio 2022.</Description>
     <License>License.txt</License>
