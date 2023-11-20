@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="RoslyJump.VSIX._2022.2b14b1a1-ba95-4ff2-8924-f961fd750512" Version="1.0" Language="en-US" Publisher="Pavel Sapehin" />
-        <DisplayName>RoslyJump.VSIX._2022</DisplayName>
-        <Description xml:space="preserve">RoslyJump for Visual Studio 2020.</Description>
+        <Identity Id="RoslyJump.VSIX_2022.2b14b1a1-ba95-4ff2-8924-f961fd750512" Version="1.0" Language="en-US" Publisher="Pavel Sapehin" />
+        <DisplayName>RoslyJump.VSIX_2022</DisplayName>
+        <Description xml:space="preserve">RoslyJump for Visual Studio 2022.</Description>
         <License>License.txt</License>
     </Metadata>
     <Installation>
