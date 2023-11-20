@@ -43,8 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure Pipelines", "Azure Pi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishManifests", "PublishManifests", "{7E5120C9-E9AD-498A-8557-AF53B3DD024F}"
 	ProjectSection(SolutionItems) = preProject
-		PublishManifests\publishManifest.json = PublishManifests\publishManifest.json
 		PublishManifests\publishManifest2022.json = PublishManifests\publishManifest2022.json
+		PublishManifests\publishManifest2019.json = PublishManifests\publishManifest2019.json
 	EndProjectSection
 EndProject
 Global
