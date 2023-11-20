@@ -109,8 +109,8 @@ jobs:
     displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
     inputs:
       contents: |
-        publishManifest.json
-        Shared\publishManifest2022.json
+        PublishManifests\publishManifest2019.json
+        PublishManifests\publishManifest2022.json
         build-results.json
         readme.md
         **\*.vsix
