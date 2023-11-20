@@ -23,8 +23,8 @@
     <ProjectGuid>{35C27797-B985-43C3-939F-634F32F7CC84}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RoslyJump</RootNamespace>
-    <AssemblyName>RoslyJump</AssemblyName>
+    <RootNamespace>RoslyJump.VSIX_2019</RootNamespace>
+    <AssemblyName>RoslyJump.VSIX_2019</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
