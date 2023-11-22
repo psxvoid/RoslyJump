@@ -116,6 +116,13 @@ jobs:
         **\*.vsix
       targetFolder: $(Build.ArtifactStagingDirectory)
   
+  - task: CopyFiles@2
+    displayName: 'Copy readme to publishManifests'
+    inputs:
+      contents: |
+        readme.md
+      targetFolder: $(Build.ArtifactStagingDirectory)\PublishManifests
+  
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Prod Artifact'
     condition: eq(variables['isMarketplaceRelease'], 'true')
