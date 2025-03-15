@@ -107,11 +107,6 @@
       <Link>RoslyJump.vsct</Link>
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
-    <Content Include="..\Shared\icon-32x32.png">
-      <Link>icon-32x32.png</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="..\Shared\preview-200x200.png">
       <Link>preview-200x200.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

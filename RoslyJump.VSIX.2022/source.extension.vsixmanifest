@@ -5,7 +5,7 @@
         <DisplayName>RoslyJump 2022</DisplayName>
         <Description xml:space="preserve">Mouseless Code Navigation for C# and Visual Studio 2022.</Description>
         <License>License.txt</License>
-        <Icon>icon-32x32.png</Icon>
+        <Icon>preview-200x200.png</Icon>
         <PreviewImage>preview-200x200.png</PreviewImage>
     </Metadata>
     <Installation>
