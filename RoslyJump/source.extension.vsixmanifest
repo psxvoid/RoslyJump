@@ -6,7 +6,7 @@
         <Description xml:space="preserve">Mouseless Code Navigation for C# and Visual Studio 2019.</Description>
         <MoreInfo>https://github.com/psxvoid/RoslyJump</MoreInfo>
         <License>License.txt</License>
-        <Icon>icon-32x32.png</Icon>
+        <Icon>preview-200x200.png</Icon>
         <PreviewImage>preview-200x200.png</PreviewImage>
     </Metadata>
     <Installation>
