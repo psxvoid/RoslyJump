@@ -5,14 +5,9 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 
-namespace RoslyJump.Infrastructure.VisualStudio.TextEditor
+namespace RoslyJump.Shared.Infrastructure.VisualStudio.TextEditor
 {
 #nullable enable
-    public interface IActiveViewAccessor
-    {
-        IWpfTextView? ActiveView { get; }
-    }
-
     [Export(typeof(IActiveViewAccessor))]
     internal sealed class ActiveViewAccessor : IActiveViewAccessor
     {

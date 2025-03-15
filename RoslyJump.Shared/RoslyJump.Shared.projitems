@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Infrastructure\VisualStudio\TextEditor\ActiveViewAccessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Infrastructure\VisualStudio\TextEditor\IActiveViewAccessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Package\CommandIds.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Package\PackageIds.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Package\RoslyJumpPackage.cs" />
