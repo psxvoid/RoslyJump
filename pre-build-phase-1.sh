@@ -134,7 +134,7 @@ currentRcBuild=`echo $latestReleaseCandidateTag | cut -d. -f4`
 currentRc=`echo $latestReleaseCandidateTag | cut -d. -f5`
 
 if [[ -z $currentRc ]]; then
-    currentRc=currentRcBuild
+    currentRc=$currentRcBuild
     currentRcBuild=0
 fi
 
@@ -146,7 +146,7 @@ previousRcBuild=`echo $previousReleaseCandidateTag | cut -d. -f4`
 previousRc=`echo $previousReleaseCandidateTag | cut -d. -f5`
 
 if [[ -z $previousRc ]]; then
-    previousRc=previousRcBuild
+    previousRc=$previousRcBuild
     previousRcBuild=0
 fi
 
