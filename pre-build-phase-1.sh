@@ -148,15 +148,16 @@ if [[ -z $previousRc ]]; then
     previousRcBuild=0
 fi
 
-echo "Current RC Major: $currentMajor"
-echo "Current RC Minor: $currentMinor"
-echo "Current RC Patch: $currentPatch"
-echo "Current RC Build: $currentBuild"
+echo "Current RC Major: $currentRcMajor"
+echo "Current RC Minor: $currentRcMinor"
+echo "Current RC Patch: $currentRcPatch"
+echo "Current RC Build: $currentRcBuild"
+echo "Current RC: $currentRc"
 
-echo "Previous RC Major: $previousMajor"
-echo "Previous RC Minor: $previousMinor"
-echo "Previous RC Patch: $previousPatch"
-echo "Previous RC Build: $previousBuild"
+echo "Previous RC Major: $previousRcMajor"
+echo "Previous RC Minor: $previousRcMinor"
+echo "Previous RC Patch: $previousRcPatch"
+echo "Previous RC: $previousRc"
 
 isRcGreater=false
 isRcEqual=false
@@ -184,16 +185,16 @@ echo "Is RC Equal  : $isRcEqual"
 
 isPreviousRcGreater=false
 
-if (( previousMajor <= currentRcMajor )); then
+if (( previousRcMajor <= currentRcMajor )); then
     isPreviousRcGreater=true
 else
-    if (( previousMinor <= currentRcMinor )); then
+    if (( previousRcMinor <= currentRcMinor )); then
         isPreviousRcGreater=true
     else
-        if (( previousPatch <= currentRcPatch )); then
+        if (( previousRcPatch <= currentRcPatch )); then
             isPreviousRcGreater=true
         else
-          if (( previousBuild < currentRcBuild )); then
+          if (( previousRcBuild < currentRcBuild )); then
               isPreviousRcGreater=true
           fi
         fi
