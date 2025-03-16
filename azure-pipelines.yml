@@ -47,6 +47,7 @@ jobs:
     latestMajor: $[dependencies.VersionUpdateAndValidation.outputs['versioning.latestMajor']]
     latestMinor: $[dependencies.VersionUpdateAndValidation.outputs['versioning.latestMinor']]
     latestPatch: $[dependencies.VersionUpdateAndValidation.outputs['versioning.latestPatch']]
+    latestBuild: $[dependencies.VersionUpdateAndValidation.outputs['versioning.latestBuild']]
     isMarketplaceRelease: $[dependencies.VersionUpdateAndValidation.outputs['versioning.isMarketplaceRelease']]
     isReleaseCandidate: $[dependencies.VersionUpdateAndValidation.outputs['versioning.isReleaseCandidate']]
     revisionCounter: $[counter(format('{0}.{1}.{2}-{3}', variables['latestMajor'], variables['latestMinor'], variables['latestPatch'], variables['isMarketplaceRelease']), 0)]

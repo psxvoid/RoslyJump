@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Formatting;
 using RoslyJump.Core;
 using RoslyJump.Core.Contexts.Local;
-using RoslyJump.Infrastructure.VisualStudio.TextEditor;
+using RoslyJump.Shared.Infrastructure.VisualStudio.TextEditor;
 using RoslyJump.Package;
 using RoslyJump.VisualComponents.TextEditor.Adornments;
 using Task = System.Threading.Tasks.Task;
