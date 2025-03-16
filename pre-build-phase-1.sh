@@ -159,18 +159,19 @@ echo "Current RC: $currentRc"
 echo "Previous RC Major: $previousRcMajor"
 echo "Previous RC Minor: $previousRcMinor"
 echo "Previous RC Patch: $previousRcPatch"
+echo "Previous RC Build: $previousRcBuild"
 echo "Previous RC: $previousRc"
 
 isRcGreater=false
 isRcEqual=false
 
-if (( currentMajor <= currentRcMajor )); then
+if (( currentMajor < currentRcMajor )); then
     isRcGreater=true
 else
-    if (( currentMinor <= currentRcMinor )); then
+    if (( currentMinor < currentRcMinor )); then
         isRcGreater=true
     else
-        if (( currentPatch <= currentRcPatch )); then
+        if (( currentPatch < currentRcPatch )); then
             isRcGreater=true
         else
             if (( currentBuild < currentRcBuild )); then
