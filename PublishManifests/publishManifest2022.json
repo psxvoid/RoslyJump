@@ -2,7 +2,7 @@
     "$schema": "http://json.schemastore.org/vsix-publish",
     "categories": [ "coding" ],
     "identity": {
-        "internalName": "RoslyJump 2022"          // If not specified, we try to generate the name from the display name of the extension in the vsixmanifest file.
+        "internalName": "RoslyJump2022"          // If not specified, we try to generate the name from the display name of the extension in the vsixmanifest file.
                                                   // Required if the display name is not the actual name of the extension.
     },
     "overview": "readme.md", // Path to the "readme" file that gets uploaded to the Marketplace. Required.
