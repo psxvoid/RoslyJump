@@ -21,8 +21,8 @@ fi
 activeBranch=$BUILD_SOURCEBRANCH
 
 releaseGlob="[[:digit:]]*.[[:digit:]]*.[[:digit:]]*"
-releaseGrepRegex="^[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+$"
-releaseCandidateGrepRegex="^[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+-rc[[:digit:]]\+$"
+releaseGrepRegex="^[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\(.[[:digit:]]\+\)\?$"
+releaseCandidateGrepRegex="^[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\(.[[:digit:]]\+\)\?-rc[[:digit:]]\+$"
 
 # get the latest tag on the current branch
 latestReleaseTag=$(git tag --list $releaseGlob --sort=-creatordate | grep $releaseGrepRegex | head -n 1)
@@ -99,38 +99,64 @@ echo "Is Release Candidate: $isReleaseCandidate"
 currentMajor=`echo $latestReleaseTag | cut -d. -f1`
 currentMinor=`echo $latestReleaseTag | cut -d. -f2`
 currentPatch=`echo $latestReleaseTag | cut -d. -f3`
+currentBuild=`echo $latestReleaseTag | cut -d. -f4`
+
+if [[ -z $currentBuild ]]; then
+    currentBuild=0
+fi
 
 previousMajor=`echo $previousReleaseTag | cut -d. -f1`
 previousMinor=`echo $previousReleaseTag | cut -d. -f2`
 previousPatch=`echo $previousReleaseTag | cut -d. -f3`
+previousBuild=`echo $previousReleaseTag | cut -d. -f4`
+
+if [[ -z $previousBuild ]]; then
+    previousBuild=0
+fi
 
 echo "Current Major: $currentMajor"
 echo "Current Minor: $currentMinor"
 echo "Current Patch: $currentPatch"
+echo "Current Build: $currentBuild"
 
 echo "Previous Major: $previousMajor"
 echo "Previous Minor: $previousMinor"
 echo "Previous Patch: $previousPatch"
+echo "Previous Build: $previousBuild"
 
 latestReleaseCandidateTag="${latestReleaseCandidateTag//-rc/.}"
 currentRcMajor=`echo $latestReleaseCandidateTag | cut -d. -f1`
 currentRcMinor=`echo $latestReleaseCandidateTag | cut -d. -f2`
 currentRcPatch=`echo $latestReleaseCandidateTag | cut -d. -f3`
-currentRc=`echo $latestReleaseCandidateTag | cut -d. -f4`
+currentRcBuild=`echo $latestReleaseCandidateTag | cut -d. -f4`
+currentRc=`echo $latestReleaseCandidateTag | cut -d. -f5`
+
+if [[ -z $currentRc ]]; then
+    currentRc=currentRcBuild
+    currentRcBuild=0
+fi
 
 previousReleaseCandidateTag="${previousReleaseCandidateTag//-rc/.}"
 previousRcMajor=`echo $previousReleaseCandidateTag | cut -d. -f1`
 previousRcMinor=`echo $previousReleaseCandidateTag | cut -d. -f2`
 previousRcPatch=`echo $previousReleaseCandidateTag | cut -d. -f3`
-previousRc=`echo $previousReleaseCandidateTag | cut -d. -f4`
+previousRcBuild=`echo $previousReleaseCandidateTag | cut -d. -f4`
+previousRc=`echo $previousReleaseCandidateTag | cut -d. -f5`
+
+if [[ -z $previousRc ]]; then
+    previousRc=previousRcBuild
+    previousRcBuild=0
+fi
 
 echo "Current RC Major: $currentMajor"
 echo "Current RC Minor: $currentMinor"
 echo "Current RC Patch: $currentPatch"
+echo "Current RC Build: $currentBuild"
 
 echo "Previous RC Major: $previousMajor"
 echo "Previous RC Minor: $previousMinor"
 echo "Previous RC Patch: $previousPatch"
+echo "Previous RC Build: $previousBuild"
 
 isRcGreater=false
 isRcEqual=false
@@ -141,10 +167,14 @@ else
     if (( currentMinor <= currentRcMinor )); then
         isRcGreater=true
     else
-        if (( currentPatch < currentRcPatch )); then
+        if (( currentPatch <= currentRcPatch )); then
             isRcGreater=true
-        elif (( currentPatch == currentRcPatch )); then
-            isRcEqual=true
+        else
+            if (( currentBuild < currentRcBuild )); then
+                isRcGreater=true
+            elif (( currentBuild == currentRcBuild )); then
+                isRcEqual=true
+            fi
         fi
     fi
 fi
@@ -160,8 +190,12 @@ else
     if (( previousMinor <= currentRcMinor )); then
         isPreviousRcGreater=true
     else
-        if (( previousPatch < currentRcPatch )); then
+        if (( previousPatch <= currentRcPatch )); then
             isPreviousRcGreater=true
+        else
+          if (( previousBuild < currentRcBuild )); then
+              isPreviousRcGreater=true
+          fi
         fi
     fi
 fi
@@ -172,33 +206,45 @@ if [[ $isRcGreater = true ]]; then
     currentMajor=$currentRcMajor
     currentMinor=$currentRcMinor
     currentPatch=$currentRcPatch
+    currentBuild=$currentRcBuild
 fi
 
 if [[ $isPreviousRcGreater = true ]]; then
     previousMajor=$previousRcMajor
     previousMinor=$previousRcMinor
     previousPatch=$previousRcPatch
+    previousBuild=$previousRcBuild
 fi
 
-echo "Current Version : $currentMajor.$currentMinor.$currentPatch"
-echo "Previous Version: $previousMajor.$previousMinor.$previousPatch"
+echo "Current Version : $currentMajor.$currentMinor.$currentPatch.$currentBuild"
+echo "Previous Version: $previousMajor.$previousMinor.$previousPatch.$previousBuild"
 
 if (( currentMajor == previousMajor )); then
     if (( currentMinor == previousMinor )); then
-        if (( currentPatch < previousPatch )); then
-            >&2 echo "Versioning Error: Patch version is less than the previous one."
-            exit 1
-        elif [[ $currentPatch = $previousPatch ]]; then
-            if (( currentRc < previousRc )); then
-                >&2 echo "Versioning Error: Release candidate version is less than the previous one."
+        if (( currentPatch == previousPatch )); then
+            if (( currentBuild < previousBuild )); then
+                >&2 echo "Versioning Error: Build version is less than the previous one."
                 exit 1
-            elif (( currentRc != previousRc && currentRc != previousRc + 1 )); then
-                >&2 echo "Versioning Error: Release candidate version is increased but not incremented."
+            elif [[ $currentBuild = $previousBuild ]]; then
+                if (( currentRc < previousRc )); then
+                    >&2 echo "Versioning Error: Release candidate version is less than the previous one."
+                    exit 1
+                elif (( currentRc != previousRc && currentRc != previousRc + 1 )); then
+                    >&2 echo "Versioning Error: Release candidate version is increased but not incremented."
+                    exit 1
+                fi
+            elif (( currentBuild != previousBuild + 1 )); then
+                >&2 echo "Versioning Error: Build version is increased but not incremented."
                 exit 1
             fi
-        elif (( currentPatch != previousPatch + 1 )); then
-            >&2 echo "Versioning Error: Patch version is increased but not incremented."
-            exit 1
+        else
+            if (( currentPatch <= previousPatch )); then
+                >&2 echo "Versioning Error: Patch version is less than the previous one."
+                exit 1
+            elif (( currentPatch != previousPatch + 1 )); then
+                >&2 echo "Versioning Error: Patch version is increased but not incremented."
+                exit 1
+            fi
         fi
     else
         if (( currentMinor <= previousMinor )); then
@@ -227,6 +273,7 @@ echo "##vso[task.setvariable variable=isReleaseCandidate;isOutput=true]$isReleas
 echo "##vso[task.setvariable variable=latestMajor;isOutput=true]$currentMajor"
 echo "##vso[task.setvariable variable=latestMinor;isOutput=true]$currentMinor"
 echo "##vso[task.setvariable variable=latestPatch;isOutput=true]$currentPatch"
+echo "##vso[task.setvariable variable=latestBuild;isOutput=true]$currentBuild"
 
 if [[ $isMarketplaceRelease = true ]]; then
     echo "##vso[build.addbuildtag]marketplace-release"
