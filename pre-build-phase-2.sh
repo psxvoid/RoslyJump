@@ -7,6 +7,7 @@ isReleaseCandidate=${ISRELEASECANDIDATE,,}
 latestMajor=$LATESTMAJOR
 latestMinor=$LATESTMINOR
 latestPatch=$LATESTPATCH
+latestBuild=$LATESTBUILD
 revisionCounter=$REVISIONCOUNTER
 
 if [[ -z $activeBranch ]]; then
@@ -39,6 +40,11 @@ if [[ -z $latestPatch ]] || ! [[ $latestPatch =~ ^[0-9]+$ ]]; then
     exit 1
 fi
 
+if [[ -z $latestBuild ]] || ! [[ $latestBuild =~ ^[0-9]+$ ]]; then
+    >&2 echo 'ENV Error: The LATESTBUILD environment variable is not set or is not a number.'
+    exit 1
+fi
+
 if [[ -z $revisionCounter ]] || ! [[ $revisionCounter =~ ^[0-9]+$ ]]; then
     >&2 echo 'ENV Error: The REVISIONCOUNTER environment variable is not set or is not a number.'
     exit 1
@@ -48,7 +54,11 @@ releaseVersion="$latestMajor.$latestMinor.$latestPatch.$revisionCounter"
 
 # update vsixmanifest version
 if [[ $activeBranch = "refs/heads/main" || $activeBranch = "refs/tags/$latestMajor.$latestMinor.$latestPatch" ]] && [[ $isMarketplaceRelease = true ]]; then
-    releaseVersion="$latestMajor.$latestMinor.$latestPatch"
+    if [[ $latestBuild = "0" ]]; then
+      releaseVersion="$latestMajor.$latestMinor.$latestPatch"
+    else
+      releaseVersion="$latestMajor.$latestMinor.$latestPatch.$latestBuild"
+    fi
 fi
 
 sed -r -i.bak "s/(Identity..*Version=\")([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*)(\")/\1$releaseVersion\3/g" ./RoslyJump/source.extension.vsixmanifest
