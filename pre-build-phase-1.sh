@@ -136,6 +136,8 @@ currentRc=`echo $latestReleaseCandidateTag | cut -d. -f5`
 if [[ -z $currentRc ]]; then
     currentRc=$currentRcBuild
     currentRcBuild=0
+elif (( currentRcBuild <= 0 )); then
+    >&2 echo "Tag Error: (RC) Do not set the fourth version number (build) when it's zero, use x.y.z instead (not x.y.z.0)."
 fi
 
 previousReleaseCandidateTag="${previousReleaseCandidateTag//-rc/.}"
