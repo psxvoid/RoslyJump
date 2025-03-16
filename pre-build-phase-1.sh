@@ -103,6 +103,8 @@ currentBuild=`echo $latestReleaseTag | cut -d. -f4`
 
 if [[ -z $currentBuild ]]; then
     currentBuild=0
+elif (( currentBuild <= 0 )); then
+    >&2 echo "Tag Error: Do not set the fourth version number (build) when it's zero, use x.y.z instead (not x.y.z.0)."
 fi
 
 previousMajor=`echo $previousReleaseTag | cut -d. -f1`
