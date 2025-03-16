@@ -215,7 +215,7 @@ if [[ $isRcGreater = true ]]; then
     currentBuild=$currentRcBuild
 fi
 
-if [[ $isPreviousRcGreater = true ]]; then
+if [[ $isRcGreater = true ]] && [[ $isPreviousRcGreater = true ]]; then
     previousMajor=$previousRcMajor
     previousMinor=$previousRcMinor
     previousPatch=$previousRcPatch
